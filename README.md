@@ -19,7 +19,7 @@
 
 ## Table of Contents:
 
-  * [Technologies Used](#technologies)
+  * [Technologies Used](#technologies-used)
   * [Design](#design)
   * [Usage](#usage)
   * [License](#license)
@@ -42,8 +42,8 @@
  <a target="_blank" rel="noopener noreferrer" href="https://www.figma.com/">
     <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma Badge" style="max-width: 100%;">
  </a>
- <a target="_blank" rel="noopener noreferrer" href="https://www.figma.com/">
-    <img src="https://img.shields.io/badge/Canva-%2300C4CC.svg?&style=for-the-badge&logo=Canva&logoColor=white" alt="MongoDB Atlas" style="max-width: 100%;">
+ <a target="_blank" rel="noopener noreferrer" href="https://www.canva.com/">
+    <img src="https://img.shields.io/badge/Canva-%2300C4CC.svg?&style=for-the-badge&logo=Canva&logoColor=white" alt="Canva Badge" style="max-width: 100%;">
  </a>
 
 ## Design:
@@ -69,14 +69,16 @@ After everyday that you complete your "Today" task(s), you earn a streak day and
 
 ## Contact:
 
-<h3 style="display: inline">Brianna Woodruff </h3>
-    <a target="_blank" rel="noopener noreferrer" href="https://github.com/briannawoodruff">
-       <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" style="max-width: 100%;">
-    </a>
-    <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/briannaewoodruff/">
-       <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" style="max-width: 100%;">
-    </a>
-    <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/briannaewoodruff/">
-       <img src="https://img.shields.io/badge/Portfolio-EA4C89?style=for-the-badge&logo=About.me&logoColor=white" alt="Portfolio" style="max-width: 100%;">
-    </a>  
+### Brianna Woodruff  
+
 briannaewoodruff@gmail.com
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/briannawoodruff">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" style="max-width: 100%;">
+</a>
+<a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/briannaewoodruff/">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" style="max-width: 100%;">
+</a>
+<a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/briannaewoodruff/">
+    <img src="https://img.shields.io/badge/Portfolio-EA4C89?style=for-the-badge&logo=About.me&logoColor=white" alt="Portfolio" style="max-width: 100%;">
+</a>
