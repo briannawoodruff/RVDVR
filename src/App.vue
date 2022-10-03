@@ -1,27 +1,43 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Splash v-if="splash" />
+  <HelloWorld v-else msg="Welcome to Your Vue.js App" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Splash from "./components/Splash.vue"
+import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    HelloWorld,
+    Splash,
+  },
+  data: () => ({
+    splash: true,
+  }),
+
+  mounted() {
+    setTimeout(() => {
+      this.splash = false;
+    }, 2000);
+  },
+};
 </script>
 
 <style lang="scss">
 @import "./scss/_variables.scss";
 
 #app {
-  background-color: $white;
-
+  background: url(./assets/images/backgrounds/RVDVR-gray-bg.svg) center
+    no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  // margin-top: 60px;
+  min-height: 100%;
 }
 </style>
