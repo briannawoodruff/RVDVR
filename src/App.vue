@@ -1,17 +1,20 @@
 <template>
   <Splash v-if="splash" />
-  <HelloWorld v-else msg="Welcome to Your Vue.js App" />
+  <!-- <HelloWorld v-else msg="Welcome to Your Vue.js App" /> -->
+  <TodayToDo v-else />
 </template>
 
 <script>
-import Splash from "./components/Splash.vue"
-import HelloWorld from "./components/HelloWorld.vue";
+  // import HelloWorld from "./components/HelloWorld.vue";
+  import TodayToDo from './components/TodayToDo.vue'
+  import Splash from "./components/Splash.vue"
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    // HelloWorld,
     Splash,
+    TodayToDo,
   },
   data: () => ({
     splash: true,
@@ -36,6 +39,8 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100vw;
+  height: 100vh;
   color: #2c3e50;
   // margin-top: 60px;
   min-height: 100%;

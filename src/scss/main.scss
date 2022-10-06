@@ -1,10 +1,5 @@
-// font-family: 'Blinker', sans-serif;
-@import url('https://fonts.googleapis.com/css2?family=Blinker&display=swap');
-// font-family: 'Nunito Sans', sans-serif;
-@import url('https://fonts.googleapis.com/css2?family=Blinker&family=Nunito+Sans&display=swap');
-
 html {
-    font-family: "Nunito Sans", sans-serif;
+    font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -14,3 +9,9 @@ body {
     height: 100%;
     margin: 0;
 }
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
