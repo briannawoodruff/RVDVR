@@ -1,8 +1,8 @@
 <template>
   <label class="single-task checkbox">
-      <input type="checkbox" />
-      <div class="indicator"></div>
-      <p class="text">Sample Text</p>
+    <input type="checkbox" />
+    <div class="indicator"></div>
+    <p class="text">Sample Text</p>
   </label>
 </template>
         
@@ -19,14 +19,15 @@ export default {
 .single-task {
   width: 100%;
   height: auto;
-  border: 2px solid $darkGreen;
+  // border: 2px solid $darkGreen;
   background-color: $white;
-  padding: 7px 5px 7px 40px;
+  padding: 10px 5px 10px 45px;
   margin: 0;
   border-radius: 5px;
   font-family: $nunito;
   position: relative;
   cursor: pointer;
+  font-size: $text-sm;
   font-weight: 600;
   text-align: start;
   color: $black;
@@ -37,8 +38,8 @@ export default {
     cursor: pointer;
     z-index: 2;
     opacity: 0;
-    top: 7px;
-    left: 192px;
+    top: 8px;
+    left: 196px;
     height: 24px;
     width: 24px;
     transform: translate(-187px, -1px);
@@ -47,20 +48,13 @@ export default {
 
 .indicator {
   position: absolute;
-  top: 6px;
-  left: 5px;
+  top: 7px;
+  left: 9px;
   height: 24px;
   width: 24px;
-  border: 2px solid darkgray;
+  border: 2px solid $darkGray;
   border-radius: 4px;
   background-color: $mediumGray;
-
-  .single-task input:checked ~ & {
-    + p {
-      color: darken($color: $grayBG, $amount: 40);
-      text-decoration: line-through;
-    }
-  }
   // hover
   .single-task:hover input ~ & {
     background: $grayBG;
@@ -69,6 +63,13 @@ export default {
   .single-task input:checked ~ & {
     background: $goodGreen;
     border: none;
+  }
+  // checked color change and strikethrough
+  .single-task input:checked ~ & {
+    + p {
+      color: darken($color: $grayBG, $amount: 40);
+      text-decoration: line-through;
+    }
   }
   // hover when checked
   .single-task:hover input:not([disabled]):checked ~ & {

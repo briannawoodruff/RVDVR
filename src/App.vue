@@ -16,10 +16,11 @@ export default {
     Splash,
     TodayToDo,
   },
-  data: () => ({
-    splash: true,
-  }),
-
+  data() {
+    return {
+      splash: true,
+    }
+  }, 
   mounted() {
     setTimeout(() => {
       this.splash = false;

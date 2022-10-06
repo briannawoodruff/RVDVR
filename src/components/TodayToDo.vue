@@ -7,21 +7,46 @@
     <div class="tasks">
       <SingleTask />
       <SingleTask />
-      <SingleTask />
-      <SingleTask />
-      <SingleTask />
-      <SingleTask />
     </div>
+    <AddTask @toggle-add-task="toggleAddTask" :showAddTask="showAddTask" />
   </div>
 </template>
       
 <script>
 import SingleTask from "./SingleTask.vue";
+import AddTask from "./AddTask.vue";
 
 export default {
   name: "TodayToDo",
   components: {
     SingleTask,
+    AddTask,
+  },
+  data() {
+    return {
+      showAddTask: true,
+    };
+  },
+  methods: {
+    toggleAddTask() {
+      this.showAddTask = !this.showAddTask;
+    },
+    async addTask(task) {
+      const res = await fetch(
+        "https://vue-tasktracker-backend.herokuapp.com/tasks",
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(task),
+        }
+      );
+
+      const data = await res.json();
+
+      this.tasks = [...this.tasks, data];
+    },
   },
 };
 </script>
@@ -33,16 +58,17 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   width: 300px;
   max-width: 500px;
-  min-height: 250px;
+  min-height: 175px;
   margin: 30px auto;
   overflow: auto;
-  border: 2px solid $darkGreen;
+  border: 3px solid $darkGreen;
   background-color: $white;
   padding: 0;
   border-radius: 5px;
+  top: 0;
 }
 .wrapper {
   width: 98%;
@@ -58,8 +84,8 @@ hr {
   margin: 5px;
   height: 2px;
   border-width: 0;
-  color: darkgray;
-  background-color: darkgray;
+  color: $darkGray;
+  background-color: $darkGray;
 }
 .tasks {
   display: flex;
