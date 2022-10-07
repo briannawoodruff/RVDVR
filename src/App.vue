@@ -26,8 +26,8 @@ export default {
     async addTask(newTask) {
       this.allTasks = [...this.allTasks, newTask]
     },
-    async deleteTask() {
-      // this.allTasks = [...this.allTasks, newTask]
+    async deleteTask(task) {
+      this.allTasks.splice(this.allTasks.indexOf(task), 1)
     },
   },
   async mounted() {

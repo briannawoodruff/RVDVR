@@ -1,8 +1,11 @@
 <template>
   <label class="single-task checkbox">
     <input type="checkbox" />
+    <button
+      @click="$parent.$emit('delete-task', task.id)"
+      class="indicator-delete"
+    ></button>
     <div class="indicator-checkbox"></div>
-    <button class="indicator-delete"></button>
     <p class="text">{{ this.task.task }}</p>
   </label>
 </template>

@@ -93,9 +93,14 @@ export default {
   & input {
     width: auto;
     height: auto;
-    margin: 5px 5px 10px 5px;
+    margin: 5px 10px 10px 10px;
     padding: 8px 7px;
     font-size: $text-sm;
   }
+}
+.task-input:focus, .task-input:active {
+  outline: none;
+  border: 2px solid $navy;
+  border-radius: 3px;
 }
 </style>
