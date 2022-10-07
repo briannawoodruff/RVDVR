@@ -1,13 +1,16 @@
 <template>
   <Splash v-if="splash" />
   <!-- <HelloWorld v-else msg="Welcome to Your Vue.js App" /> -->
-  <TodayToDo v-else @add-task="addTask" @delete-task="deleteTask" :allTasks="this.allTasks"/>
+  <Card v-else title="TODAY" @add-task="addTask">
+    <TodayToDo @delete-task="deleteTask" :allTasks="this.allTasks"/>
+  </Card>
 </template>
 
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
 import TodayToDo from "./components/TodayToDo.vue";
 import Splash from "./components/Splash.vue";
+import Card from "./components/layout/Card.vue"
 
 export default {
   name: "App",
@@ -15,6 +18,7 @@ export default {
     // HelloWorld,
     Splash,
     TodayToDo,
+    Card,
   },
   data() {
     return {
