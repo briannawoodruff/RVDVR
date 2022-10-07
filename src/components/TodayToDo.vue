@@ -4,11 +4,26 @@
       <h2 class="header">TODAY</h2>
       <hr />
     </div>
-    <div class="tasks">
-      <SingleTask />
-      <SingleTask />
+    <!-- TASKS -->
+    <!-- IF there is tasks -->
+    <div v-if="this.allTasks.length">
+      <!-- Filters for TODAY only tasks -->
+      <div class="tasks" v-for="task in this.allTasks.filter(item => item.isToday === true)" :key="task.id">
+        <SingleTask :task="task" />
+      </div>
     </div>
-    <AddTask @toggle-add-task="toggleAddTask" :showAddTask="showAddTask" />
+    <!-- IF there's no tasks -->
+    <div v-else-if="this.showAddTask" @click="toggleAddTask" class="tasks">
+      <p class="no-tasks">Add or drag a task</p>
+    </div>
+
+    <!-- ADDTASK BUTTON/FORM -->
+    <AddTask
+      @toggle-add-task="toggleAddTask"
+      @add-task="$emit('add-task', newTask)"
+      :showAddTask="showAddTask"
+      :isToday="isToday"
+    />
   </div>
 </template>
       
@@ -22,30 +37,21 @@ export default {
     SingleTask,
     AddTask,
   },
+  emits: ["add-task"],
+  props: {
+    allTasks: {
+      type: Array,
+    },
+  },
   data() {
     return {
       showAddTask: true,
+      isToday: true,
     };
   },
   methods: {
     toggleAddTask() {
       this.showAddTask = !this.showAddTask;
-    },
-    async addTask(task) {
-      const res = await fetch(
-        "https://vue-tasktracker-backend.herokuapp.com/tasks",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(task),
-        }
-      );
-
-      const data = await res.json();
-
-      this.tasks = [...this.tasks, data];
     },
   },
 };
@@ -61,7 +67,7 @@ export default {
   // justify-content: center;
   width: 300px;
   max-width: 500px;
-  min-height: 175px;
+  min-height: 150px;
   margin: 30px auto;
   overflow: auto;
   border: 3px solid $darkGreen;
@@ -92,6 +98,12 @@ hr {
   flex-direction: column;
   width: 100%;
   top: 38px;
+  cursor: pointer;
+}
+.no-tasks {
+  font-size: $text-sm;
+  font-family: $nunito;
+  margin: 8px 0 35px 0;
 }
 </style>
       

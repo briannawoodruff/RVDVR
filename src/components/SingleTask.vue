@@ -2,13 +2,18 @@
   <label class="single-task checkbox">
     <input type="checkbox" />
     <div class="indicator"></div>
-    <p class="text">Sample Text</p>
+    <p class="text">{{ this.task.task }}</p>
   </label>
 </template>
         
 <script>
 export default {
   name: "SingleTask",
+  props: {
+    task: {
+        type: Object,
+    }
+  },
 };
 </script>
         

@@ -1,50 +1,77 @@
 <template>
+  <!-- ADDTASK BUTTON TRUE -->
   <form v-if="showAddTask" @submit="$emit('toggle-add-task')" class="add-form">
     <input type="submit" value="+" class="add-task-btn" />
   </form>
-
-  <form v-else @submit="$emit('toggle-add-task')" class="add-form">
+  <!-- INPUT ADDTASK FORM -->
+  <form v-else @submit="onSubmit" class="add-form">
     <div class="form-control">
-      <!-- <label for="task">Task</label> -->
       <input
+        id="input"
         type="text"
-        v-model="text"
-        name="text"
-        placeholder="Add Task"
+        v-model="this.newTask.task"
+        name="task"
+        placeholder="Add a Task"
         class="task-input"
       />
     </div>
-
+    <!-- Done Button -->
     <input type="submit" value="Done" class="add-task-btn" />
   </form>
 </template>
   
-  <script>
+<script>
+import { uuid } from "vue-uuid";
+
 export default {
   name: "AddTask",
+  emits: ["toggle-add-task"],
   props: {
     showAddTask: Boolean,
+    isToday: Boolean,
+    allTasks: {
+      type: Array,
+    },
   },
-  emits: ["toggle-add-task"],
   data() {
     return {
-      text: "",
-      day: "",
-      reminder: false,
+      newTask: {
+        id: uuid.v4(),
+        task: "",
+        isToday: this.isToday,
+        completed: false,
+      },
     };
   },
-  methods: {},
+  methods: {
+    onSubmit(e) {
+      e.preventDefault();
+      // IF text was added
+      if (this.newTask.task !== "") {
+        this.$parent.$emit("add-task", this.newTask);
+        this.newTask = {
+          id: uuid.v4(),
+          task: "",
+          isToday: this.isToday,
+          completed: false,
+        };
+      }
+      // BUTTON TOGGLE
+      this.$emit("toggle-add-task");
+    },
+  },
 };
 </script>
   
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
+// form container
 .add-form {
   margin: 5px 0 15px 0;
   height: 100%;
   width: 100%;
 }
-
+// form buttons
 .add-task-btn {
   width: 80%;
   font-size: $text-sm;
@@ -55,8 +82,9 @@ export default {
   border-radius: 5px;
   background-color: $darkGreen;
   padding: 3px;
+  cursor: pointer;
 }
-
+// form text input
 .form-control {
   display: flex;
   flex-direction: column;
