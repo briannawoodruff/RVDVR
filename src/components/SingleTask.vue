@@ -29,7 +29,7 @@ export default {
   width: 100%;
   height: auto;
   overflow: hidden;
-  // border: 2px solid $darkGreen;
+  border: 2px solid $white;
   background-color: $white;
   padding: 10px 35px 10px 45px;
   margin: 0;
@@ -47,17 +47,20 @@ export default {
     cursor: pointer;
     z-index: 2;
     opacity: 0;
-    top: 8px;
+    top: 11px;
     left: 196px;
     height: 24px;
     width: 24px;
     transform: translate(-187px, -1px);
   }
+  &:hover {
+    border: 2px solid $darkGray;
+  }
 }
 // checkbox
 .indicator-checkbox {
   position: absolute;
-  top: 7px;
+  top: 10px;
   left: 9px;
   height: 24px;
   width: 24px;
@@ -119,7 +122,7 @@ export default {
   display: none;
   position: absolute;
   z-index: 7;
-  top: 7px;
+  top: 10px;
   right: 10px;
   height: 24px;
   width: 24px;
