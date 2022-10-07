@@ -1,7 +1,8 @@
 <template>
   <label class="single-task checkbox">
     <input type="checkbox" />
-    <div class="indicator"></div>
+    <div class="indicator-checkbox"></div>
+    <button class="indicator-delete"></button>
     <p class="text">{{ this.task.task }}</p>
   </label>
 </template>
@@ -11,8 +12,8 @@ export default {
   name: "SingleTask",
   props: {
     task: {
-        type: Object,
-    }
+      type: Object,
+    },
   },
 };
 </script>
@@ -24,9 +25,10 @@ export default {
 .single-task {
   width: 100%;
   height: auto;
+  overflow: hidden;
   // border: 2px solid $darkGreen;
   background-color: $white;
-  padding: 10px 5px 10px 45px;
+  padding: 10px 35px 10px 45px;
   margin: 0;
   border-radius: 5px;
   font-family: $nunito;
@@ -36,7 +38,6 @@ export default {
   font-weight: 600;
   text-align: start;
   color: $black;
-
   // Hide default browser input
   & input {
     position: absolute;
@@ -50,8 +51,8 @@ export default {
     transform: translate(-187px, -1px);
   }
 }
-
-.indicator {
+// checkbox
+.indicator-checkbox {
   position: absolute;
   top: 7px;
   left: 9px;
@@ -97,7 +98,7 @@ export default {
     // checkbox tick
     .checkbox & {
       left: 8px;
-      top: 2px;
+      top: 3px;
       width: 5px;
       height: 12px;
       border: solid $white;
@@ -107,6 +108,40 @@ export default {
     // disabled tick color
     .checkbox input:disabled ~ & {
       border-color: $grayBG;
+    }
+  }
+}
+// delete
+.indicator-delete {
+  display: none;
+  position: absolute;
+  z-index: 7;
+  top: 7px;
+  right: 10px;
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 4px;
+  background-color: $deleteRed;
+  // hover over task show delete button
+  .single-task:hover & {
+    display: block;
+  }
+  // hover over delete
+  &:hover {
+    background: darken($color: $deleteRed, $amount: 5);
+  }
+  // X
+  &:after {
+    content: "\D7";
+    position: absolute;
+    .checkbox & {
+      font-size: 26px;
+      font-weight: bold;
+      font-family: $nunito;
+      right: 4px;
+      top: -6.5px;
+      color: $white;
     }
   }
 }

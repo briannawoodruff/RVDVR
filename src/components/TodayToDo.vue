@@ -9,7 +9,7 @@
     <div v-if="this.allTasks.length">
       <!-- Filters for TODAY only tasks -->
       <div class="tasks" v-for="task in this.allTasks.filter(item => item.isToday === true)" :key="task.id">
-        <SingleTask :task="task" />
+        <SingleTask @delete-task="$emit('delete-task', task)" :task="task" />
       </div>
     </div>
     <!-- IF there's no tasks -->
@@ -37,7 +37,7 @@ export default {
     SingleTask,
     AddTask,
   },
-  emits: ["add-task"],
+  emits: ["add-task", "delete-task"],
   props: {
     allTasks: {
       type: Array,

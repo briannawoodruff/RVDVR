@@ -1,7 +1,7 @@
 <template>
   <Splash v-if="splash" />
   <!-- <HelloWorld v-else msg="Welcome to Your Vue.js App" /> -->
-  <TodayToDo v-else @add-task="addTask" :allTasks="this.allTasks"/>
+  <TodayToDo v-else @add-task="addTask" @delete-task="deleteTask" :allTasks="this.allTasks"/>
 </template>
 
 <script>
@@ -25,6 +25,9 @@ export default {
   methods: {
     async addTask(newTask) {
       this.allTasks = [...this.allTasks, newTask]
+    },
+    async deleteTask() {
+      // this.allTasks = [...this.allTasks, newTask]
     },
   },
   async mounted() {
