@@ -31,6 +31,7 @@ import TodayToDo from "./components/TodayToDo.vue";
 import MasterToDo from "./components/MasterToDo.vue";
 import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
+const STORAGE_KEY = 'rvdvr_todos';
 
 export default {
   name: "App",
@@ -51,12 +52,16 @@ export default {
   methods: {
     async addTask(newTask) {
       this.allTasks = [...this.allTasks, newTask];
+      // localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks))
     },
     async deleteTask(task) {
       // Find the specific task with it's id
       let foundItem = this.allTasks.find(item => item.id === task)
       // Remove task from array
       this.allTasks.splice(this.allTasks.indexOf(foundItem), 1);
+      // localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks))
     },
   },
   async mounted() {
@@ -65,6 +70,10 @@ export default {
       this.splash = false;
     }, 2000);
   },
+  async created() {
+    // Grabs todos from localStorage with refreshed
+    this.allTasks = JSON.parse(localStorage.getItem((STORAGE_KEY) || '[]'));
+  }
 };
 </script>
 

@@ -18,6 +18,7 @@
             type="text"
             v-model="this.newTask.task"
             name="task"
+            autofocus
             placeholder="Add a Task"
             class="task-input"
           />
