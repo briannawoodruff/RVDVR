@@ -1,17 +1,18 @@
 <template>
-  <!-- TODAY TASKS -->
+  <!-- MASTER TASKS -->
   <!-- IF there is tasks -->
   <div
     v-if="
       this.allTasks.length > 0 &&
-      this.allTasks.some((item) => item.isToday === true)
+      this.allTasks.some((item) => item.isToday === false)
     "
     class="container"
   >
-    <!-- Filters for TODAY only tasks -->
+    <!-- Filters for NOT TODAY only tasks -->
+
     <div class="tasks" v-for="task in this.allTasks" :key="task.id">
       <SingleTask
-        v-if="task.isToday === true"
+        v-if="task.isToday === false"
         @delete-task="$parent.$emit('delete-task', task)"
         :task="task"
       />
@@ -19,14 +20,14 @@
   </div>
   <!-- IF there's no tasks -->
   <div v-else>
-    <div v-if="this.showTodayTask" @click="toggleTodayTask" class="tasks">
-      <p class="no-tasks">Add or drag a task</p>
+    <div v-if="this.showMasterTask" @click="toggleMasterTask" class="tasks">
+      <p class="no-tasks">Add a task</p>
     </div>
   </div>
   <!-- AddTask Button/Form -->
   <AddTask
-    @toggle-today-task="toggleTodayTask"
-    :showTodayTask="this.showTodayTask"
+    @toggle-master-task="toggleMasterTask"
+    :showMasterTask="this.showMasterTask"
     @add-task="$emit('add-task', newTask)"
     :isToday="this.isToday"
   />
@@ -37,7 +38,7 @@ import SingleTask from "./SingleTask.vue";
 import AddTask from "./AddTask.vue";
 
 export default {
-  name: "TodayToDo",
+  name: "MasterToDo",
   components: {
     SingleTask,
     AddTask,
@@ -53,12 +54,12 @@ export default {
   },
   data() {
     return {
-      showTodayTask: true,
+      showMasterTask: true,
     };
   },
   methods: {
-    async toggleTodayTask() {
-      this.showTodayTask = !this.showTodayTask;
+    async toggleMasterTask() {
+      this.showMasterTask = !this.showMasterTask;
     },
   },
 };
@@ -83,13 +84,6 @@ export default {
   font-size: $text-sm;
   font-family: $nunito;
   margin: 8px 0 35px 0;
-}
-@media only screen and (max-width: $mobile-width) {
-  .tasks {
-    display: flex;
-    justify-content: flex-start;
-    text-align: start;
-  }
 }
 </style>
       

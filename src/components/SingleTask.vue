@@ -1,11 +1,15 @@
 <template>
   <label class="single-task checkbox">
+    <!-- Invisible default checkbox -->
     <input type="checkbox" />
+    <!-- Delete button -->
     <button
-      @click="$parent.$emit('delete-task', task.id)"
+      @click="$parent.$emit('delete-task', this.task.id)"
       class="indicator-delete"
     ></button>
+    <!-- Custom checkbox -->
     <div class="indicator-checkbox"></div>
+    <!-- The added task -->
     <p class="text">{{ this.task.task }}</p>
   </label>
 </template>
@@ -117,7 +121,7 @@ export default {
     }
   }
 }
-// delete
+// delete button
 .indicator-delete {
   display: none;
   position: absolute;
