@@ -1,6 +1,5 @@
 <template>
   <Splash v-if="splash" />
-  <!-- <HelloWorld v-else msg="Welcome to Your Vue.js App" /> -->
   <div v-else class="container">
     <div class="card">
       <Card title="TODAY">
@@ -26,7 +25,6 @@
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld.vue";
 import TodayToDo from "./components/TodayToDo.vue";
 import MasterToDo from "./components/MasterToDo.vue";
 import Splash from "./components/Splash.vue";
@@ -36,7 +34,6 @@ const STORAGE_KEY = 'rvdvr_todos';
 export default {
   name: "App",
   components: {
-    // HelloWorld,
     Splash,
     TodayToDo,
     MasterToDo,
