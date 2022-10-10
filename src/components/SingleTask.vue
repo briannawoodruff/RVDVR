@@ -1,17 +1,22 @@
 <template>
-  <label class="single-task checkbox">
+  <div
+    @click="setActive(this.task.id)"
+    :id="this.task.id"
+    class="single-task checkbox"
+    :class="{ active: this.index === this.activeItem }"
+  >
     <!-- Invisible default checkbox -->
-    <input type="checkbox" />
     <!-- Delete button -->
+    <input type="checkbox" />
     <button
-      @click="$parent.$emit('delete-task', this.task.id)"
-      class="indicator-delete"
+      @click.prevent="$parent.$emit('delete-task', this.task.id)"
+      class="indicator-delete hide-btn"
     ></button>
     <!-- Custom checkbox -->
     <div class="indicator-checkbox"></div>
     <!-- The added task -->
     <p class="text">{{ this.task.task }}</p>
-  </label>
+  </div>
 </template>
         
 <script>
@@ -20,6 +25,47 @@ export default {
   props: {
     task: {
       type: Object,
+    },
+    activeItem: {
+      type: Number,
+    },
+    index: {
+      type: Number,
+    },
+    allTasks: {
+      type: Array,
+    },
+  },
+  watch: {
+    activeItem: {
+      // removes the previously active tasks delete button
+      // when the activeItem changes, set previous activeItem deleteBtn to none
+      handler(currentItem, oldItem) {
+        // IF the currentItem and oldItem exist
+        if (currentItem !== null && oldItem !== undefined && oldItem !== null) {
+          // finds the previously active task and adds hide-btn to hide it
+          let findOld = this.allTasks.filter((item, i) => i === oldItem);
+          // IF the previous item is found
+          if (findOld.length > 0) {
+            let old = document.getElementById(findOld[0].id);
+            let deleteBtn = old.querySelector(".indicator-delete");
+            deleteBtn.classList.add("hide-btn");
+          }
+        }
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    async setActive(id) {
+      // makes the delete button visible when active by removing hide-btn
+      if (id !== undefined) {
+        let current = document.getElementById(id);
+        if (current !== null) {
+          let btn = current.querySelector(".indicator-delete");
+          btn.classList.remove("hide-btn");
+        }
+      }
     },
   },
 };
@@ -51,15 +97,19 @@ export default {
     cursor: pointer;
     z-index: 2;
     opacity: 0;
-    top: 11px;
+    top: 10px;
     left: 196px;
-    height: 24px;
-    width: 24px;
-    transform: translate(-187px, -1px);
+    height: 36px;
+    width: 36px;
+    // transform: translate(-187px, -1px);
+    transform: translate(-192px, -5px);
   }
   &:hover {
     border: 2px solid $darkGray;
   }
+}
+.active {
+  border: 2px solid $darkGray;
 }
 // checkbox
 .indicator-checkbox {
@@ -79,9 +129,7 @@ export default {
   .single-task input:checked ~ & {
     background: $goodGreen;
     border: none;
-  }
-  // checked color change and strikethrough
-  .single-task input:checked ~ & {
+    // checked color change and strikethrough
     + p {
       color: darken($color: $grayBG, $amount: 40);
       text-decoration: line-through;
@@ -122,8 +170,15 @@ export default {
   }
 }
 // delete button
-.indicator-delete {
+.hide-btn {
   display: none;
+  // hover over task show delete button
+  .single-task:hover & {
+    display: block;
+  }
+}
+.indicator-delete {
+  // display: block;
   position: absolute;
   z-index: 7;
   top: 10px;
@@ -133,10 +188,6 @@ export default {
   border: none;
   border-radius: 4px;
   background-color: $deleteRed;
-  // hover over task show delete button
-  .single-task:hover & {
-    display: block;
-  }
   // hover over delete
   &:hover {
     background: darken($color: $deleteRed, $amount: 5);

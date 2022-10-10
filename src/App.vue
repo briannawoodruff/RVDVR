@@ -5,6 +5,8 @@
       <Card title="TODAY">
         <TodayToDo
           :isToday="true"
+          :activeItem="this.activeItem"
+          @selected-task="selectedTask"
           @add-task="addTask"
           @delete-task="deleteTask"
           :allTasks="this.allTasks"
@@ -15,6 +17,8 @@
       <Card title="MASTER TO DO">
         <MasterToDo
           :isToday="false"
+          :activeItem="this.activeItem"
+          @selected-task="selectedTask"
           @add-task="addTask"
           @delete-task="deleteTask"
           :allTasks="this.allTasks"
@@ -29,7 +33,7 @@ import TodayToDo from "./components/TodayToDo.vue";
 import MasterToDo from "./components/MasterToDo.vue";
 import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
-const STORAGE_KEY = 'rvdvr_todos';
+const STORAGE_KEY = "rvdvr_todos";
 
 export default {
   name: "App",
@@ -44,21 +48,27 @@ export default {
       splash: true,
       allTasks: [],
       isToday: Boolean,
+      activeItem: null,
     };
   },
   methods: {
     async addTask(newTask) {
       this.allTasks = [...this.allTasks, newTask];
       // localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
     async deleteTask(task) {
       // Find the specific task with it's id
-      let foundItem = this.allTasks.find(item => item.id === task)
+      let foundItem = this.allTasks.find((item) => item.id === task);
       // Remove task from array
       this.allTasks.splice(this.allTasks.indexOf(foundItem), 1);
       // localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+    },
+    // sets the active class (adding a border to the selected task) via it's index
+    async selectedTask(i) {
+      // this gets emitted to SingleTask.vue -> :class="{ active: this.index === this.activeItem }"
+      this.activeItem = i;
     },
   },
   async mounted() {
@@ -69,8 +79,8 @@ export default {
   },
   async created() {
     // Grabs todos from localStorage with refreshed
-    this.allTasks = JSON.parse(localStorage.getItem((STORAGE_KEY) || '[]'));
-  }
+    this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  },
 };
 </script>
 

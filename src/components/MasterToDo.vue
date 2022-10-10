@@ -9,12 +9,15 @@
     class="container"
   >
     <!-- Filters for NOT TODAY only tasks -->
-
-    <div class="tasks" v-for="task in this.allTasks" :key="task.id">
+    <div class="tasks" v-for="(task, i) in this.allTasks" :key="task.id">
       <SingleTask
+        :index="i"
+        :activeItem="this.activeItem"
+        @click="$emit('selected-task', i)"
         v-if="task.isToday === false"
         @delete-task="$parent.$emit('delete-task', task)"
         :task="task"
+        :allTasks="this.allTasks"
       />
     </div>
   </div>
@@ -43,13 +46,16 @@ export default {
     SingleTask,
     AddTask,
   },
-  emits: ["delete-task", "add-task"],
+  emits: ["delete-task", "add-task", "selected-task"],
   props: {
     allTasks: {
       type: Array,
     },
     isToday: {
       type: Boolean,
+    },
+    activeItem: {
+      type: Number,
     },
   },
   data() {
@@ -68,6 +74,9 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
 
+.active {
+  border: 2px solid $darkGray;
+}
 .container {
   display: flex;
   flex-direction: column;

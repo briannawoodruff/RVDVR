@@ -11,7 +11,7 @@
     </form>
     <!-- Input AddTask Form -->
     <div v-else class="add-form">
-      <form @submit="onSubmit">
+      <form @submit.passive="onSubmit">
         <div class="form-control">
           <input
             id="input"
@@ -41,13 +41,14 @@
     </form>
     <!-- Input AddTask Form -->
     <div v-else class="add-form">
-      <form @submit="onSubmit">
+      <form @submit.passive="onSubmit">
         <div class="form-control">
           <input
             id="input"
             type="text"
             v-model="this.newTask.task"
             name="task"
+            autofocus
             placeholder="Add a Task"
             class="task-input"
           />
@@ -89,9 +90,21 @@ export default {
       },
     };
   },
+  watch: {
+    // watches toggle to put the input in focus
+    showTodayTask(currentItem) {
+      if (!currentItem) {
+        this.setFocus();
+      }
+    },
+    showMasterTask(currentItem) {
+      if (!currentItem) {
+        this.setFocus();
+      }
+    },
+  },
   methods: {
-    onSubmit(e) {
-      e.preventDefault();
+    onSubmit() {
       // IF text was added
       if (this.newTask.task !== "") {
         this.$parent.$emit("add-task", this.newTask);
@@ -109,6 +122,16 @@ export default {
       } else {
         this.$emit("toggle-master-task");
       }
+    },
+    async setFocus() {
+      // waits until mounts
+      setTimeout(() => {
+        let input = document.getElementById("input");
+        // puts input in focus
+        if (input !== null) {
+          input.select();
+        }
+      }, 50);
     },
   },
 };
