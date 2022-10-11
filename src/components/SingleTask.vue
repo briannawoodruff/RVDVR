@@ -7,7 +7,11 @@
   >
     <!-- Invisible default checkbox -->
     <!-- Delete button -->
-    <input type="checkbox" />
+    <input
+      @click="setCompleted(this.task.id)"
+      type="checkbox"
+      :checked="this.task.completed"
+    />
     <button
       @click.prevent="$parent.$emit('delete-task', this.task.id)"
       class="indicator-delete hide-btn"
@@ -20,6 +24,8 @@
 </template>
         
 <script>
+const STORAGE_KEY = "rvdvr_todos";
+
 export default {
   name: "SingleTask",
   props: {
@@ -66,6 +72,14 @@ export default {
           btn.classList.remove("hide-btn");
         }
       }
+    },
+    async setCompleted(id) {
+      // find task in allTasks and update completed property
+      let [found] = this.allTasks.filter((task) => task.id === id);
+      // toggle completed property
+      found.completed = !this.task.completed;
+      // update localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
   },
 };
