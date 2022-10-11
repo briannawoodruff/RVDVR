@@ -13,7 +13,7 @@
       :checked="this.task.completed"
     />
     <button
-      @click.prevent="$parent.$emit('delete-task', this.task.id)"
+      @click.prevent="deleteTask(this.task.id)"
       class="indicator-delete hide-btn"
     ></button>
     <!-- Custom checkbox -->
@@ -80,6 +80,16 @@ export default {
       found.completed = !this.task.completed;
       // update localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+    },
+    async deleteTask(task) {
+      // Find the specific task with it's id
+      let foundItem = this.allTasks.find((item) => item.id === task);
+      // save to a mutatable array
+      let tasks = this.allTasks
+      // Remove task from array
+      tasks.splice(this.allTasks.indexOf(foundItem), 1);
+      // update localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     },
   },
 };

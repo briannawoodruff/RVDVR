@@ -2,16 +2,18 @@
   <!-- TODAY TODO FORM -->
   <div v-if="this.isToday" class="form">
     <!-- AddTask Button True -->
-    <form
-      v-if="this.showTodayTask"
-      @submit="$emit('toggle-today-task')"
-      class="add-form"
-    >
-      <input type="submit" value="+" class="add-task-btn" />
+    <form v-if="this.showTodayTask" class="add-form">
+      <button
+        @click="$emit('toggle-today-task')"
+        type="button"
+        class="add-task-btn"
+      >
+        +
+      </button>
     </form>
     <!-- Input AddTask Form -->
     <div v-else class="add-form">
-      <form @submit.passive="onSubmit">
+      <form>
         <div class="form-control">
           <input
             id="input"
@@ -24,7 +26,9 @@
           />
         </div>
         <!-- Done Button -->
-        <input type="submit" value="Done" class="add-task-btn" />
+        <button @click="onSubmit" type="button" class="add-task-btn">
+          Done
+        </button>
       </form>
     </div>
   </div>
@@ -32,16 +36,18 @@
   <!-- MASTER TODO FORM -->
   <div v-else class="form">
     <!-- AddTask Button True -->
-    <form
-      v-if="this.showMasterTask"
-      @submit="$emit('toggle-master-task')"
-      class="add-form"
-    >
-      <input type="submit" value="+" class="add-task-btn" />
+    <form v-if="this.showMasterTask" class="add-form">
+      <button
+        @click="$emit('toggle-master-task')"
+        type="button"
+        class="add-task-btn"
+      >
+        +
+      </button>
     </form>
     <!-- Input AddTask Form -->
     <div v-else class="add-form">
-      <form @submit.passive="onSubmit">
+      <form>
         <div class="form-control">
           <input
             id="input"
@@ -54,7 +60,9 @@
           />
         </div>
         <!-- Done Button -->
-        <input type="submit" value="Done" class="add-task-btn" />
+        <button @click="onSubmit" type="button" class="add-task-btn">
+          Done
+        </button>
       </form>
     </div>
   </div>
@@ -65,7 +73,7 @@ import { uuid } from "vue-uuid";
 
 export default {
   name: "AddTask",
-  emits: ["toggle-today-task", "add-task"],
+  emits: ["toggle-today-task", "toggle-master-task", "add-task"],
   props: {
     showTodayTask: {
       type: Boolean,
@@ -104,11 +112,13 @@ export default {
     },
   },
   methods: {
-    onSubmit() {
+    onSubmit(e) {
+      e.preventDefault();
       // IF text was added
       if (this.newTask.task !== "") {
         this.$parent.$emit("add-task", this.newTask);
         // reset newTask
+
         this.newTask = {
           id: uuid.v4(),
           task: "",
@@ -117,6 +127,7 @@ export default {
         };
       }
       // BUTTON TOGGLE
+
       if (this.isToday) {
         this.$emit("toggle-today-task");
       } else {
