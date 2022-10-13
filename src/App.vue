@@ -1,7 +1,9 @@
 <template>
+  <!-- SPLASH -->
   <Splash v-if="splash" />
   <div v-else class="container">
-    <div class="card">
+    <!-- TODAY CARD -->
+    <div v-if="this.toggleToday" class="card">
       <Card title="TODAY">
         <TaskList
           :allTasks="this.allTasks"
@@ -12,7 +14,16 @@
           @selected-task="selectedTask"
         />
       </Card>
+      <div class="button-container">
+        <Button title="Break" />
+        <Button
+          title="Prioritize"
+          @toggle-today-list="toggleTodayList"
+          :toggleToday="this.toggleToday"
+        />
+      </div>
     </div>
+    <!-- MASTER CARD -->
     <div class="card">
       <Card title="MASTER TO DO">
         <TaskList
@@ -25,6 +36,10 @@
         />
       </Card>
     </div>
+    <!-- EISENHOWER MATRIX -->
+    <div v-if="!this.toggleToday" class="card">
+      <!-- <Card> </Card> -->
+    </div>
   </div>
 </template>
 
@@ -32,6 +47,7 @@
 import TaskList from "./components/TaskList.vue";
 import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
+import Button from "./components/Button.vue";
 const STORAGE_KEY = "rvdvr_todos";
 
 export default {
@@ -40,6 +56,7 @@ export default {
     Splash,
     TaskList,
     Card,
+    Button,
   },
   data() {
     return {
@@ -47,6 +64,7 @@ export default {
       allTasks: [],
       isToday: Boolean,
       activeItem: null,
+      toggleToday: true,
     };
   },
   methods: {
@@ -70,6 +88,9 @@ export default {
       }
       // update localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+    },
+    toggleTodayList() {
+      this.toggleToday = !this.toggleToday;
     },
   },
   mounted() {
@@ -116,6 +137,16 @@ export default {
   align-items: center;
   text-align: center;
   height: auto;
+}
+.button-container {
+  // border: 2px solid $darkGray;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 82%;
+  height: auto;
+  margin: 0;
+  padding: 0;
 }
 
 @media only screen and (max-width: $mobile-width) {
