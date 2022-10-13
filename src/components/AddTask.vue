@@ -1,19 +1,19 @@
 <template>
-  <!-- TODAY TODO FORM -->
-  <div v-if="this.isToday" class="form">
-    <!-- AddTask Button True -->
-    <form v-if="this.showTodayTask" class="add-form">
+  <!-- ADDTASK FORM -->
+  <div class="form">
+    <!-- IF AddTask Button True, show + button -->
+    <form v-if="this.isToday ? this.showTodayTask : this.showMasterTask" @submit.prevent="onSubmit" class="add-form">
       <button
-        @click="$emit('toggle-today-task')"
+        @click="this.isToday ? $emit('toggle-today-task') : $emit('toggle-master-task')"
         type="button"
         class="add-task-btn"
       >
         +
       </button>
     </form>
-    <!-- Input AddTask Form -->
+    <!-- ELSE show Input AddTask Form and "Add a Task" Button -->
     <div v-else class="add-form">
-      <form>
+      <form @submit.prevent="onSubmit">
         <div class="form-control">
           <input
             id="input"
@@ -26,41 +26,7 @@
           />
         </div>
         <!-- Done Button -->
-        <button @click="onSubmit" type="button" class="add-task-btn">
-          Done
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MASTER TODO FORM -->
-  <div v-else class="form">
-    <!-- AddTask Button True -->
-    <form v-if="this.showMasterTask" class="add-form">
-      <button
-        @click="$emit('toggle-master-task')"
-        type="button"
-        class="add-task-btn"
-      >
-        +
-      </button>
-    </form>
-    <!-- Input AddTask Form -->
-    <div v-else class="add-form">
-      <form>
-        <div class="form-control">
-          <input
-            id="input"
-            type="text"
-            v-model="this.newTask.task"
-            name="task"
-            autofocus
-            placeholder="Add a Task"
-            class="task-input"
-          />
-        </div>
-        <!-- Done Button -->
-        <button @click="onSubmit" type="button" class="add-task-btn">
+        <button @click.prevent="onSubmit" type="button" class="add-task-btn">
           Done
         </button>
       </form>
@@ -112,13 +78,11 @@ export default {
     },
   },
   methods: {
-    onSubmit(e) {
-      e.preventDefault();
+    onSubmit() {
       // IF text was added
       if (this.newTask.task !== "") {
         this.$parent.$emit("add-task", this.newTask);
         // reset newTask
-
         this.newTask = {
           id: uuid.v4(),
           task: "",
@@ -127,8 +91,7 @@ export default {
         };
       }
       // BUTTON TOGGLE
-
-      if (this.isToday) {
+      if (this.isToday === true) {
         this.$emit("toggle-today-task");
       } else {
         this.$emit("toggle-master-task");
@@ -182,7 +145,7 @@ export default {
   & input {
     width: auto;
     height: auto;
-    margin: 5px 10px 10px 10px;
+    margin: 0 10px 0 10px;
     padding: 8px 7px;
     font-size: $text-sm;
   }

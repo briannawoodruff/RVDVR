@@ -63,7 +63,7 @@ export default {
     },
   },
   methods: {
-    async setActive(id) {
+    setActive(id) {
       // makes the delete button visible when active by removing hide-btn
       if (id !== undefined) {
         let current = document.getElementById(id);
@@ -73,19 +73,19 @@ export default {
         }
       }
     },
-    async setCompleted(id) {
-      // find task in allTasks and update completed property
+    setCompleted(id) {
+      // find task in allTasks
       let [found] = this.allTasks.filter((task) => task.id === id);
       // toggle completed property
       found.completed = !this.task.completed;
       // update localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
-    async deleteTask(task) {
+    deleteTask(task) {
       // Find the specific task with it's id
       let foundItem = this.allTasks.find((item) => item.id === task);
       // save to a mutatable array
-      let tasks = this.allTasks
+      let tasks = this.allTasks;
       // Remove task from array
       tasks.splice(this.allTasks.indexOf(foundItem), 1);
       // update localStorage
@@ -105,7 +105,7 @@ export default {
   overflow: hidden;
   border: 2px solid $white;
   background-color: $white;
-  padding: 10px 35px 10px 45px;
+  padding: 12.33px 35px 12.33px 45px;
   margin: 0;
   border-radius: 5px;
   font-family: $nunito;
@@ -125,11 +125,16 @@ export default {
     left: 196px;
     height: 36px;
     width: 36px;
-    // transform: translate(-187px, -1px);
     transform: translate(-192px, -5px);
   }
   &:hover {
     border: 2px solid $darkGray;
+  }
+  &:active {
+    cursor: move;
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
   }
 }
 .active {

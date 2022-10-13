@@ -4,22 +4,24 @@
     <div class="card">
       <Card title="TODAY">
         <TaskList
+          :allTasks="this.allTasks"
           :isToday="true"
           :activeItem="this.activeItem"
-          @selected-task="selectedTask"
           @add-task="addTask"
-          :allTasks="this.allTasks"
+          @update-task="updateTask"
+          @selected-task="selectedTask"
         />
       </Card>
     </div>
     <div class="card">
       <Card title="MASTER TO DO">
         <TaskList
+          :allTasks="this.allTasks"
           :isToday="false"
           :activeItem="this.activeItem"
-          @selected-task="selectedTask"
           @add-task="addTask"
-          :allTasks="this.allTasks"
+          @update-task="updateTask"
+          @selected-task="selectedTask"
         />
       </Card>
     </div>
@@ -48,24 +50,35 @@ export default {
     };
   },
   methods: {
-    async addTask(newTask) {
+    addTask(newTask) {
       this.allTasks = [...this.allTasks, newTask];
       // localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
     // sets the active class (adding a border to the selected task) via it's index
-    async selectedTask(i) {
+    selectedTask(i) {
       // this gets emitted to SingleTask.vue -> :class="{ active: this.index === this.activeItem }"
       this.activeItem = i;
     },
+    updateTask(task) {
+      // if a task is passed
+      if (task) {
+        // find task in allTasks
+        let [found] = this.allTasks.filter((item) => item.id === task.id);
+        // toggle isToday property
+        found.isToday = !task.isToday;
+      }
+      // update localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+    },
   },
-  async mounted() {
+  mounted() {
     // Splash timeout
     setTimeout(() => {
       this.splash = false;
     }, 2000);
   },
-  async created() {
+  created() {
     // Grabs todos from localStorage with refreshed
     this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   },

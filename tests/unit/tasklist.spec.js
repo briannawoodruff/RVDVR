@@ -1,13 +1,13 @@
 import { shallowMount } from '@vue/test-utils'
-import TodayToDo from '@/components/TodayToDo.vue'
+import TaskList from '@/components/TaskList.vue'
 
-describe('TodayToDo.vue', () => {
+describe('TaskList.vue', () => {
     let wrapper;
     const allTasks = [{ id: "7ae38d80-b399-4e60-b5ec-13d106e51b55", task: "Grocery Shopping", isToday: true, completed: false }];
     const isToday = true;
 
     beforeEach(() => {
-        wrapper = shallowMount(TodayToDo, {
+        wrapper = shallowMount(TaskList, {
             propsData: {
                 allTasks: allTasks,
                 isToday: isToday

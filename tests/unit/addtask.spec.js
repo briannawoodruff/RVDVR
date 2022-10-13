@@ -34,7 +34,7 @@ describe('AddTask.vue', () => {
         })
     })
 
-    it('TodayToDo renders on page load', () => {
+    it('addTask renders on page load', () => {
         expect(wrapper.find('.form'));
     })
     it('renders allTasks, isToday, showTodayTask, & showMasterTask when passed', () => {
@@ -44,7 +44,7 @@ describe('AddTask.vue', () => {
         expect(wrapper.props('showMasterTask')).toBe(false);
     })
     it('triggers', async () => {
-        await wrapper.find('input[type=submit]').trigger('click');
+        await wrapper.find('button').trigger('click');
         expect(wrapper.emitted()).toHaveProperty('click');
     })
     it('sets newTask data', () => {
@@ -60,5 +60,13 @@ describe('AddTask.vue', () => {
       
         await wrapper.vm.$nextTick();
         expect(wrapper.emitted('add-task')).toBeTruthy();
+    })
+    it('emits the toggle task to its parent', async () => {
+        wrapper.vm.$emit('toggle-today-task');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('toggle-today-task')).toBeTruthy();
+        wrapper.vm.$emit('toggle-master-task');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('toggle-master-task')).toBeTruthy();
     })
 })
