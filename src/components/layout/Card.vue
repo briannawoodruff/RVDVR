@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="wrapper">
+  <div :class="this.title === 'Eisenhower' ? 'container eisenhower' : 'container'">
+    <div v-if="this.title !== 'Eisenhower'" class="wrapper">
       <h2 class="header">{{ this.title }}</h2>
       <hr />
     </div>
@@ -27,7 +27,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 320px;
   max-width: 500px;
   height: auto;
   margin: 30px;
@@ -37,6 +37,12 @@ export default {
   padding: 0;
   border-radius: 5px;
   top: 0;
+}
+.eisenhower {
+  width: 320px;
+  height: 320px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 .wrapper {
   width: 98%;

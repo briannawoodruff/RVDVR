@@ -3,7 +3,7 @@
   <Splash v-if="splash" />
   <div v-else class="container">
     <!-- TODAY CARD -->
-    <div v-if="this.toggleToday" class="card">
+    <div v-if="this.toggleToday" id="today" class="card">
       <Card title="TODAY">
         <TaskList
           :allTasks="this.allTasks"
@@ -23,8 +23,20 @@
         />
       </div>
     </div>
+    <!-- EISENHOWER MATRIX -->
+    <div v-else class="card">
+      <p class="info">Drag a task to the box that describes it best</p>
+      <Card title="Eisenhower">
+        <Eisenhower />
+      </Card>
+      <Button
+        title="Done"
+        @toggle-today-list="toggleTodayList"
+        :toggleToday="this.toggleToday"
+      />
+    </div>
     <!-- MASTER CARD -->
-    <div class="card">
+    <div id="master" :class="this.allTasks.length === 0 ? 'card master' : 'card'">
       <Card title="MASTER TO DO">
         <TaskList
           :allTasks="this.allTasks"
@@ -36,10 +48,6 @@
         />
       </Card>
     </div>
-    <!-- EISENHOWER MATRIX -->
-    <div v-if="!this.toggleToday" class="card">
-      <!-- <Card> </Card> -->
-    </div>
   </div>
 </template>
 
@@ -48,6 +56,7 @@ import TaskList from "./components/TaskList.vue";
 import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
 import Button from "./components/Button.vue";
+import Eisenhower from "./components/Eisenhower.vue";
 const STORAGE_KEY = "rvdvr_todos";
 
 export default {
@@ -57,6 +66,7 @@ export default {
     TaskList,
     Card,
     Button,
+    Eisenhower,
   },
   data() {
     return {
@@ -120,7 +130,6 @@ export default {
   width: 100vw;
   height: 100vh;
   color: #2c3e50;
-  // margin-top: 60px;
   min-height: 100%;
 }
 .container {
@@ -137,16 +146,22 @@ export default {
   align-items: center;
   text-align: center;
   height: auto;
+
+  &.master {
+    padding-bottom: 50px;
+  }
 }
 .button-container {
-  // border: 2px solid $darkGray;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 82%;
+  width: 85%;
   height: auto;
   margin: 0;
   padding: 0;
+}
+.info {
+  background: $white;
 }
 
 @media only screen and (max-width: $mobile-width) {

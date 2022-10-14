@@ -1,5 +1,6 @@
 <template>
   <button
+    v-if="this.title !== 'Done'"
     @click.prevent="handleClick"
     :class="this.title === 'Break' ? 'btn btn-break' : 'btn btn-prioritize'"
   >
@@ -18,6 +19,11 @@
     {{ this.title }}
     <!-- Break Streak -->
     <div v-if="this.title === 'Break'" class="streak">2</div>
+  </button>
+  <!-- DONE BTN -->
+  <button v-else @click.prevent="handleClick" class="btn btn-done">
+    <!-- Title -->
+    {{ this.title }}
   </button>
 </template>
   
@@ -41,7 +47,6 @@ export default {
         // ELSE Prioritize Button
         // toggles today container
         this.$emit("toggle-today-list");
-        console.log("click prioritize");
       }
     },
   },
@@ -76,6 +81,13 @@ export default {
     border: 2px solid darken($color: $lightBlue, $amount: 20);
     padding-right: 10px;
   }
+  &-done {
+    color: white;
+    border: 2px solid darken($color: $teal, $amount: 10);
+    border-radius: 5px;
+    background-color: $teal;
+    width: 64%;
+  }
   .icon {
     height: 40px;
     width: 40px;
@@ -83,8 +95,7 @@ export default {
   .streak {
     font-weight: bold;
     padding: 0 10px;
-    font-size: $text-lg;
+    font-size: $text-md;
   }
 }
 </style>
-  
