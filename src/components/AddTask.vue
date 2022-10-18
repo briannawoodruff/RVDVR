@@ -2,9 +2,17 @@
   <!-- ADDTASK FORM -->
   <div class="form">
     <!-- IF AddTask Button True, show + button -->
-    <form v-if="this.isToday ? this.showTodayTask : this.showMasterTask" @submit.prevent="onSubmit" class="add-form">
+    <form
+      v-if="this.isToday ? this.showTodayTask : this.showMasterTask"
+      @submit.prevent="onSubmit"
+      class="add-form"
+    >
       <button
-        @click="this.isToday ? $emit('toggle-today-task') : $emit('toggle-master-task')"
+        @click="
+          this.isToday
+            ? $emit('toggle-today-task')
+            : $emit('toggle-master-task')
+        "
         type="button"
         class="add-task-btn"
       >
@@ -61,7 +69,7 @@ export default {
         task: "",
         isToday: this.isToday,
         completed: false,
-        color: '#fff',
+        color: "#fff",
       },
     };
   },
@@ -89,7 +97,7 @@ export default {
           task: "",
           isToday: this.isToday,
           completed: false,
-          color: ''
+          color: "#fff",
         };
       }
       // BUTTON TOGGLE

@@ -47,15 +47,17 @@ export default {
     activeItem: {
       // removes the previously active tasks delete button
       // when the activeItem changes, set previous activeItem deleteBtn to none
-      handler(currentItem, oldItem) {
-        // IF the currentItem and oldItem exist
-        if (currentItem !== null && oldItem !== undefined && oldItem !== null) {
+      handler(currentItem, pastItem) {
+        // IF the currentItem and pastItem exist
+        if (currentItem !== null && pastItem !== undefined && pastItem !== null) {
           // finds the previously active task and adds hide-btn to hide it
-          let findOld = this.allTasks.filter((item, i) => i === oldItem);
+          let findPastItem = this.allTasks.filter((item, i) => i === pastItem);
           // IF the previous item is found
-          if (findOld.length > 0) {
-            let old = document.getElementById(findOld[0].id);
-            let deleteBtn = old.querySelector(".indicator-delete");
+          if (findPastItem.length > 0) {
+            let oldItem = document.getElementById(findPastItem[0].id); //parent
+            let siblingEl = oldItem.querySelector(".indicator-checkbox") //sibling
+            let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
+            oldItem.insertBefore(deleteBtn, siblingEl); //handle error
             deleteBtn.classList.add("hide-btn");
           }
         }
@@ -228,7 +230,7 @@ export default {
     position: absolute;
     .checkbox & {
       font-size: 26px;
-      font-weight: bold;
+      font-weight: boldItem;
       font-family: $nunito;
       right: 4px;
       top: -6.5px;

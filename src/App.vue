@@ -34,6 +34,7 @@
       </Card>
       <Button
         title="Done"
+        @group-colors="groupColors"
         @toggle-today-list="toggleTodayList"
         :toggleToday="this.toggleToday"
       />
@@ -105,7 +106,7 @@ export default {
         // IF the task is found
         if (found !== null || found !== undefined || found.length !== 0) {
           // UPDATE the id
-          found.id = uuid.v4()
+          found.id = uuid.v4();
           // toggle isToday property
           found.isToday = !task.isToday;
         }
@@ -125,12 +126,14 @@ export default {
     setBackgroundColor(destination) {
       // sets background color of each task
       let fromEl = document.getElementById(this.currentTaskId);
-      let [found] = this.allTasks.filter((item) => item.id === this.currentTaskId);
+      let [found] = this.allTasks.filter(
+        (item) => item.id === this.currentTaskId
+      );
 
       if (fromEl !== null) {
         let colors = {
           eRed: "#FFC7C2",
-          eYellow: "#FFE8A3",
+          eYellow: "#FBE8A3",
           eOrange: "#FCD19C",
           eGreen: "#AFF4C6",
         };
@@ -147,6 +150,28 @@ export default {
           found.color = colors.eGreen;
         }
         // updates localStorage once color is set
+        this.updateTask();
+      }
+    },
+    groupColors() {
+      if (this.allTasks.length > 0) {
+        // orders colors alphabetically
+        const group = this.allTasks.sort((a, b) =>
+          b.color.localeCompare(a.color)
+        );
+        // array with categorized
+        let categorized = group.filter((item) => {
+          return item.color !== "#fff";
+        });
+        // array with uncategorized
+        let uncategorized = group.filter((item) => {
+          return item.color === "#fff";
+        });
+        // create new array with the correct order
+        let reordered = [...categorized, ...uncategorized];
+        // resets allTasks
+        this.allTasks = reordered;
+        // sets localStorage
         this.updateTask()
       }
     },
@@ -156,6 +181,8 @@ export default {
     setTimeout(() => {
       this.splash = false;
     }, 2000);
+    // groups by colors on page load
+    this.groupColors();
   },
   created() {
     // Grabs todos from localStorage with refreshed

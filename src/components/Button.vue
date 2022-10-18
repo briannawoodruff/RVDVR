@@ -38,11 +38,18 @@ export default {
       type: Boolean,
     },
   },
+  emits: ["group-colors", "toggle-today-list"],
   methods: {
     handleClick() {
       // IF Break Button
       if (this.title === "Break") {
         // ---BREAK BTN FUNCTIONALITY WILL BE HERE---
+      } else if (this.title === "Done") {
+        // ELSE IF Done Button
+        // groups colors
+        this.$emit("group-colors")
+        // toggles today container
+        this.$emit("toggle-today-list");
       } else {
         // ELSE Prioritize Button
         // toggles today container
