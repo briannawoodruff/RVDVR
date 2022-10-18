@@ -50,7 +50,6 @@ export default {
       }
     },
   },
-  mounted() {},
 };
 </script>
   
@@ -63,7 +62,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   width: 130px;
-  font-size: $text-sm;
+  font-size: $text-md;
   font-weight: bold;
   font-family: $nunito;
   border-radius: 5px;

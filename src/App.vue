@@ -24,10 +24,13 @@
       </div>
     </div>
     <!-- EISENHOWER MATRIX -->
-    <div v-else class="card">
+    <div v-else-if="!this.toggleToday" class="card">
       <p class="info">Drag a task to the box that describes it best</p>
       <Card title="Eisenhower">
-        <Eisenhower />
+        <Eisenhower
+          :currentTaskId="this.currentTaskId"
+          @set-background-color="setBackgroundColor"
+        />
       </Card>
       <Button
         title="Done"
@@ -36,7 +39,10 @@
       />
     </div>
     <!-- MASTER CARD -->
-    <div id="master" :class="this.allTasks.length === 0 ? 'card master' : 'card'">
+    <div
+      id="master"
+      :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
+    >
       <Card title="MASTER TO DO">
         <TaskList
           :allTasks="this.allTasks"
@@ -45,6 +51,7 @@
           @add-task="addTask"
           @update-task="updateTask"
           @selected-task="selectedTask"
+          @set-current-task="setCurrentTask"
         />
       </Card>
     </div>
@@ -57,6 +64,7 @@ import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
 import Button from "./components/Button.vue";
 import Eisenhower from "./components/Eisenhower.vue";
+import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 
 export default {
@@ -75,6 +83,7 @@ export default {
       isToday: Boolean,
       activeItem: null,
       toggleToday: true,
+      currentTaskId: "",
     };
   },
   methods: {
@@ -93,14 +102,53 @@ export default {
       if (task) {
         // find task in allTasks
         let [found] = this.allTasks.filter((item) => item.id === task.id);
-        // toggle isToday property
-        found.isToday = !task.isToday;
+        // IF the task is found
+        if (found !== null || found !== undefined || found.length !== 0) {
+          // UPDATE the id
+          found.id = uuid.v4()
+          // toggle isToday property
+          found.isToday = !task.isToday;
+        }
+        // then update localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+      } else {
+        // ELSE no task is passed (in the case of a reorder), update localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
       }
-      // update localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
     toggleTodayList() {
       this.toggleToday = !this.toggleToday;
+    },
+    setCurrentTask(id) {
+      this.currentTaskId = id;
+    },
+    setBackgroundColor(destination) {
+      // sets background color of each task
+      let fromEl = document.getElementById(this.currentTaskId);
+      let [found] = this.allTasks.filter((item) => item.id === this.currentTaskId);
+
+      if (fromEl !== null) {
+        let colors = {
+          eRed: "#FFC7C2",
+          eYellow: "#FFE8A3",
+          eOrange: "#FCD19C",
+          eGreen: "#AFF4C6",
+        };
+        if (destination === "do") {
+          found.color = colors.eRed;
+        }
+        if (destination === "decide") {
+          found.color = colors.eYellow;
+        }
+        if (destination === "delegate") {
+          found.color = colors.eOrange;
+        }
+        if (destination === "later") {
+          found.color = colors.eGreen;
+        }
+        // updates localStorage once color is set
+        this.updateTask()
+      }
     },
   },
   mounted() {
@@ -155,7 +203,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 85%;
+  width: 81%;
   height: auto;
   margin: 0;
   padding: 0;

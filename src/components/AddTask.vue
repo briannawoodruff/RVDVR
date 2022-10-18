@@ -61,6 +61,7 @@ export default {
         task: "",
         isToday: this.isToday,
         completed: false,
+        color: '#fff',
       },
     };
   },
@@ -88,6 +89,7 @@ export default {
           task: "",
           isToday: this.isToday,
           completed: false,
+          color: ''
         };
       }
       // BUTTON TOGGLE

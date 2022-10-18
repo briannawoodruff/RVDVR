@@ -4,6 +4,7 @@
     :id="this.task.id"
     class="single-task checkbox"
     :class="{ active: this.index === this.activeItem }"
+    :style="{backgroundColor: this.task.color}"
   >
     <!-- Invisible default checkbox -->
     <!-- Delete button -->
@@ -65,7 +66,7 @@ export default {
   methods: {
     setActive(id) {
       // makes the delete button visible when active by removing hide-btn
-      if (id !== undefined) {
+      if (id !== undefined || id !== null) {
         let current = document.getElementById(id);
         if (current !== null) {
           let btn = current.querySelector(".indicator-delete");
@@ -125,7 +126,7 @@ export default {
     left: 196px;
     height: 36px;
     width: 36px;
-    transform: translate(-192px, -5px);
+    transform: translate(-192px, -3px);
   }
   &:hover {
     border: 2px solid $darkGray;
@@ -143,7 +144,7 @@ export default {
 // checkbox
 .indicator-checkbox {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 9px;
   height: 24px;
   width: 24px;
@@ -210,7 +211,7 @@ export default {
   // display: block;
   position: absolute;
   z-index: 7;
-  top: 10px;
+  top: 12px;
   right: 10px;
   height: 24px;
   width: 24px;

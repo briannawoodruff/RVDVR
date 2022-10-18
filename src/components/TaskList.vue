@@ -4,8 +4,8 @@
   <div class="container">
     <!-- Draggable Element -->
     <draggable
-      :group="{ name: 'tasks', put: true }"
-      :move="move"
+      :group="{ name: 'tasks', pull: 'clone', put: true }"
+      :clone="handleClone"
       @start="drag = true"
       @end="end"
       :list="this.allTasks.length > 0 ? this.allTasks : ['Add or drag a task']"
@@ -32,7 +32,7 @@
           @click="toggleTodayTask"
           class="task"
         >
-        <!-- IF there are no tasks OR there are no Today tasks AND toggles on and off -->
+          <!-- IF there are no tasks OR there are no Today tasks AND toggles on and off -->
           <div
             v-if="
               (this.allTasks.length === 0 ||
@@ -49,7 +49,7 @@
           @click="toggleMasterTask"
           class="task"
         >
-        <!-- IF there are no tasks OR there are no Master tasks AND toggles on and off -->
+          <!-- IF there are no tasks OR there are no Master tasks AND toggles on and off -->
           <div
             v-if="
               (this.allTasks.length === 0 ||
@@ -86,7 +86,7 @@ export default {
     AddTask,
     draggable,
   },
-  emits: ["add-task", "selected-task", "update-task"],
+  emits: ["add-task", "selected-task", "update-task", "set-current-task"],
   props: {
     allTasks: {
       type: Array,
@@ -102,7 +102,8 @@ export default {
     return {
       showTodayTask: true,
       showMasterTask: true,
-      task: [],
+      task: null,
+      selectedTaskId: null,
     };
   },
   methods: {
@@ -112,18 +113,25 @@ export default {
     toggleMasterTask() {
       this.showMasterTask = !this.showMasterTask;
     },
-    move(evt) {
+    handleClone(item) {
+      // clones the moved item
+      let cloned = JSON.parse(JSON.stringify(item))
       // set the moved task
-      let task = evt.draggedContext.element;
-      this.task = task;
+      // only sets this.task if it's null or different
+      if (this.task === null || this.task !== cloned) {
+        // sets selected task
+        this.task = cloned;
+        // sets the selected tasks id
+        this.selectedTaskId = this.task.id;
+        this.$emit("set-current-task", this.selectedTaskId);
+      }
     },
     end({ from, to }) {
-      // IF a task is moved to a different list, update the task and JSON
+      // IF a task is moved to a different list, update task and localStorage
       if (from.id !== to.id) {
         this.$emit("update-task", this.task);
-
-      } else {
-        // If a task is reordered in it's same list, update the JSON
+      } else if (from.id === to.id) {
+        // ELSE IF a task is moved in the same list, update localStorage
         this.$emit("update-task");
       }
     },
@@ -144,6 +152,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+.tasks {
+  width: 100%;
 }
 .task {
   display: flex;
