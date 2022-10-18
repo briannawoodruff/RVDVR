@@ -40,7 +40,7 @@
               this.showTodayTask
             "
           >
-            <p class="no-tasks">Add or drag a task</p>
+            <p class="no-tasks">Add or drag 1 or 2 tasks to do today</p>
           </div>
         </div>
         <!-- MASTER element AND index < 1 to only show once -->
@@ -57,7 +57,7 @@
               this.showMasterTask
             "
           >
-            <p class="no-tasks">Add a task</p>
+            <p class="no-tasks">Add tasks to make your general list</p>
           </div>
         </div>
       </template>

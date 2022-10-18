@@ -14,8 +14,9 @@
           @selected-task="selectedTask"
         />
       </Card>
-      <div class="button-container">
-        <Button title="Break" />
+      <!-- IF Desktop, show buttons -->
+      <div v-if="!this.mobileWidth" class="button-container">
+        <Button title="Break Day" />
         <Button
           title="Prioritize"
           @toggle-today-list="toggleTodayList"
@@ -32,7 +33,8 @@
           @set-background-color="setBackgroundColor"
         />
       </Card>
-      <Button
+      <!-- IF Desktop, show done button -->
+      <Button v-if="!this.mobileWidth"
         title="Done"
         @group-colors="groupColors"
         @toggle-today-list="toggleTodayList"
@@ -44,7 +46,7 @@
       id="master"
       :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
     >
-      <Card title="MASTER TO DO">
+      <Card title="MISSION PANEL">
         <TaskList
           :allTasks="this.allTasks"
           :isToday="false"
@@ -55,6 +57,22 @@
           @set-current-task="setCurrentTask"
         />
       </Card>
+      <!-- IF Mobile, show buttons -->
+      <div v-if="this.mobileWidth && this.toggleToday" class="button-container">
+        <Button title="Break Day" />
+        <Button
+          title="Prioritize"
+          @toggle-today-list="toggleTodayList"
+          :toggleToday="this.toggleToday"
+        />
+      </div>
+      <!-- IF showing Eisenhower Matrix AND Mobile, show done button -->
+      <Button v-if="!this.toggleToday && this.mobileWidth"
+        title="Done"
+        @group-colors="groupColors"
+        @toggle-today-list="toggleTodayList"
+        :toggleToday="this.toggleToday"
+      />
     </div>
   </div>
 </template>
@@ -85,6 +103,7 @@ export default {
       activeItem: null,
       toggleToday: true,
       currentTaskId: "",
+      mobileWidth: "",
     };
   },
   methods: {
@@ -172,7 +191,15 @@ export default {
         // resets allTasks
         this.allTasks = reordered;
         // sets localStorage
-        this.updateTask()
+        this.updateTask();
+      }
+    },
+    // Watches width of screen and sets mobileWidth if mobile
+    handleWidth() {
+      if (window.innerWidth <= 768) {
+        this.mobileWidth = true;
+      } else {
+        this.mobileWidth = false;
       }
     },
   },
@@ -181,8 +208,13 @@ export default {
     setTimeout(() => {
       this.splash = false;
     }, 2000);
-    // groups by colors on page load
+
+    // gGoups by colors on page load
     this.groupColors();
+    // Watches window width
+    window.addEventListener("resize", this.handleWidth);
+    // Onload sets window width
+    this.handleWidth();
   },
   created() {
     // Grabs todos from localStorage with refreshed
@@ -229,7 +261,7 @@ export default {
 .button-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 81%;
   height: auto;
   margin: 0;

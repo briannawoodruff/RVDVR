@@ -61,5 +61,11 @@ hr {
   color: $darkGray;
   background-color: $darkGray;
 }
+
+@media only screen and (max-width: $mobile-width) {
+  .container {
+    margin: 20px 30px;
+  }
+}
 </style>
         

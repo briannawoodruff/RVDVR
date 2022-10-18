@@ -105,7 +105,7 @@ export default {
           name: "Delegate",
           info: "Tasks that must get done soon. Can someone help?",
         },
-        { name: "Later", info: "Not a priority and can be done whenever" },
+        { name: "Delay", info: "Not a priority and can be done whenever" },
       ],
       destination: "",
     };
