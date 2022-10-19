@@ -4,7 +4,7 @@
     :id="this.task.id"
     class="single-task checkbox"
     :class="{ active: this.index === this.activeItem }"
-    :style="{backgroundColor: this.task.color}"
+    :style="{ backgroundColor: this.task.color }"
   >
     <!-- Invisible default checkbox -->
     <!-- Delete button -->
@@ -49,16 +49,22 @@ export default {
       // when the activeItem changes, set previous activeItem deleteBtn to none
       handler(currentItem, pastItem) {
         // IF the currentItem and pastItem exist
-        if (currentItem !== null && pastItem !== undefined && pastItem !== null) {
+        if (
+          currentItem !== null &&
+          pastItem !== undefined &&
+          pastItem !== null
+        ) {
           // finds the previously active task and adds hide-btn to hide it
           let findPastItem = this.allTasks.filter((item, i) => i === pastItem);
           // IF the previous item is found
           if (findPastItem.length > 0) {
             let oldItem = document.getElementById(findPastItem[0].id); //parent
-            let siblingEl = oldItem.querySelector(".indicator-checkbox") //sibling
-            let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
-            oldItem.insertBefore(deleteBtn, siblingEl); //handle error
-            deleteBtn.classList.add("hide-btn");
+            let siblingEl = oldItem.querySelector(".indicator-checkbox"); //sibling
+            if (siblingEl !== null) {
+              let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
+              oldItem.insertBefore(deleteBtn, siblingEl); //handle error
+              deleteBtn.classList.add("hide-btn");
+            }
           }
         }
       },
@@ -236,6 +242,11 @@ export default {
       top: -6.5px;
       color: $white;
     }
+  }
+}
+@media only screen and (max-width: $mobile-width) {
+  .single-task {
+    font-size: $text-xs;
   }
 }
 </style>

@@ -32,6 +32,7 @@
 <script>
 export default {
   name: "ButtonComponent",
+  emits: ["group-colors", "toggle-today-list", "show-mission"],
   props: {
     title: {
       type: String,
@@ -40,20 +41,23 @@ export default {
       type: Boolean,
     },
   },
-  emits: ["group-colors", "toggle-today-list"],
   methods: {
     handleClick() {
       // IF Break Button
       if (this.title === "Break") {
         // ---BREAK BTN FUNCTIONALITY WILL BE HERE---
-      } else if (this.title === "Done") {
+      }
+      if (this.title === "Done") {
         // ELSE IF Done Button
         // groups colors
         this.$emit("group-colors");
         // toggles today container
         this.$emit("toggle-today-list");
-      } else {
+      }
+      if (this.title === "Prioritize") {
         // ELSE Prioritize Button
+        // shows mission panel
+        this.$emit("show-mission", this.title);
         // toggles today container
         this.$emit("toggle-today-list");
       }
@@ -90,16 +94,13 @@ export default {
     margin-bottom: 12px;
   }
   & .title {
-      position: absolute;
-      bottom: 0;
-      margin: 1px;
-    }
+    position: absolute;
+    bottom: 0;
+    margin: 1px;
+  }
   &-break {
     background-color: $pastelOrange;
     border: 2px solid darken($color: $pastelOrange, $amount: 20);
-    & .wrapper {
-      transform: translateX(-5px);
-    }
   }
   &-prioritize {
     background-color: $lightBlue;
@@ -113,19 +114,15 @@ export default {
     width: 67%;
     font-size: $text-sm;
   }
-  .icon {
-    height: 45px;
-    width: 45px;
-  }
   .streak {
     font-weight: bold;
-    padding: 2px 0 0 0;
+    padding: 0 5px;
     font-size: $text-lg;
   }
 }
 @media only screen and (max-width: $mobile-width) {
   .btn {
-    margin-top: 20px;
+    margin: 15px 0 40px 0;
   }
 }
 </style>

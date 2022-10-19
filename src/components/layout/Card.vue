@@ -1,7 +1,27 @@
 <template>
-  <div :class="this.title === 'Eisenhower' ? 'container eisenhower' : 'container'">
+  <div
+    :class="this.title === 'Eisenhower' ? 'container eisenhower' : 'container'"
+  >
     <div v-if="this.title !== 'Eisenhower'" class="wrapper">
-      <h2 class="header">{{ this.title }}</h2>
+      <h2 class="header">
+        {{ this.title }}
+        <button
+          @click="$emit('show-mission')"
+          v-if="this.title === 'MISSION PANEL'"
+          class="icon-btn"
+        >
+          <img
+            v-if="this.showMission"
+            class="icon"
+            src="../../assets/images/icons/RVDVR-Icons-Eye.svg"
+          />
+          <img
+            v-else
+            class="icon"
+            src="../../assets/images/icons/RVDVR-Icons-EyeHidden.svg"
+          />
+        </button>
+      </h2>
       <hr />
     </div>
     <!-- Where tasks are inserted -->
@@ -16,11 +36,15 @@ export default {
     title: {
       type: String,
     },
+    showMission: {
+      type: Boolean,
+    },
   },
+  emits: ["show-mission"],
 };
 </script>
         
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import "../../scss/_variables.scss";
 
 .container {
@@ -37,6 +61,17 @@ export default {
   padding: 0;
   border-radius: 5px;
   top: 0;
+}
+.header {
+  position: relative;
+  & .icon-btn {
+    position: absolute;
+    top: 3px;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 }
 .eisenhower {
   width: 320px;
@@ -64,7 +99,7 @@ hr {
 
 @media only screen and (max-width: $mobile-width) {
   .container {
-    margin: 20px 30px;
+    margin: 10px 30px;
   }
 }
 </style>

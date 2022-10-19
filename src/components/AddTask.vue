@@ -128,7 +128,7 @@ export default {
   width: 100%;
 }
 .add-form {
-  margin: 5px 0 15px 0;
+  margin: 5px 0 10px 0;
   height: auto;
   width: 100%;
 }

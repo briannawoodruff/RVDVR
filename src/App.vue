@@ -20,6 +20,7 @@
         <Button
           title="Prioritize"
           @toggle-today-list="toggleTodayList"
+          @show-mission="hideMission"
           :toggleToday="this.toggleToday"
         />
       </div>
@@ -34,7 +35,8 @@
         />
       </Card>
       <!-- IF Desktop, show done button -->
-      <Button v-if="!this.mobileWidth"
+      <Button
+        v-if="!this.mobileWidth"
         title="Done"
         @group-colors="groupColors"
         @toggle-today-list="toggleTodayList"
@@ -46,15 +48,21 @@
       id="master"
       :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
     >
-      <Card title="MISSION PANEL">
+      <Card
+        title="MISSION PANEL"
+        @show-mission="hideMission"
+        :showMission="this.showMission"
+      >
         <TaskList
           :allTasks="this.allTasks"
           :isToday="false"
           :activeItem="this.activeItem"
+          :showMission="this.showMission"
           @add-task="addTask"
           @update-task="updateTask"
           @selected-task="selectedTask"
           @set-current-task="setCurrentTask"
+          @show-mission="hideMission"
         />
       </Card>
       <!-- IF Mobile, show buttons -->
@@ -63,11 +71,13 @@
         <Button
           title="Prioritize"
           @toggle-today-list="toggleTodayList"
+          @show-mission="hideMission"
           :toggleToday="this.toggleToday"
         />
       </div>
       <!-- IF showing Eisenhower Matrix AND Mobile, show done button -->
-      <Button v-if="!this.toggleToday && this.mobileWidth"
+      <Button
+        v-if="!this.toggleToday && this.mobileWidth"
         title="Done"
         @group-colors="groupColors"
         @toggle-today-list="toggleTodayList"
@@ -104,6 +114,7 @@ export default {
       toggleToday: true,
       currentTaskId: "",
       mobileWidth: "",
+      showMission: true,
     };
   },
   methods: {
@@ -202,6 +213,16 @@ export default {
         this.mobileWidth = false;
       }
     },
+    // Hides the mission panel to help focus on todays tasks
+    hideMission(title) {
+      // IF prioritize is passed, set true (regardless of toggle)
+      if (title === "Prioritize") {
+        this.showMission = true;
+        // ELSE toggle on and off on click
+      } else {
+        this.showMission = !this.showMission;
+      }
+    },
   },
   mounted() {
     // Splash timeout
@@ -234,10 +255,15 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: auto;
   color: #2c3e50;
   min-height: 100%;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 }
 .container {
   display: flex;
@@ -269,6 +295,7 @@ export default {
 }
 .info {
   background: $white;
+  margin-top: 20px;
 }
 
 @media only screen and (max-width: $mobile-width) {
@@ -276,6 +303,9 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  #today {
+    margin-top: 20px;
   }
 }
 </style>

@@ -185,6 +185,7 @@ export default {
   & p.info {
     font-size: $text-xs;
     background: none;
+    margin: 0;
   }
   // makes the p tags in the draggable box block
   &-drag {

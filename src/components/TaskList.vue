@@ -15,49 +15,53 @@
       item-key="id"
     >
       <template #item="{ element, index }">
-        <SingleTask
-          v-if="this.allTasks.length > 0 && this.isToday === element.isToday"
-          class="task"
-          @click="$emit('selected-task', index)"
-          :key="element.id"
-          :index="index"
-          :task="element"
-          :activeItem="this.activeItem"
-          :allTasks="this.allTasks"
-        />
-        <!-- IF there's no tasks -->
-        <!-- TODAY element AND index < 1 to only show once -->
         <div
-          v-else-if="this.isToday === true && index < 1"
-          @click="toggleTodayTask"
-          class="task"
+          v-if="this.isToday ? this.isToday : !this.isToday && this.showMission"
         >
-          <!-- IF there are no tasks OR there are no Today tasks AND toggles on and off -->
+          <SingleTask
+            v-if="this.allTasks.length > 0 && this.isToday === element.isToday"
+            class="task"
+            @click="$emit('selected-task', index)"
+            :key="element.id"
+            :index="index"
+            :task="element"
+            :activeItem="this.activeItem"
+            :allTasks="this.allTasks"
+          />
+          <!-- IF there's no tasks -->
+          <!-- TODAY element AND index < 1 to only show once -->
           <div
-            v-if="
-              (this.allTasks.length === 0 ||
-                !this.allTasks.some((item) => item.isToday === true)) &&
-              this.showTodayTask
-            "
+            v-else-if="this.isToday === true && index < 1"
+            @click="toggleTodayTask"
+            class="task"
           >
-            <p class="no-tasks">Add or drag 1 or 2 tasks to do today</p>
+            <!-- IF there are no tasks OR there are no Today tasks AND toggles on and off -->
+            <div
+              v-if="
+                (this.allTasks.length === 0 ||
+                  !this.allTasks.some((item) => item.isToday === true)) &&
+                this.showTodayTask
+              "
+            >
+              <p class="no-tasks">Add or drag 1 or 2 tasks to do today</p>
+            </div>
           </div>
-        </div>
-        <!-- MASTER element AND index < 1 to only show once -->
-        <div
-          v-else-if="this.isToday === false && index < 1"
-          @click="toggleMasterTask"
-          class="task"
-        >
-          <!-- IF there are no tasks OR there are no Master tasks AND toggles on and off -->
+          <!-- MASTER element AND index < 1 to only show once -->
           <div
-            v-if="
-              (this.allTasks.length === 0 ||
-                !this.allTasks.some((item) => item.isToday === false)) &&
-              this.showMasterTask
-            "
+            v-else-if="this.isToday === false && index < 1"
+            @click="toggleMasterTask"
+            class="task"
           >
-            <p class="no-tasks">Add tasks to make your general list</p>
+            <!-- IF there are no tasks OR there are no Master tasks AND toggles on and off -->
+            <div
+              v-if="
+                (this.allTasks.length === 0 ||
+                  !this.allTasks.some((item) => item.isToday === false)) &&
+                this.showMasterTask
+              "
+            >
+              <p class="no-tasks">Add tasks to make your general list</p>
+            </div>
           </div>
         </div>
       </template>
@@ -65,6 +69,7 @@
   </div>
   <!-- AddTask Button/Form -->
   <AddTask
+    v-if="this.isToday ? this.isToday : !this.isToday && this.showMission"
     @add-task="$emit('add-task', newTask)"
     @toggle-today-task="toggleTodayTask"
     @toggle-master-task="toggleMasterTask"
@@ -72,6 +77,11 @@
     :showMasterTask="this.showMasterTask"
     :isToday="this.isToday"
   />
+  <div v-else @click="$emit('show-mission')" class="show">
+    <button class="show-btn">
+      <p class="arrow-down">v v v</p>
+    </button>
+  </div>
 </template>
       
 <script>
@@ -86,7 +96,13 @@ export default {
     AddTask,
     draggable,
   },
-  emits: ["add-task", "selected-task", "update-task", "set-current-task"],
+  emits: [
+    "add-task",
+    "selected-task",
+    "update-task",
+    "set-current-task",
+    "show-mission",
+  ],
   props: {
     allTasks: {
       type: Array,
@@ -96,6 +112,9 @@ export default {
     },
     activeItem: {
       type: Number,
+    },
+    showMission: {
+      type: Boolean,
     },
   },
   data() {
@@ -115,7 +134,7 @@ export default {
     },
     handleClone(item) {
       // clones the moved item
-      let cloned = JSON.parse(JSON.stringify(item))
+      let cloned = JSON.parse(JSON.stringify(item));
       // set the moved task
       // only sets this.task if it's null or different
       if (this.task === null || this.task !== cloned) {
@@ -166,6 +185,44 @@ export default {
   font-size: $text-sm;
   font-family: $nunito;
   margin: 8px 0 20.66px 0;
+}
+.show {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  &-btn {
+    cursor: pointer;
+    width: 100%;
+    font-size: $text-sm;
+    font-weight: bold;
+    font-stretch: 200%;
+    font-family: $nunito;
+    color: darken($color: $darkGray, $amount: 20);
+    border: none;
+    background-color: $mediumGray;
+    padding: 3px;
+    letter-spacing: 0.5rem;
+    &:hover {
+      background-color: $grayBG;
+      color: darken($color: $darkGray, $amount: 30);
+    }
+  }
+}
+.arrow-down:hover {
+      animation: wobble 1s infinite;
+}
+@keyframes wobble {
+  0% {
+    transform: translateY(-0.1rem);
+  }
+  50% {
+    transform: translateY(0.2rem);
+  }
+  100% {
+    transform: translateY(-0.1rem);
+  }
 }
 </style>
       
