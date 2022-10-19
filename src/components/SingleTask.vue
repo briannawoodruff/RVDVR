@@ -42,6 +42,9 @@ export default {
     allTasks: {
       type: Array,
     },
+    watchDelete: {
+      type: Function,
+    },
   },
   watch: {
     activeItem: {
@@ -60,7 +63,7 @@ export default {
           if (findPastItem.length > 0) {
             let oldItem = document.getElementById(findPastItem[0].id); //parent
             let siblingEl = oldItem.querySelector(".indicator-checkbox"); //sibling
-            if (siblingEl !== null) {
+            if (siblingEl !== null) { // makes sure sibling is found
               let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
               oldItem.insertBefore(deleteBtn, siblingEl); //handle error
               deleteBtn.classList.add("hide-btn");
@@ -90,15 +93,9 @@ export default {
       // update localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
     },
-    deleteTask(task) {
-      // Find the specific task with it's id
-      let foundItem = this.allTasks.find((item) => item.id === task);
-      // save to a mutatable array
-      let tasks = this.allTasks;
-      // Remove task from array
-      tasks.splice(this.allTasks.indexOf(foundItem), 1);
-      // update localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    deleteTask(taskId) {
+      // bypass vue draggable emit function limitation to delete a task
+      this.watchDelete(taskId);
     },
   },
 };

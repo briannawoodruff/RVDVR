@@ -3,7 +3,7 @@
   <Splash v-if="splash" />
   <div v-else class="container">
     <!-- TODAY CARD -->
-    <div v-if="this.toggleToday" id="today" class="card">
+    <div v-if="this.toggleToday" id="today" class="card today">
       <Card title="TODAY">
         <TaskList
           :allTasks="this.allTasks"
@@ -11,6 +11,7 @@
           :activeItem="this.activeItem"
           @add-task="addTask"
           @update-task="updateTask"
+          @delete-task="deleteTask"
           @selected-task="selectedTask"
         />
       </Card>
@@ -60,6 +61,7 @@
           :showMission="this.showMission"
           @add-task="addTask"
           @update-task="updateTask"
+          @delete-task="deleteTask"
           @selected-task="selectedTask"
           @set-current-task="setCurrentTask"
           @show-mission="hideMission"
@@ -128,24 +130,38 @@ export default {
       // this gets emitted to SingleTask.vue -> :class="{ active: this.index === this.activeItem }"
       this.activeItem = i;
     },
-    updateTask(task) {
+    updateTask(tasks) {
       // if a task is passed
-      if (task) {
+      if (tasks) {
         // find task in allTasks
-        let [found] = this.allTasks.filter((item) => item.id === task.id);
+        let [found] = this.allTasks.filter((item) => item.id === tasks.id);
         // IF the task is found
         if (found !== null || found !== undefined || found.length !== 0) {
           // UPDATE the id
           found.id = uuid.v4();
           // toggle isToday property
-          found.isToday = !task.isToday;
+          found.isToday = !tasks.isToday;
         }
-        // then update localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
-      } else {
-        // ELSE no task is passed (in the case of a reorder), update localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
       }
+      // updates localStorage
+      this.updateLocalStorage();
+    },
+    deleteTask(taskId) {
+      // finds task to delete
+      let [found] = this.allTasks.filter((item) => item.id === taskId);
+      // IF the task is found
+      if (found !== null || found !== undefined || found.length !== 0) {
+        // delete task from allTasks
+        this.allTasks.splice(this.allTasks.indexOf(found), 1);
+      }
+      // then update localStorage
+      this.updateLocalStorage();
+    },
+    updateLocalStorage() {
+      // updates localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.allTasks));
+      // updates this.allTasks after updating localStorage
+      this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY));
     },
     toggleTodayList() {
       this.toggleToday = !this.toggleToday;
@@ -281,7 +297,7 @@ export default {
   height: auto;
 
   &.master {
-    padding-bottom: 50px;
+    padding-bottom: 60px;
   }
 }
 .button-container {
@@ -303,9 +319,9 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  #today {
-    margin-top: 20px;
+    & .today {
+      margin-top: 20px;
+    }
   }
 }
 </style>

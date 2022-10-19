@@ -4,7 +4,7 @@
   <div class="container">
     <!-- Draggable Element -->
     <draggable
-      :group="{ name: 'tasks', pull: 'clone', put: true }"
+      :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
       :clone="handleClone"
       @start="drag = true"
       @end="end"
@@ -22,6 +22,7 @@
             v-if="this.allTasks.length > 0 && this.isToday === element.isToday"
             class="task"
             @click="$emit('selected-task', index)"
+            :watchDelete="this.watchDelete"
             :key="element.id"
             :index="index"
             :task="element"
@@ -69,7 +70,11 @@
   </div>
   <!-- AddTask Button/Form -->
   <AddTask
-    v-if="this.isToday ? this.isToday : !this.isToday && this.showMission"
+    v-if="
+      this.isToday
+        ? this.isToday && !this.todayLimit
+        : !this.isToday && this.showMission
+    "
     @add-task="$emit('add-task', newTask)"
     @toggle-today-task="toggleTodayTask"
     @toggle-master-task="toggleMasterTask"
@@ -77,7 +82,11 @@
     :showMasterTask="this.showMasterTask"
     :isToday="this.isToday"
   />
-  <div v-else @click="$emit('show-mission')" class="show">
+  <div
+    v-else-if="!this.isToday && !this.showMission"
+    @click="$emit('show-mission')"
+    class="show"
+  >
     <button class="show-btn">
       <p class="arrow-down">v v v</p>
     </button>
@@ -88,6 +97,7 @@
 import SingleTask from "./SingleTask.vue";
 import AddTask from "./AddTask.vue";
 import draggable from "vuedraggable";
+// const STORAGE_KEY = "rvdvr_todos";
 
 export default {
   name: "TaskList",
@@ -100,6 +110,7 @@ export default {
     "add-task",
     "selected-task",
     "update-task",
+    "delete-task",
     "set-current-task",
     "show-mission",
   ],
@@ -123,7 +134,23 @@ export default {
       showMasterTask: true,
       task: null,
       selectedTaskId: null,
+      todayLimit: null,
     };
+  },
+  watch: {
+    // When allTasks change, check if number of today tasks change to set limit
+    allTasks: {
+      handler(currentItem, pastItem) {
+        // IF the currentItem and pastItem exist
+        if (
+          currentItem !== null &&
+          pastItem !== undefined &&
+          pastItem !== null
+        ) {
+          this.checkNumberOfToday();
+        }
+      },
+    },
   },
   methods: {
     toggleTodayTask() {
@@ -154,6 +181,36 @@ export default {
         this.$emit("update-task");
       }
     },
+    // Checks if there are more than 1 tasks in Today
+    checkNumberOfToday() {
+      // finds all the today tasks
+      const findToday = this.allTasks.filter((item) => item.isToday === true);
+      // IF there are more than 1 today tasks, limit today and hide the addTask btn
+      if (findToday.length > 1) {
+        this.todayLimit = true;
+        // ELSE there are less than 2 tasks, show the addTask btn
+      } else {
+        this.todayLimit = false;
+      }
+    },
+    // Sets the pull function depending on whether its the Today card and today tasks are limited
+    pullFunction() {
+      // IF it's today card and limited, set false to stop pulling more elements to today card
+      if (this.isToday && this.todayLimit) {
+        return false;
+        // ELSE allow tasks to be pulled into card
+      } else {
+        return true;
+      }
+    },
+    // emits to parent to delete a task
+    watchDelete(taskId) {
+      this.$emit("delete-task", taskId)
+    },
+  },
+  mounted() {
+    // onload checks number of todays tasks and sets todayLimit
+    this.checkNumberOfToday();
   },
 };
 </script>
@@ -170,6 +227,7 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   justify-content: flex-start;
 }
 .tasks {
@@ -211,7 +269,7 @@ export default {
   }
 }
 .arrow-down:hover {
-      animation: wobble 1s infinite;
+  animation: wobble 1s infinite;
 }
 @keyframes wobble {
   0% {
