@@ -44,7 +44,7 @@
                 this.showTodayTask
               "
             >
-              <p class="no-tasks">Add or drag 1 or 2 tasks to do today</p>
+              <p class="no-tasks">Add or drag up to 3 tasks to do today</p>
             </div>
           </div>
           <!-- MASTER element AND index < 1 to only show once -->
@@ -97,7 +97,6 @@
 import SingleTask from "./SingleTask.vue";
 import AddTask from "./AddTask.vue";
 import draggable from "vuedraggable";
-// const STORAGE_KEY = "rvdvr_todos";
 
 export default {
   name: "TaskList",
@@ -186,7 +185,7 @@ export default {
       // finds all the today tasks
       const findToday = this.allTasks.filter((item) => item.isToday === true);
       // IF there are more than 1 today tasks, limit today and hide the addTask btn
-      if (findToday.length > 1) {
+      if (findToday.length > 2) {
         this.todayLimit = true;
         // ELSE there are less than 2 tasks, show the addTask btn
       } else {
@@ -225,8 +224,7 @@ export default {
   opacity: 0.5;
 }
 .container {
-  display: flex;
-  flex-direction: column;
+  @extend %flex-column;
   overflow: hidden;
   justify-content: flex-start;
 }

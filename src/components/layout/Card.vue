@@ -14,11 +14,13 @@
             v-if="this.showMission"
             class="icon"
             src="../../assets/images/icons/RVDVR-Icons-Eye.svg"
+            alt="Show Mission Panel Open Eye"
           />
           <img
             v-else
             class="icon"
             src="../../assets/images/icons/RVDVR-Icons-EyeHidden.svg"
+            alt="Hide Mission Panel Closed Eye"
           />
         </button>
       </h2>
@@ -48,9 +50,8 @@ export default {
 @import "../../scss/_variables.scss";
 
 .container {
+  @extend %flex-column;
   position: relative;
-  display: flex;
-  flex-direction: column;
   width: 320px;
   max-width: 500px;
   height: auto;
@@ -61,9 +62,12 @@ export default {
   padding: 0;
   border-radius: 5px;
   top: 0;
+  box-shadow: 2px 4px 6px $darkGrayShadow;
 }
 .header {
   position: relative;
+  letter-spacing: 0.05rem;
+  // text-shadow: 1px 1px 1px rgb(0 0 0 / 10%);
   & .icon-btn {
     position: absolute;
     top: 3px;

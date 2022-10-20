@@ -1,31 +1,39 @@
 <template>
   <button
-    v-if="this.title !== 'Done'"
     @click.prevent="handleClick"
-    :class="this.title === 'Break Day' ? 'btn btn-break' : 'btn btn-prioritize'"
+    class="btn"
+    :id="this.title === 'Break Day' ? this.title.split(' ')[0] : this.title"
   >
-    <div class="wrapper">
-      <!-- Icon -->
+    <!-- Icon -->
+    <div
+      v-if="this.title !== 'Done'"
+      class="wrapper"
+      :id="
+        this.title === 'Break Day'
+          ? `wrapper-${this.title.split(' ')[0]}`
+          : `wrapper-${this.title}`
+      "
+    >
+      <!-- Break Icon -->
       <img
         v-if="this.title === 'Break Day'"
         class="icon"
         src="../assets/images/icons/RVDVR-Icons-Pause-Btn-Black.svg"
+        alt="Break Icon"
       />
+      <!-- Prioritize Icon -->
       <img
-        v-else
+        v-else-if="this.title === 'Prioritize'"
         class="icon"
         src="../assets/images/icons/RVDVR-Icons-Scan.svg"
+        alt="Prioritize Icon"
       />
+
       <!-- Break Streak -->
-      <div v-if="this.title === 'Break Day'" class="streak">2</div>
+      <div v-if="this.title === 'Break Day'" class="streak">3</div>
     </div>
     <!-- Title -->
     <p class="title">{{ this.title }}</p>
-  </button>
-  <!-- DONE BTN -->
-  <button v-else @click.prevent="handleClick" class="btn btn-done">
-    <!-- Title -->
-    {{ this.title }}
   </button>
 </template>
   
@@ -63,6 +71,30 @@ export default {
       }
     },
   },
+  mounted() {
+    // grabs first part of "Break Day"
+    const breakId = this.title.split(" ")[0];
+    // IF Break Btn
+    if (this.title === "Break Day") {
+      // add Break classs
+      let btn = document.getElementById(breakId);
+      btn.classList.add("btn-break");
+      let wrapper = document.getElementById(`wrapper-${breakId}`);
+      wrapper.classList.add("break");
+      // ELSE IF Prioritize Btn
+    } else if (this.title === "Prioritize") {
+      // add Prioritize classes
+      let btn = document.getElementById(this.title);
+      btn.classList.add("btn-prioritize");
+      let wrapper = document.getElementById(`wrapper-${this.title}`);
+      wrapper.classList.add("prioritize");
+      // ELSE Done Btn
+    } else {
+      // add Done class
+      let btn = document.getElementById(this.title);
+      btn.classList.add("btn-done");
+    }
+  },
 };
 </script>
   
@@ -70,54 +102,63 @@ export default {
 @import "../scss/variables";
 
 .btn {
-  display: flex;
-  // flex-direction: row;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  // width: 130px;
-  width: 100px;
-  height: auto;
-  font-size: 14px;
-  // font-weight: bold;
-  font-family: $nunito;
+  @extend %flex-row;
+  justify-content: flex-start;
+  width: 150px;
+  height: 45px;
+  font-size: $text-xs;
+  font-weight: bold;
+  font-family: $blinker;
   border-radius: 5px;
-  padding: 3px;
   cursor: pointer;
   color: $black;
-  position: relative;
+  letter-spacing: 0.05rem;
   & .wrapper {
-    display: flex;
-    flex-direction: row;
+    @extend %flex-row;
     justify-content: space-around;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  & .title {
-    position: absolute;
-    bottom: 0;
-    margin: 1px;
-  }
-  &-break {
-    background-color: $pastelOrange;
-    border: 2px solid darken($color: $pastelOrange, $amount: 20);
-  }
-  &-prioritize {
-    background-color: $lightBlue;
-    border: 2px solid darken($color: $lightBlue, $amount: 20);
-  }
-  &-done {
-    color: white;
-    border: 2px solid darken($color: $teal, $amount: 10);
+    height: 100%;
+    width: 52px;
+    margin-right: 10px;
     border-radius: 5px;
-    background-color: $teal;
-    width: 67%;
+    &.break {
+      justify-content: center;
+      background-color: lighten($color: $orange, $amount: 20);
+    }
+    &.prioritize {
+      background-color: lighten($color: $blue, $amount: 18);
+    }
+  }
+  @mixin btn($name: "", $col: white, $boxSdw: #444) {
+    &#{$name} {
+      background: $col;
+      border: 2px solid $col;
+      box-shadow: 2px 4px 6px $boxSdw;
+      &:active {
+        transform: translate(1px, 1px);
+        box-shadow: 1px 3px 5px $boxSdw;
+      }
+    }
+  }
+  @include btn("-break", $orange, $orangeShadow);
+  @include btn("-prioritize", $blue, $blueShadow);
+  @include btn("-done", $teal, $tealShadow);
+  &-done {
+    justify-content: center;
+    color: white;
+    text-align: center;
     font-size: $text-sm;
+    width: 65%;
+    height: auto;
+    padding: 5px;
+    & p {
+      text-shadow: 2px 2px 3px $blackShadow;
+    }
   }
   .streak {
+    font-family: $nunito;
     font-weight: bold;
-    padding: 0 5px;
-    font-size: $text-lg;
+    padding: 1px 2px 0 2px;
+    font-size: $text-md;
   }
 }
 @media only screen and (max-width: $mobile-width) {

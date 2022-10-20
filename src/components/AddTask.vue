@@ -139,11 +139,17 @@ export default {
   font-weight: bold;
   font-family: $nunito;
   color: white;
-  border: 2px solid darken($color: $darkGreen, $amount: 10);
+  box-shadow: 2px 4px 5px $darkGreenShadow;
+  border: none;
   border-radius: 5px;
   background-color: $darkGreen;
-  padding: 3px;
+  padding: 5px;
   cursor: pointer;
+  text-shadow: 2px 2px 3px $blackShadow;
+  &:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 3px 5px $blackShadow;
+  }
 }
 // form text input
 .form-control {
@@ -165,5 +171,13 @@ export default {
   outline: none;
   border: 2px solid $navy;
   border-radius: 3px;
+}
+@media only screen and (max-width: $mobile-width) {
+  .add-task-btn {
+    font-size: $text-xs;
+  }
+  .form-control input {
+    font-size: $text-xs;
+  }
 }
 </style>

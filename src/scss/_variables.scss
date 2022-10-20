@@ -4,3 +4,17 @@
 // Predefined Break-points
 $mobile-width: 768px;
 $medium-width: 1024px;
+
+// Extend Classes
+// flex row
+%flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+// flex column
+%flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

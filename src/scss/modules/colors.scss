@@ -2,24 +2,35 @@
 $grayBG: #D2D2D2;
 $mediumGray: #ebebeb;
 $darkGray: #A9A9A9;
-$lightGreen: #CCE3DE;
-$lightPurple: #E1E5F2;
+$darkGrayShadow: rgb(169, 169, 169, 0.8);
+$black: #000;
+$blackShadow: rgba(0, 0, 0, 0.3);
+$white: #fff;
 
-// Buttons / Icons
+// BUTTONS/ ICONS
+// AddTask Btn
 $darkGreen: #6B9080;
+$darkGreenShadow: darken($color: rgba(107, 144, 128, 0.4), $amount: 10);
+// Done
 $teal: #1282A2;
+$tealShadow: darken($color: rgba(18, 130, 162, 0.4), $amount: 10);
 $navy: #022B3A;
-$lightBlue: #BFDBF7;
-$pastelOrange: #F1DAC4;
-$pastelGreen: #8FC7A7;
+// Prioritize
+$blue: #48cae4;
+$blueShadow: darken($color: rgba(72, 202, 228, 0.4), $amount: 10);
+// Break
+$orange: #ff9d00;
+$orangeShadow: darken($color: rgba(255, 157, 0, 0.4), $amount: 10);
+// Checkmark and Delete Btn
 $goodGreen: #29D11B;
 $deleteRed: #ff6565;
+// Other
+$pastelGreen: #8FC7A7;
+$lightGreen: #CCE3DE;
+$lightPurple: #E1E5F2;
 
 // Eisenhower Matrix
 $eGreen: #AFF4C6; // 1
 $eYellow: #FBE8A3; // 2
 $eOrange: #FCD19C; // 3
 $eRed: #FFC7C2; // 4
-
-$black: #000;
-$white: #fff;

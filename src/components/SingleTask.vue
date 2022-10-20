@@ -63,7 +63,8 @@ export default {
           if (findPastItem.length > 0) {
             let oldItem = document.getElementById(findPastItem[0].id); //parent
             let siblingEl = oldItem.querySelector(".indicator-checkbox"); //sibling
-            if (siblingEl !== null) { // makes sure sibling is found
+            if (siblingEl !== null) {
+              // makes sure sibling is found
               let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
               oldItem.insertBefore(deleteBtn, siblingEl); //handle error
               deleteBtn.classList.add("hide-btn");
@@ -170,9 +171,17 @@ export default {
       text-decoration: line-through;
     }
   }
+  // if checkbox not checked yet, inset shadow
+  input:not([enabled]):active ~ & {
+    box-shadow: inset 1px 2px 3px $darkGreenShadow;
+  }
   // hover when checked
   .single-task:hover input:not([disabled]):checked ~ & {
-    background: darken($color: $goodGreen, $amount: 10);
+    background: darken($color: $goodGreen, $amount: 5);
+  }
+  // if checkbox is checked, translate
+  .single-task:active input:not([disabled]):checked ~ & {
+    transform: translate(1px, 1px);
   }
   // hide default browser input
   .single-task input:disabled ~ & {
@@ -223,9 +232,13 @@ export default {
   border: none;
   border-radius: 4px;
   background-color: $deleteRed;
+  cursor: pointer;
   // hover over delete
   &:hover {
     background: darken($color: $deleteRed, $amount: 5);
+  }
+  &:active {
+    transform: translate(1px, 1px);
   }
   // X
   &:after {
@@ -233,7 +246,7 @@ export default {
     position: absolute;
     .checkbox & {
       font-size: 26px;
-      font-weight: boldItem;
+      font-weight: bold;
       font-family: $nunito;
       right: 4px;
       top: -6.5px;

@@ -178,6 +178,8 @@ export default {
   }
   // all the boxes with titles
   &.title {
+    font-family: $blinker;
+    letter-spacing: 0.05rem;
     font-weight: bold;
     padding: 0;
   }
@@ -195,6 +197,8 @@ export default {
   & .name {
     font-size: $text-md;
     font-weight: bold;
+    font-family: $blinker;
+    letter-spacing: 0.05rem;
   }
   // sets color of the draggable boxes
   &.do {
