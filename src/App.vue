@@ -1,90 +1,97 @@
 <template>
   <!-- SPLASH -->
   <Splash v-if="splash" />
-  <div v-else class="container">
-    <!-- TODAY CARD -->
-    <div v-if="this.toggleToday" id="today" class="card today">
-      <Card title="TODAY">
-        <TaskList
-          :allTasks="this.allTasks"
-          :isToday="true"
-          :activeItem="this.activeItem"
-          @add-task="addTask"
-          @update-task="updateTask"
-          @delete-task="deleteTask"
-          @selected-task="selectedTask"
-        />
-      </Card>
-      <!-- IF Desktop, show buttons -->
-      <div v-if="!this.mobileWidth" class="button-container">
-        <Button title="Break Day" />
+  <div v-else>
+    <!-- NAVBAR -->
+    <NavBar />
+    <div class="container">
+      <!-- TODAY CARD -->
+      <div v-if="this.toggleToday" id="today" class="card today">
+        <Card title="TODAY">
+          <TaskList
+            :allTasks="this.allTasks"
+            :isToday="true"
+            :activeItem="this.activeItem"
+            @add-task="addTask"
+            @update-task="updateTask"
+            @delete-task="deleteTask"
+            @selected-task="selectedTask"
+          />
+        </Card>
+        <!-- IF Desktop, show buttons -->
+        <div v-if="!this.mobileWidth" class="button-container">
+          <Button title="Break Day" />
+          <Button
+            title="Prioritize"
+            @toggle-today-list="toggleTodayList"
+            @show-mission="hideMission"
+            :toggleToday="this.toggleToday"
+          />
+        </div>
+      </div>
+      <!-- EISENHOWER MATRIX -->
+      <div v-else-if="!this.toggleToday" id="mission" class="card">
+        <p class="info">Drag a task to the box that describes it best</p>
+        <Card title="Eisenhower">
+          <Eisenhower
+            :currentTaskId="this.currentTaskId"
+            @set-background-color="setBackgroundColor"
+          />
+        </Card>
+        <!-- IF Desktop, show done button -->
         <Button
-          title="Prioritize"
+          v-if="!this.mobileWidth"
+          title="Done"
+          @group-colors="groupColors"
           @toggle-today-list="toggleTodayList"
-          @show-mission="hideMission"
           :toggleToday="this.toggleToday"
         />
       </div>
-    </div>
-    <!-- EISENHOWER MATRIX -->
-    <div v-else-if="!this.toggleToday" class="card">
-      <p class="info">Drag a task to the box that describes it best</p>
-      <Card title="Eisenhower">
-        <Eisenhower
-          :currentTaskId="this.currentTaskId"
-          @set-background-color="setBackgroundColor"
-        />
-      </Card>
-      <!-- IF Desktop, show done button -->
-      <Button
-        v-if="!this.mobileWidth"
-        title="Done"
-        @group-colors="groupColors"
-        @toggle-today-list="toggleTodayList"
-        :toggleToday="this.toggleToday"
-      />
-    </div>
-    <!-- MASTER CARD -->
-    <div
-      id="master"
-      :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
-    >
-      <Card
-        title="MISSION PANEL"
-        @show-mission="hideMission"
-        :showMission="this.showMission"
+      <!-- MASTER CARD -->
+      <div
+        id="master"
+        :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
       >
-        <TaskList
-          :allTasks="this.allTasks"
-          :isToday="false"
-          :activeItem="this.activeItem"
+        <Card
+          title="MISSION PANEL"
+          @show-mission="hideMission"
           :showMission="this.showMission"
-          @add-task="addTask"
-          @update-task="updateTask"
-          @delete-task="deleteTask"
-          @selected-task="selectedTask"
-          @set-current-task="setCurrentTask"
-          @show-mission="hideMission"
-        />
-      </Card>
-      <!-- IF Mobile, show buttons -->
-      <div v-if="this.mobileWidth && this.toggleToday" class="button-container">
-        <Button title="Break Day" />
+        >
+          <TaskList
+            :allTasks="this.allTasks"
+            :isToday="false"
+            :activeItem="this.activeItem"
+            :showMission="this.showMission"
+            @add-task="addTask"
+            @update-task="updateTask"
+            @delete-task="deleteTask"
+            @selected-task="selectedTask"
+            @set-current-task="setCurrentTask"
+            @show-mission="hideMission"
+          />
+        </Card>
+        <!-- IF Mobile, show buttons -->
+        <div
+          v-if="this.mobileWidth && this.toggleToday"
+          class="button-container"
+        >
+          <Button title="Break Day" />
+          <Button
+            title="Prioritize"
+            @toggle-today-list="toggleTodayList"
+            @show-mission="hideMission"
+            :toggleToday="this.toggleToday"
+          />
+        </div>
+        <!-- IF showing Eisenhower Matrix AND Mobile, show done button -->
         <Button
-          title="Prioritize"
+          v-if="!this.toggleToday && this.mobileWidth"
+          title="Done"
+          @group-colors="groupColors"
           @toggle-today-list="toggleTodayList"
-          @show-mission="hideMission"
           :toggleToday="this.toggleToday"
         />
       </div>
-      <!-- IF showing Eisenhower Matrix AND Mobile, show done button -->
-      <Button
-        v-if="!this.toggleToday && this.mobileWidth"
-        title="Done"
-        @group-colors="groupColors"
-        @toggle-today-list="toggleTodayList"
-        :toggleToday="this.toggleToday"
-      />
     </div>
   </div>
 </template>
@@ -95,6 +102,7 @@ import Splash from "./components/Splash.vue";
 import Card from "./components/layout/Card.vue";
 import Button from "./components/Button.vue";
 import Eisenhower from "./components/Eisenhower.vue";
+import NavBar from "./components/NavBar.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 
@@ -106,6 +114,7 @@ export default {
     Card,
     Button,
     Eisenhower,
+    NavBar,
   },
   data() {
     return {
@@ -282,10 +291,12 @@ export default {
   }
 }
 .container {
-  @extend %flex-row;
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .card {
   @extend %flex-column;
@@ -317,8 +328,11 @@ export default {
     justify-content: center;
     align-items: center;
     & .today {
-      margin-top: 20px;
+      margin-top: 60px;
     }
+  }
+  #mission {
+    margin-top: 50px;
   }
 }
 </style>
