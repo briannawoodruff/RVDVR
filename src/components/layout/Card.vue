@@ -1,6 +1,7 @@
 <template>
   <div
     :class="this.title === 'Eisenhower' ? 'container eisenhower' : 'container'"
+    :id="this.title === 'MISSION PANEL' ? this.title.split(' ')[0] : this.title"
   >
     <div v-if="this.title !== 'Eisenhower'" class="wrapper">
       <h2 class="header">
@@ -63,11 +64,13 @@ export default {
   border-radius: 5px;
   top: 0;
   box-shadow: 2px 4px 6px $darkGrayShadow;
+  &#MISSION {
+  margin-top: 75px;
+}
 }
 .header {
   position: relative;
   letter-spacing: 0.05rem;
-  // text-shadow: 1px 1px 1px rgb(0 0 0 / 10%);
   & .icon-btn {
     position: absolute;
     top: 3px;
@@ -104,6 +107,9 @@ hr {
 @media only screen and (max-width: $mobile-width) {
   .container {
     margin: 10px 30px;
+    &#MISSION {
+      margin-top: 10px;
+    }
   }
 }
 </style>

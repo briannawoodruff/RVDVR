@@ -10,7 +10,7 @@
       </button>
       <img
         class="logo logo-rvdvr"
-        src="../assets/images/logos/RVDVR-Logo-Small.svg"
+        src="../assets/images/logos/RVDVR-Logo-Small-Black.svg"
         alt="RVDΛR logo navigation bar"
       />
       <button @click="handleClick('info')" class="btn">
@@ -50,7 +50,8 @@ export default {
   right: 0;
   width: 100%;
   height: auto;
-  border-bottom: 2px solid $darkGreen;
+  border-bottom: 3px solid $darkGreen;
+  box-shadow: 0px 0.3px 5px $darkGrayShadow;
   background: white;
   display: flex;
   align-items: center;

@@ -2,7 +2,7 @@
   <div class="splash">
     <img
       class="logo"
-      src="../assets/images/logos/RVDVR-logo-black.svg"
+      src="../assets/images/logos/RVDVR-Logo-Black-Splash.svg"
       alt="RVDΛR logo black"
     />
   </div>
@@ -25,12 +25,12 @@ export default {
   transform: scale(1.3);
 }
 .logo {
-  transform: translateY(-75px);
+  transform: translateY(-100px);
   animation: transform 2s 1;
 }
 @keyframes transform {
   100% {
-    transform: translateY(0px);
+    transform: translateY(-25px);
   }
 }
 

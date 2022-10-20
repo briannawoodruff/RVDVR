@@ -30,7 +30,7 @@
         </div>
       </div>
       <!-- EISENHOWER MATRIX -->
-      <div v-else-if="!this.toggleToday" id="mission" class="card">
+      <div v-else-if="!this.toggleToday" id="matrix" class="card">
         <p class="info">Drag a task to the box that describes it best</p>
         <Card title="Eisenhower">
           <Eisenhower
@@ -53,6 +53,7 @@
         :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
       >
         <Card
+          class="master-card"
           title="MISSION PANEL"
           @show-mission="hideMission"
           :showMission="this.showMission"
@@ -331,7 +332,7 @@ export default {
       margin-top: 60px;
     }
   }
-  #mission {
+  #matrix {
     margin-top: 50px;
   }
 }
