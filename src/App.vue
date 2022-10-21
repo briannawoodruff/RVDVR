@@ -48,15 +48,14 @@
         />
       </div>
       <!-- MASTER CARD -->
-      <div
-        id="master"
-        :class="this.allTasks.length <= 1 ? 'card master' : 'card'"
-      >
+      <div id="master" class="card">
         <Card
-          class="master-card"
           title="MISSION PANEL"
           @show-mission="hideMission"
           :showMission="this.showMission"
+          :allTasks="this.allTasks"
+          :mobileWidth="this.mobileWidth"
+          :toggleToday="this.toggleToday"
         >
           <TaskList
             :allTasks="this.allTasks"
@@ -125,7 +124,7 @@ export default {
       activeItem: null,
       toggleToday: true,
       currentTaskId: "",
-      mobileWidth: "",
+      mobileWidth: Boolean,
       showMission: true,
     };
   },
@@ -304,10 +303,6 @@ export default {
   justify-content: center;
   text-align: center;
   height: auto;
-
-  &.master {
-    padding-bottom: 60px;
-  }
 }
 .button-container {
   display: flex;

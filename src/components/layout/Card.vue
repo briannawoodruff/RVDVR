@@ -35,6 +35,7 @@
 <script>
 export default {
   name: "CardContainer",
+  emits: ["show-mission"],
   props: {
     title: {
       type: String,
@@ -42,8 +43,78 @@ export default {
     showMission: {
       type: Boolean,
     },
+    allTasks: {
+      type: Array,
+    },
+    mobileWidth: {
+      type: Boolean,
+    },
+    toggleToday: {
+      type: Boolean,
+    },
   },
-  emits: ["show-mission"],
+  data() {
+    return {
+      masterLimit: null,
+    };
+  },
+  watch: {
+    // When allTasks change, check if number of master tasks change to set limit and dynamic change styling
+    allTasks: {
+      handler(currentItem, pastItem) {
+        // IF the currentItem and pastItem exist
+        if (
+          currentItem !== null &&
+          pastItem !== undefined &&
+          pastItem !== null
+        ) {
+          this.checkNumberOfMaster();
+          this.setMasterStyling();
+        }
+      },
+    },
+  },
+  methods: {
+    // Checks if there are more than 1 tasks in Master
+    checkNumberOfMaster() {
+      if (this.allTasks !== undefined) {
+        // finds all the master tasks
+        const findMaster = this.allTasks.filter(
+          (item) => item.isToday === false
+        );
+        // IF there are less than or = 2, limit master
+        if (findMaster.length <= 2) {
+          this.masterLimit = true;
+          // ELSE there are more than 2 tasks
+        } else {
+          this.masterLimit = false;
+        }
+      }
+    },
+    setMasterStyling() {
+      let elMaster = document.getElementById("MISSION");
+      if (this.toggleToday) {
+        // IF Desktop
+        if (!this.mobileWidth) {
+          // IF less than three, translate up
+          if (this.masterLimit) {
+            elMaster.style.transform = "translateY(-47px)";
+            elMaster.style.transition = "transform 1s";
+            // ELSE more than three tasks, translate down
+          } else {
+            elMaster.style.transform = "translateY(7px)";
+            elMaster.style.transition = "transform 1s";
+          }
+        }
+      }
+    },
+  },
+  mounted() {
+    // onload checks number of master tasks and sets masterLimit
+    this.checkNumberOfMaster();
+    // sets classes
+    this.setMasterStyling();
+  },
 };
 </script>
         
@@ -65,8 +136,8 @@ export default {
   top: 0;
   box-shadow: 2px 4px 6px $darkGrayShadow;
   &#MISSION {
-  margin-top: 75px;
-}
+    margin-top: 75px;
+  }
 }
 .header {
   position: relative;

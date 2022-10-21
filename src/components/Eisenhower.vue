@@ -173,6 +173,7 @@ export default {
   // rotating the left titles
   & .left-column {
     transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
     white-space: nowrap;
     word-spacing: 0.2em;
   }
