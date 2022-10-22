@@ -184,7 +184,6 @@ export default {
   // if checkbox is checked, translate
   .single-task:active input:not([disabled]):checked ~ & {
     transform: translate(1px, 1px);
-    -webkit-transform: translate(1px, 1px);
   }
   // hide default browser input
   .single-task input:disabled ~ & {
@@ -209,7 +208,6 @@ export default {
       border: solid $white;
       border-width: 0 3px 3px 0;
       transform: rotate(45deg);
-      -webkit-transform: rotate(45deg);
     }
     // disabled tick color
     .checkbox input:disabled ~ & {
@@ -243,7 +241,6 @@ export default {
   }
   &:active {
     transform: translate(1px, 1px);
-    -webkit-transform: translate(1px, 1px);
   }
   // X
   &:after {

@@ -106,6 +106,7 @@ import NavBar from "./components/NavBar.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
+const PASTTASKS_KEY = "rvdvr_pasttasks";
 
 export default {
   name: "App",
@@ -130,6 +131,7 @@ export default {
       streakCount: 0,
       midnight: new Date().setUTCHours(24, 0, 0, 0),
       currentTime: 0,
+      pastTodaysTasks: [],
     };
   },
   watch: {
@@ -269,6 +271,9 @@ export default {
     setStreakLocalStorage() {
       localStorage.setItem(STREAK_KEY, JSON.stringify(this.streakCount));
     },
+    setPastTodayTasks() {
+      localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
+    },
     setMidnight() {
       // sets to next midnight
       this.midnight = new Date().setUTCHours(24, 0, 0, 0);
@@ -278,33 +283,35 @@ export default {
       const findToday = this.allTasks.filter((item) => item.isToday === true);
       // finds all the tasks that are completed
       const completed = findToday.filter((item) => item.completed === true);
-
-      //  IF all tasks in today are completed and not equal to 0
-      if (
-        completed.length === findToday.length &&
-        completed.length !== 0 &&
-        findToday.length !== 0
-      ) {
-        // limit streak to 365 days
-        if (this.streakCount <= 365) {
-          // increases streak
-          this.streakCount++;
+        //  IF all tasks in today are completed and not equal to 0 && the new todays tasks are different than the prior day
+        if (
+          completed.length === findToday.length &&
+          completed.length !== 0 &&
+          findToday.length !== 0 &&
+          this.pastTodaysTasks !== findToday
+        ) {
+          // limit streak to 365 days
+          if (this.streakCount <= 365) {
+            // increases streak
+            this.streakCount++;
+            // sets streak storage
+            this.setStreakLocalStorage();
+            // saves today's tasks to compare to the next day
+            this.pastTodaysTasks = findToday;
+            this.setPastTodayTasks();
+          } else {
+            // resets streak
+            this.streakCount = 0;
+            // resets streak storage
+            this.setStreakLocalStorage();
+          }
+        } else {
+          // ELSE streak is broken and reset to 0
+          this.streakCount = 0;
           // sets streak storage
           this.setStreakLocalStorage();
-          console.log("streak continue", this.streakCount);
-        } else {
-          // resets streak
-          this.streakCount = 0;
-          // resets streak storage
-          this.setStreakLocalStorage();
         }
-      } else {
-        // ELSE streak is broken and reset to 0
-        this.streakCount = 0;
-        // sets streak storage
-        this.setStreakLocalStorage();
-        console.log("broke streak", this.streakCount);
-      }
+      
     },
   },
   mounted() {
@@ -334,6 +341,11 @@ export default {
     // Grabs streak from localStorage when reloaded
     this.streakCount = JSON.parse(localStorage.getItem(STREAK_KEY) || 0);
     this.setStreakLocalStorage();
+    // Grabs past today tasks from localStorage when reloaded
+    this.pastTodaysTasks = JSON.parse(
+      localStorage.getItem(PASTTASKS_KEY) || "[]"
+    );
+    this.setPastTodayTasks();
   },
 };
 </script>
@@ -366,12 +378,15 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 0;
 }
 .card {
   @extend %flex-column;
   justify-content: center;
   text-align: center;
   height: auto;
+  z-index: 0;
+  position: relative;
 }
 .button-container {
   display: flex;
