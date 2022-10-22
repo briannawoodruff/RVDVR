@@ -73,6 +73,12 @@ export default {
         }
       },
     },
+    // watches mobile width and resets it when toggled
+    mobileWidth(newValue) {
+      if (newValue) {
+        this.setMasterStyling();
+      }
+    },
   },
   methods: {
     // Checks if there are more than 1 tasks in Master
@@ -105,6 +111,8 @@ export default {
             elMaster.style.transform = "translateY(7px)";
             elMaster.style.transition = "transform 1s";
           }
+        } else {
+          elMaster.style.transform = "translateY(0px)";
         }
       }
     },

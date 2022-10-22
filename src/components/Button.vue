@@ -30,7 +30,9 @@
       />
 
       <!-- Break Streak -->
-      <div v-if="this.title === 'Break Day'" class="streak">3</div>
+      <div v-if="this.title === 'Break Day'" class="streak">
+        {{ this.breakStreakAmount }}
+      </div>
     </div>
     <!-- Title -->
     <p class="title">{{ this.title }}</p>
@@ -38,6 +40,8 @@
 </template>
   
 <script>
+const BREAKSTREAK_KEY = "rvdvr_breakstreak";
+
 export default {
   name: "ButtonComponent",
   emits: ["group-colors", "toggle-today-list", "show-mission"],
@@ -48,12 +52,26 @@ export default {
     toggleToday: {
       type: Boolean,
     },
+    streakCount: {
+      type: Number,
+    },
+  },
+  data() {
+    return {
+      breakStreakAmount: 0,
+    };
   },
   methods: {
     handleClick() {
       // IF Break Button
-      if (this.title === "Break") {
+      if (this.title === "Break Day") {
+        console.log("click break btn");
         // ---BREAK BTN FUNCTIONALITY WILL BE HERE---
+        if (this.breakStreakAmount === 0) {
+          return;
+        } else {
+          this.breakStreakAmount--;
+        }
       }
       if (this.title === "Done") {
         // ELSE IF Done Button
@@ -70,29 +88,61 @@ export default {
         this.$emit("toggle-today-list");
       }
     },
+    buttonStyling() {
+      // grabs first part of "Break Day"
+      const breakId = this.title.split(" ")[0];
+      // IF Break Btn
+      if (this.title === "Break Day") {
+        // add Break classs
+        let btn = document.getElementById(breakId);
+        btn.classList.add("btn-break");
+        let wrapper = document.getElementById(`wrapper-${breakId}`);
+        wrapper.classList.add("break");
+        // ELSE IF Prioritize Btn
+      } else if (this.title === "Prioritize") {
+        // add Prioritize classes
+        let btn = document.getElementById(this.title);
+        btn.classList.add("btn-prioritize");
+        let wrapper = document.getElementById(`wrapper-${this.title}`);
+        wrapper.classList.add("prioritize");
+        // ELSE Done Btn
+      } else {
+        // add Done class
+        let btn = document.getElementById(this.title);
+        btn.classList.add("btn-done");
+      }
+    },
+    setBreakStreakLocalStorage() {
+      localStorage.setItem(
+        BREAKSTREAK_KEY,
+        JSON.stringify(this.breakStreakAmount)
+      );
+    },
+    breakStreak() {
+      // IF the streakCount is divisible by 5 (every 5 days you get a break day), increase # of break days
+      if (this.streakCount % 5 === 0 && this.streakCount > 0) {
+        if (this.streakCount <= 25) {
+          this.breakStreakAmount++;
+          this.setBreakStreakLocalStorage();
+          // ELSE IF streakCount is more than 25 && breakStreakAmount is less than 5, increace # of break days (to limit the amount of streaks you can have [total of 5 at most])
+        } else if (this.streakCount > 25 && this.breakStreakAmount < 5) {
+          this.breakStreakAmount++;
+          this.setBreakStreakLocalStorage();
+        }
+      }
+    },
   },
   mounted() {
-    // grabs first part of "Break Day"
-    const breakId = this.title.split(" ")[0];
-    // IF Break Btn
+    this.buttonStyling(this.title);
+
     if (this.title === "Break Day") {
-      // add Break classs
-      let btn = document.getElementById(breakId);
-      btn.classList.add("btn-break");
-      let wrapper = document.getElementById(`wrapper-${breakId}`);
-      wrapper.classList.add("break");
-      // ELSE IF Prioritize Btn
-    } else if (this.title === "Prioritize") {
-      // add Prioritize classes
-      let btn = document.getElementById(this.title);
-      btn.classList.add("btn-prioritize");
-      let wrapper = document.getElementById(`wrapper-${this.title}`);
-      wrapper.classList.add("prioritize");
-      // ELSE Done Btn
-    } else {
-      // add Done class
-      let btn = document.getElementById(this.title);
-      btn.classList.add("btn-done");
+      this.breakStreak();
+
+      // Grabs break streak from localStorage when reloaded
+      this.breakStreakCount = JSON.parse(
+        localStorage.getItem(BREAKSTREAK_KEY) || 0
+      );
+      this.setBreakStreakLocalStorage();
     }
   },
 };

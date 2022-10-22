@@ -7,7 +7,7 @@
           src="../assets/images/icons/RVDVR-Icons-Streak.svg"
           alt="RVDΛR streak icon"
         />
-        <p class="streak-num">{{this.streakCount}}</p>
+        <p class="streak-num">{{ this.streakCount }}</p>
       </div>
       <img
         class="logo logo-rvdvr"
@@ -26,7 +26,6 @@
 </template>
           
 <script>
-
 export default {
   name: "NavBar",
   props: {
@@ -34,12 +33,9 @@ export default {
       type: Number,
     },
   },
-  //   emits: ["show-mission"],
   methods: {
     handleClick(name) {
-      if (name === "streak") {
-        console.log(name);
-      } else {
+      if (name === "info") {
         console.log(name);
       }
     },

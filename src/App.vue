@@ -3,7 +3,7 @@
   <Splash v-if="splash" />
   <div v-else>
     <!-- NAVBAR -->
-    <NavBar :streakCount="this.streakCount" :currentTime="this.currentTime" />
+    <NavBar :streakCount="this.streakCount" />
     <div class="container">
       <!-- TODAY CARD -->
       <div v-if="this.toggleToday" id="today" class="card today">
@@ -20,7 +20,7 @@
         </Card>
         <!-- IF Desktop, show buttons -->
         <div v-if="!this.mobileWidth" class="button-container">
-          <Button title="Break Day" />
+          <Button title="Break Day" :streakCount="this.streakCount" />
           <Button
             title="Prioritize"
             @toggle-today-list="toggleTodayList"
@@ -75,7 +75,7 @@
           v-if="this.mobileWidth && this.toggleToday"
           class="button-container"
         >
-          <Button title="Break Day" />
+          <Button title="Break Day" :streakCount="this.streakCount" />
           <Button
             title="Prioritize"
             @toggle-today-list="toggleTodayList"
@@ -106,8 +106,6 @@ import NavBar from "./components/NavBar.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
-// import moment from "moment";
-// moment().format();
 
 export default {
   name: "App",
@@ -274,26 +272,36 @@ export default {
     setMidnight() {
       // sets to next midnight
       this.midnight = new Date().setUTCHours(24, 0, 0, 0);
-      console.log("future", this.midnight);
     },
     updateStreak() {
       // finds all the today tasks
       const findToday = this.allTasks.filter((item) => item.isToday === true);
       // finds all the tasks that are completed
       const completed = findToday.filter((item) => item.completed === true);
-      console.log(findToday, completed);
 
-      //  IF all tasks in today are completed
-      if (completed.length === findToday.length) {
-        // increases streak
-        this.streakCount++;
-        // resets streak storage
-        this.setStreakLocalStorage();
-        console.log("streak continue", this.streakCount);
+      //  IF all tasks in today are completed and not equal to 0
+      if (
+        completed.length === findToday.length &&
+        completed.length !== 0 &&
+        findToday.length !== 0
+      ) {
+        // limit streak to 365 days
+        if (this.streakCount <= 365) {
+          // increases streak
+          this.streakCount++;
+          // sets streak storage
+          this.setStreakLocalStorage();
+          console.log("streak continue", this.streakCount);
+        } else {
+          // resets streak
+          this.streakCount = 0;
+          // resets streak storage
+          this.setStreakLocalStorage();
+        }
       } else {
         // ELSE streak is broken and reset to 0
         this.streakCount = 0;
-        // resets streak storage
+        // sets streak storage
         this.setStreakLocalStorage();
         console.log("broke streak", this.streakCount);
       }
@@ -315,13 +323,10 @@ export default {
     // Onload sets window width
     this.handleWidth();
 
-    // sets midnight
-    this.setMidnight();
-
-    // updates the time
+    // updates the time every 30 minutes
     window.setInterval(() => {
       this.currentTime = Date.now();
-    }, 5000);
+    }, 1800000);
   },
   created() {
     // Grabs todos from localStorage when reloaded
