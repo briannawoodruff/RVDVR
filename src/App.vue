@@ -3,7 +3,7 @@
   <Splash v-if="splash" />
   <div v-else>
     <!-- NAVBAR -->
-    <NavBar />
+    <NavBar :streakCount="this.streakCount" :currentTime="this.currentTime" />
     <div class="container">
       <!-- TODAY CARD -->
       <div v-if="this.toggleToday" id="today" class="card today">
@@ -105,6 +105,9 @@ import Eisenhower from "./components/Eisenhower.vue";
 import NavBar from "./components/NavBar.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
+const STREAK_KEY = "rvdvr_streak";
+// import moment from "moment";
+// moment().format();
 
 export default {
   name: "App",
@@ -126,7 +129,24 @@ export default {
       currentTaskId: "",
       mobileWidth: Boolean,
       showMission: true,
+      streakCount: 0,
+      midnight: new Date().setUTCHours(24, 0, 0, 0),
+      currentTime: 0,
     };
+  },
+  watch: {
+    // watches the time change to evaluate updating the streak and midnight to the next day
+    async currentTime(newValue) {
+      // console.log(newValue, this.midnight)
+      // IF the currentTime is past midnight
+      if (newValue > this.midnight) {
+        // update streak
+        this.updateStreak();
+        // reset midnight
+        this.setMidnight();
+        return;
+      }
+    },
   },
   methods: {
     addTask(newTask) {
@@ -248,8 +268,41 @@ export default {
         this.showMission = !this.showMission;
       }
     },
+    setStreakLocalStorage() {
+      localStorage.setItem(STREAK_KEY, JSON.stringify(this.streakCount));
+    },
+    setMidnight() {
+      // sets to next midnight
+      this.midnight = new Date().setUTCHours(24, 0, 0, 0);
+      console.log("future", this.midnight);
+    },
+    updateStreak() {
+      // finds all the today tasks
+      const findToday = this.allTasks.filter((item) => item.isToday === true);
+      // finds all the tasks that are completed
+      const completed = findToday.filter((item) => item.completed === true);
+      console.log(findToday, completed);
+
+      //  IF all tasks in today are completed
+      if (completed.length === findToday.length) {
+        // increases streak
+        this.streakCount++;
+        // resets streak storage
+        this.setStreakLocalStorage();
+        console.log("streak continue", this.streakCount);
+      } else {
+        // ELSE streak is broken and reset to 0
+        this.streakCount = 0;
+        // resets streak storage
+        this.setStreakLocalStorage();
+        console.log("broke streak", this.streakCount);
+      }
+    },
   },
   mounted() {
+    // resets interval
+    clearInterval();
+
     // Splash timeout
     setTimeout(() => {
       this.splash = false;
@@ -261,10 +314,21 @@ export default {
     window.addEventListener("resize", this.handleWidth);
     // Onload sets window width
     this.handleWidth();
+
+    // sets midnight
+    this.setMidnight();
+
+    // updates the time
+    window.setInterval(() => {
+      this.currentTime = Date.now();
+    }, 5000);
   },
   created() {
-    // Grabs todos from localStorage with refreshed
+    // Grabs todos from localStorage when reloaded
     this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    // Grabs streak from localStorage when reloaded
+    this.streakCount = JSON.parse(localStorage.getItem(STREAK_KEY) || 0);
+    this.setStreakLocalStorage();
   },
 };
 </script>

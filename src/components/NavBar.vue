@@ -1,13 +1,14 @@
 <template>
   <div class="container">
     <div class="wrapper">
-      <button @click="handleClick('streak')" class="btn">
+      <div class="streak">
         <img
           class="logo logo-streak"
           src="../assets/images/icons/RVDVR-Icons-Streak.svg"
           alt="RVDΛR streak icon"
         />
-      </button>
+        <p class="streak-num">{{this.streakCount}}</p>
+      </div>
       <img
         class="logo logo-rvdvr"
         src="../assets/images/logos/RVDVR-Logo-Small-Black.svg"
@@ -25,9 +26,14 @@
 </template>
           
 <script>
+
 export default {
   name: "NavBar",
-  props: {},
+  props: {
+    streakCount: {
+      type: Number,
+    },
+  },
   //   emits: ["show-mission"],
   methods: {
     handleClick(name) {
@@ -65,6 +71,17 @@ export default {
   overflow: hidden;
   justify-content: space-evenly;
   align-items: center;
+  width: 60%;
+}
+.streak {
+  @extend %flex-row;
+  &-num {
+    font-family: $nunito;
+    font-size: $text-lg;
+    font-weight: bold;
+    padding: 3px 0 0 4px;
+    color: $black;
+  }
 }
 .btn {
   background: none;
@@ -83,10 +100,20 @@ export default {
     margin-top: 2px;
   }
 }
+@media only screen and (max-width: $xl-width) {
+  .wrapper {
+    width: 70%;
+  }
+}
+@media only screen and (max-width: $large-width) {
+  .wrapper {
+    width: 80%;
+  }
+}
 @media only screen and (max-width: $medium-width) {
   .wrapper {
     justify-content: space-around;
-    width: 100%;
+    width: 90%;
   }
   .logo {
     &-streak {
