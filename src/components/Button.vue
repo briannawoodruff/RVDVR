@@ -17,7 +17,7 @@
       <!-- Break Icon -->
       <img
         v-if="this.title === 'Break Day'"
-        class="icon"
+        class="icon icon-break"
         src="../assets/images/icons/RVDVR-Icons-Pause-Btn-Black.svg"
         alt="Break Icon"
       />
@@ -44,7 +44,7 @@ const BREAKSTREAK_KEY = "rvdvr_breakstreak";
 
 export default {
   name: "ButtonComponent",
-  emits: ["group-colors", "toggle-today-list", "show-mission"],
+  emits: ["group-colors", "toggle-today-list", "show-mission", "set-pause"],
   props: {
     title: {
       type: String,
@@ -55,22 +55,43 @@ export default {
     streakCount: {
       type: Number,
     },
+    pauseStreak: {
+      type: Boolean,
+    },
   },
   data() {
     return {
       breakStreakAmount: 0,
     };
   },
+  watch: {
+    // watches the pauseStreak change to update the pause btn styling
+    async pauseStreak(newValue) {
+      if (newValue) {
+        this.pauseButtonStyling();
+      }
+    },
+    // watches streakCount and if it changes, check if user gets a break day
+    async streakCount(newValue) {
+      if (newValue) {
+        this.breakStreak();
+      }
+    },
+  },
   methods: {
     handleClick() {
       // IF Break Button
       if (this.title === "Break Day") {
-        console.log("click break btn");
-        // ---BREAK BTN FUNCTIONALITY WILL BE HERE---
+        // IF breakStreak is 0, shake and return
         if (this.breakStreakAmount === 0) {
+          this.oopsShake();
           return;
+          // ELSE set pause to true and subtract 1 from the count and update break streak localStorage
         } else {
+          this.$emit("set-pause");
+          // decreases counter and sets localStorage
           this.breakStreakAmount--;
+          this.setBreakStreakLocalStorage();
         }
       }
       if (this.title === "Done") {
@@ -86,6 +107,23 @@ export default {
         this.$emit("show-mission", this.title);
         // toggles today container
         this.$emit("toggle-today-list");
+      }
+    },
+    oopsShake() {
+      let pause = document.getElementById("Break");
+      pause.classList.add("oops");
+
+      window.setInterval(() => {
+        pause.classList.remove("oops");
+      }, 2000);
+      clearInterval();
+    },
+    pauseButtonStyling() {
+      let pause = document.getElementById("Break");
+      if (this.pauseStreak) {
+        pause.classList.add("paused");
+      } else {
+        pause.classList.remove("paused");
       }
     },
     buttonStyling() {
@@ -134,15 +172,13 @@ export default {
   },
   mounted() {
     this.buttonStyling(this.title);
-
+    // IF break button
     if (this.title === "Break Day") {
-      this.breakStreak();
-
+      this.pauseButtonStyling();
       // Grabs break streak from localStorage when reloaded
-      this.breakStreakCount = JSON.parse(
+      this.breakStreakAmount = JSON.parse(
         localStorage.getItem(BREAKSTREAK_KEY) || 0
       );
-      this.setBreakStreakLocalStorage();
     }
   },
 };
@@ -151,6 +187,45 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/variables";
 
+// Shake animation
+.oops {
+  animation: shake 0.3s both;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  z-index: 9999;
+}
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(2px);
+  }
+  40% {
+    transform: translateX(-2px);
+  }
+  60% {
+    transform: translateX(3px);
+  }
+  80% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.paused {
+  box-shadow: none !important;
+  background: $orangeDisabled !important;
+  border: 2px solid $orangeDisabled !important;
+  color: rgb(0, 0, 0, 0.8) !important;
+  .wrapper & {
+    background: $orangeDisabled !important;
+  }
+  .icon {
+    opacity: 0.75 !important;
+  }
+}
 .btn {
   @extend %flex-row;
   justify-content: flex-start;
@@ -163,6 +238,8 @@ export default {
   cursor: pointer;
   color: $black;
   letter-spacing: 0.05rem;
+  // position: relative;
+  z-index: 1;
   & .wrapper {
     @extend %flex-row;
     justify-content: space-around;

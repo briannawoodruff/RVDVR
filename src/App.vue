@@ -20,7 +20,12 @@
         </Card>
         <!-- IF Desktop, show buttons -->
         <div v-if="!this.mobileWidth" class="button-container">
-          <Button title="Break Day" :streakCount="this.streakCount" />
+          <Button
+            title="Break Day"
+            :streakCount="this.streakCount"
+            :pauseStreak="this.pauseStreak"
+            @set-pause="setPause"
+          />
           <Button
             title="Prioritize"
             @toggle-today-list="toggleTodayList"
@@ -75,7 +80,12 @@
           v-if="this.mobileWidth && this.toggleToday"
           class="button-container"
         >
-          <Button title="Break Day" :streakCount="this.streakCount" />
+          <Button
+            title="Break Day"
+            :streakCount="this.streakCount"
+            :pauseStreak="this.pauseStreak"
+            @set-pause="setPause"
+          />
           <Button
             title="Prioritize"
             @toggle-today-list="toggleTodayList"
@@ -107,6 +117,7 @@ import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
 const PASTTASKS_KEY = "rvdvr_pasttasks";
+const PAUSE_KEY = "rvdvr_pause";
 
 export default {
   name: "App",
@@ -129,22 +140,30 @@ export default {
       mobileWidth: Boolean,
       showMission: true,
       streakCount: 0,
-      midnight: new Date().setUTCHours(24, 0, 0, 0),
+      midnight: null,
       currentTime: 0,
       pastTodaysTasks: [],
+      pauseStreak: false,
     };
   },
   watch: {
     // watches the time change to evaluate updating the streak and midnight to the next day
-    async currentTime(newValue) {
-      // console.log(newValue, this.midnight)
+    async currentTime(timeNow) {
       // IF the currentTime is past midnight
-      if (newValue > this.midnight) {
-        // update streak
-        this.updateStreak();
-        // reset midnight
+      if (timeNow > this.midnight) {
+        // update midnight to new day midnight
         this.setMidnight();
-        return;
+        // IF pauseStreak is false, continue updating streak
+        if (!this.pauseStreak) {
+          // update streak
+          this.updateStreak();
+        }
+      }
+    },
+    // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
+    async pauseStreak(newValue) {
+      if (newValue === true) {
+        this.pauseTimer();
       }
     },
   },
@@ -271,47 +290,62 @@ export default {
     setStreakLocalStorage() {
       localStorage.setItem(STREAK_KEY, JSON.stringify(this.streakCount));
     },
-    setPastTodayTasks() {
-      localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
+    setPauseLocalStorage() {
+      localStorage.setItem(PAUSE_KEY, JSON.stringify(this.pauseStreak));
     },
     setMidnight() {
       // sets to next midnight
-      this.midnight = new Date().setUTCHours(24, 0, 0, 0);
+      this.midnight = new Date().setHours(24, 0, 0, 0);
+    },
+    setPastTodayTasks() {
+      localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
+    },
+    pauseTimer() {
+      // waits 24 hours to set pauseStreak false again (86400000 ms)
+      window.setInterval(() => {
+        this.pauseStreak = false;
+        this.setPauseLocalStorage();
+      }, 86400000);
+    },
+    setPause() {
+      this.pauseStreak = true;
+      this.setPauseLocalStorage();
+    },
+    resetStreak() {
+      // resets streak to 0
+      this.streakCount = 0;
+      // sets streak storage
+      this.setStreakLocalStorage();
     },
     updateStreak() {
       // finds all the today tasks
       const findToday = this.allTasks.filter((item) => item.isToday === true);
       // finds all the tasks that are completed
       const completed = findToday.filter((item) => item.completed === true);
-        //  IF all tasks in today are completed and not equal to 0 && the new todays tasks are different than the prior day
-        if (
-          completed.length === findToday.length &&
-          completed.length !== 0 &&
-          findToday.length !== 0 &&
-          this.pastTodaysTasks !== findToday
-        ) {
-          // limit streak to 365 days
-          if (this.streakCount <= 365) {
-            // increases streak
-            this.streakCount++;
-            // sets streak storage
-            this.setStreakLocalStorage();
-            // saves today's tasks to compare to the next day
-            this.pastTodaysTasks = findToday;
-            this.setPastTodayTasks();
-          } else {
-            // resets streak
-            this.streakCount = 0;
-            // resets streak storage
-            this.setStreakLocalStorage();
-          }
-        } else {
-          // ELSE streak is broken and reset to 0
-          this.streakCount = 0;
+      //  IF all tasks in today are completed and not equal to 0 && the new todays tasks are different than the prior day
+      if (
+        completed.length === findToday.length &&
+        completed.length !== 0 &&
+        findToday.length !== 0 &&
+        this.pastTodaysTasks !== findToday
+      ) {
+        // limit streak to 365 days
+        if (this.streakCount <= 365) {
+          // increases streak
+          this.streakCount++;
           // sets streak storage
           this.setStreakLocalStorage();
+          // saves today's tasks to compare to the next day
+          this.pastTodaysTasks = findToday;
+          this.setPastTodayTasks();
+        } else {
+          // resets streak
+          this.resetStreak();
         }
-      
+      } else {
+        // ELSE streak is broken and reset to 0
+        this.resetStreak();
+      }
     },
   },
   mounted() {
@@ -323,16 +357,16 @@ export default {
       this.splash = false;
     }, 2000);
 
-    // gGoups by colors on page load
+    // Groups by colors on page load
     this.groupColors();
     // Watches window width
     window.addEventListener("resize", this.handleWidth);
     // Onload sets window width
     this.handleWidth();
 
-    // updates the time every 30 minutes
+    // updates the time every 30 minutes (1800000 ms)
     window.setInterval(() => {
-      this.currentTime = Date.now();
+      this.currentTime = new Date().getTime();
     }, 1800000);
   },
   created() {
@@ -345,7 +379,12 @@ export default {
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
     );
-    this.setPastTodayTasks();
+    // Grabs past today tasks from localStorage when reloaded
+    this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
+    this.setPauseLocalStorage();
+
+    // sets next midnight
+    this.setMidnight();
   },
 };
 </script>
@@ -396,6 +435,7 @@ export default {
   height: auto;
   margin: 0;
   padding: 0;
+  z-index: 0;
 }
 .info {
   background: $white;

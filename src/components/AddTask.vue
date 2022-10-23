@@ -70,7 +70,7 @@ export default {
         isToday: this.isToday,
         completed: false,
         color: "#fff",
-        date: Date.now(),
+        date: new Date().getTime(),
       },
     };
   },
@@ -99,7 +99,7 @@ export default {
           isToday: this.isToday,
           completed: false,
           color: "#fff",
-          date: Date.now(),
+          date: new Date().getTime(),
         };
       }
       // BUTTON TOGGLE
