@@ -1,7 +1,7 @@
 <template>
   <!-- SPLASH -->
-  <Splash v-if="splash" />
-  <div v-else>
+  <Splash v-if="this.splash" />
+  <div class="content-container" v-else>
     <!-- NAVBAR -->
     <NavBar :streakCount="this.streakCount" />
     <div class="container">
@@ -104,6 +104,7 @@
       </div>
     </div>
   </div>
+  <Footer v-if="!this.splash" />
 </template>
 
 <script>
@@ -113,6 +114,7 @@ import Card from "./components/layout/Card.vue";
 import Button from "./components/Button.vue";
 import Eisenhower from "./components/Eisenhower.vue";
 import NavBar from "./components/NavBar.vue";
+import Footer from "./components/Footer.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
@@ -129,6 +131,7 @@ export default {
     Button,
     Eisenhower,
     NavBar,
+    Footer,
   },
   data() {
     return {
@@ -420,15 +423,18 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
   width: 100%;
   height: auto;
-  color: #2c3e50;
   min-height: 100%;
   overflow: scroll;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
   }
+}
+.content-container {
+  width: 100vw;
 }
 .container {
   display: flex;
