@@ -118,6 +118,7 @@ const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
 const PASTTASKS_KEY = "rvdvr_pasttasks";
 const PAUSE_KEY = "rvdvr_pause";
+const PAUSECOUNTER_KEY = "rvdvr_pauseCounter";
 
 export default {
   name: "App",
@@ -144,6 +145,7 @@ export default {
       currentTime: 0,
       pastTodaysTasks: [],
       pauseStreak: false,
+      pauseCounter: 0,
     };
   },
   watch: {
@@ -293,6 +295,9 @@ export default {
     setPauseLocalStorage() {
       localStorage.setItem(PAUSE_KEY, JSON.stringify(this.pauseStreak));
     },
+    setPauseCounterLocalStorage() {
+      localStorage.setItem(PAUSECOUNTER_KEY, JSON.stringify(this.pauseCounter));
+    },
     setMidnight() {
       // sets to next midnight
       this.midnight = new Date().setHours(24, 0, 0, 0);
@@ -301,11 +306,23 @@ export default {
       localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
     },
     pauseTimer() {
-      // waits 24 hours to set pauseStreak false again (86400000 ms)
-      window.setInterval(() => {
-        this.pauseStreak = false;
-        this.setPauseLocalStorage();
-      }, 86400000);
+      // waits 24 hours to set pauseStreak false again
+      // increment counter by 1 every 15 minutes
+      let counter = setInterval(() => {
+        this.pauseCounter++;
+        this.setPauseCounterLocalStorage();
+        // IF counter is 96 (24 hours)
+        if (this.pauseCounter === 96) {
+          // set pauseStreak to false and continue counting streak
+          this.pauseStreak = false;
+          this.setPauseLocalStorage();
+          // reset pause counter to 0
+          this.pauseCounter = 0;
+          this.setPauseCounterLocalStorage();
+          // stop counter from running
+          clearInterval(counter);
+        }
+      }, 900000);
     },
     setPause() {
       this.pauseStreak = true;
@@ -350,7 +367,7 @@ export default {
   },
   mounted() {
     // resets interval
-    clearInterval();
+    clearInterval(window);
 
     // Splash timeout
     setTimeout(() => {
@@ -382,6 +399,9 @@ export default {
     // Grabs past today tasks from localStorage when reloaded
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
     this.setPauseLocalStorage();
+    // Grabs how long its been since paused from localStorage when reloaded
+    this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
+    this.setPauseCounterLocalStorage();
 
     // sets next midnight
     this.setMidnight();

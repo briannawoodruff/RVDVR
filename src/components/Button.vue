@@ -66,8 +66,8 @@ export default {
   },
   watch: {
     // watches the pauseStreak change to update the pause btn styling
-    async pauseStreak(newValue) {
-      if (newValue) {
+    async pauseStreak(newValue, oldValue) {
+      if (newValue || oldValue) {
         this.pauseButtonStyling();
       }
     },
