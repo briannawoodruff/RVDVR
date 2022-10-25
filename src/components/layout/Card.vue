@@ -109,7 +109,7 @@ export default {
             elMaster.style.marginBottom = "30px"
           }
         } else {
-          elMaster.style.marginBottom = "10px"
+          // elMaster.style.marginBottom = "10px"
 
         }
       }
@@ -133,7 +133,7 @@ export default {
   width: 320px;
   max-width: 500px;
   height: auto;
-  margin: 30px;
+  margin: 50px 30px 30px 30px;
   overflow: auto;
   border: 3px solid $darkGreen;
   background-color: $white;
@@ -142,7 +142,7 @@ export default {
   top: 0;
   box-shadow: 2px 4px 6px $darkGrayShadow;
   &#MISSION {
-    margin-top: 75px;
+    margin-top: 95px;
   }
 }
 .header {
@@ -180,12 +180,19 @@ hr {
   color: $darkGray;
   background-color: $darkGray;
 }
-
+@media only screen and (max-width: 900px) {
+  .container {
+    &#MISSION {
+      margin-bottom: 50px;
+    }
+  }
+}
 @media only screen and (max-width: $mobile-width) {
   .container {
     margin: 10px 30px;
     &#MISSION {
       margin-top: 10px;
+      margin-bottom: 10px !important;
     }
   }
 }

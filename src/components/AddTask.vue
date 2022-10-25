@@ -115,7 +115,7 @@ export default {
         let input = document.getElementById("input");
         // puts input in focus
         if (input !== null) {
-          input.select();
+          input.focus();
         }
       }, 50);
     },
