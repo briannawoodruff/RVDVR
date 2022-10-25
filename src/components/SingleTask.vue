@@ -9,12 +9,12 @@
     <!-- Invisible default checkbox -->
     <!-- Delete button -->
     <input
-      @click="setCompleted(this.task.id)"
+      @click.passive="setCompleted(this.task.id)"
       type="checkbox"
       :checked="this.task.completed"
     />
     <button
-      @click.prevent="deleteTask(this.task.id)"
+      @click.passive="deleteTask(this.task.id)"
       class="indicator-delete hide-btn"
     ></button>
     <!-- Custom checkbox -->
@@ -226,7 +226,7 @@ export default {
 .indicator-delete {
   // display: block;
   position: absolute;
-  z-index: 7;
+  z-index: 100;
   top: 12px;
   right: 10px;
   height: 24px;
