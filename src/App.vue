@@ -389,7 +389,7 @@ export default {
     // Splash timeout
     setTimeout(() => {
       this.splash = false;
-    }, 2000);
+    }, 1750);
 
     // Groups by colors on page load
     this.groupColors();
@@ -441,6 +441,7 @@ export default {
   height: auto;
   min-height: 100%;
   overflow: scroll;
+  position: relative;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
@@ -455,14 +456,12 @@ export default {
   justify-content: center;
   width: 100%;
   height: 100%;
-  z-index: 0;
 }
 .card {
   @extend %flex-column;
   justify-content: center;
   text-align: center;
   height: auto;
-  z-index: 0;
   position: relative;
 }
 .button-container {
@@ -473,7 +472,6 @@ export default {
   height: auto;
   margin: 0;
   padding: 0;
-  z-index: 0;
 }
 .info {
   background: $white;

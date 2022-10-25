@@ -4,7 +4,7 @@
   <div class="container">
     <!-- Draggable Element -->
     <draggable
-      :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
+      :group="{ name: 'tasks', pull: 'clone', put: pullFunction, delayOnTouchOnly: 'true', fallbackTolerance : '5'}"
       :clone="handleClone"
       @start="drag = true"
       @end="end"
