@@ -1,4 +1,5 @@
 <template>
+  <div></div>
   <div class="container">
     <div class="wrapper">
       <div class="item streak">
@@ -17,8 +18,9 @@
         />
       </div>
       <div class="item mini">
-        <button @click="handleClick('info')" class="btn">
+        <button @click="handleClick" class="btn">
           <img
+            id="mini-logo"
             class="logo logo-simple"
             src="../assets/images/logos/RVDVR-Icons-Logo.svg"
             alt="RVDΛR simple logo"
@@ -38,10 +40,13 @@ export default {
     },
   },
   methods: {
-    handleClick(name) {
-      if (name === "info") {
-        console.log(name);
-      }
+    handleClick() {
+      let icon = document.getElementById("mini-logo");
+      icon.classList.add("rotate")
+
+      setTimeout(() => {
+        icon.classList.remove("rotate")
+      }, 1000);
     },
   },
 };
@@ -49,6 +54,27 @@ export default {
         
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
+
+.rotate {
+  animation: spin 500ms ease;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(190deg);
+  }
+  90% {
+    transform: rotate(150deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
 .container {
   position: absolute;
   top: 0;
@@ -79,6 +105,7 @@ export default {
 }
 .streak {
   justify-content: flex-start;
+  padding-left: 25px;
   &-num {
     font-family: $nunito;
     font-size: $text-lg;
@@ -89,6 +116,7 @@ export default {
 }
 .mini {
   justify-content: flex-end;
+  padding-right: 25px;
 }
 .btn {
   background: none;
@@ -97,11 +125,7 @@ export default {
 }
 .logo {
   margin: 6px 2px;
-  &-streak {
-    padding-left: 25px;
-  }
   &-simple {
-    padding-right: 25px;
     justify-content: flex-end;
   }
   &-rvdvr {
@@ -120,16 +144,16 @@ export default {
   .wrapper {
     width: 100%;
   }
+  .streak {
+    padding-left: 15px;
+  }
+  .mini {
+    padding-right: 15px;
+  }
   .logo {
     margin: 6px 0;
     height: 35px;
     width: auto;
-    &-streak {
-      padding-left: 15px;
-    }
-    &-simple {
-      padding-right: 15px;
-    }
     &-rvdvr {
       margin-top: 4px;
     }

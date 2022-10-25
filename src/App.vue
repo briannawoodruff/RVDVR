@@ -4,6 +4,7 @@
   <div class="content-container" v-else>
     <!-- NAVBAR -->
     <NavBar :streakCount="this.streakCount" />
+    <!-- <Modal v-if="this.modal" /> -->
     <div class="container">
       <!-- TODAY CARD -->
       <div v-if="this.toggleToday" id="today" class="card today">
@@ -115,6 +116,7 @@ import Button from "./components/Button.vue";
 import Eisenhower from "./components/Eisenhower.vue";
 import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
+// import Modal from "./components/Modal.vue";
 import { uuid } from "vue-uuid";
 const STORAGE_KEY = "rvdvr_todos";
 const STREAK_KEY = "rvdvr_streak";
@@ -132,6 +134,7 @@ export default {
     Eisenhower,
     NavBar,
     Footer,
+    // Modal,
   },
   data() {
     return {
@@ -149,6 +152,7 @@ export default {
       pastTodaysTasks: [],
       pauseStreak: false,
       pauseCounter: 0,
+      modal: true,
     };
   },
   watch: {
@@ -156,6 +160,7 @@ export default {
     async currentTime(timeNow) {
       // IF the currentTime is past midnight
       if (timeNow > this.midnight) {
+        console.log(timeNow, this.midnight);
         // update midnight to new day midnight
         this.setMidnight();
         // IF pauseStreak is false, continue updating streak
@@ -386,8 +391,11 @@ export default {
 
     // updates the time every 30 minutes (1800000 ms)
     window.setInterval(() => {
+      // sets next midnight
+      this.setMidnight();
+      
       this.currentTime = new Date().getTime();
-    }, 1800000);
+    }, 900000);
   },
   created() {
     // Grabs todos from localStorage when reloaded
@@ -405,9 +413,6 @@ export default {
     // Grabs how long its been since paused from localStorage when reloaded
     this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
     this.setPauseCounterLocalStorage();
-
-    // sets next midnight
-    this.setMidnight();
   },
 };
 </script>
