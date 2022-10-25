@@ -1,9 +1,7 @@
-<div id="header" align="center">
+<div id="header" style="text-align: center">
   <img src="src/assets/images/logos/RVDVR-logo-white.svg" width="200"/>
 
-  ***-Currently In Production-***
-
-  <h3>RVDΛR is a tool to simplify the overwhelming and never ending to do list by helping you prioritize your tasks into more manageable pieces.</h3>
+  <h3>RVDΛR is a tool to simplify the overwhelming and never ending to do list by helping you prioritize your tasks into more manageable pieces using the Eisenhower Matrix.</h3>
 
   ---
 </div>
@@ -20,8 +18,9 @@
 ## Table of Contents:
 
   * [Technologies Used](#technologies-used)
-  * [Design](#design)
+  * [Images](#images)
   * [Usage](#usage)
+  * [Design](#design)
   * [License](#license)
   * [Contact](#contact)
 
@@ -46,21 +45,49 @@
     <img src="https://img.shields.io/badge/Canva-%2300C4CC.svg?&style=for-the-badge&logo=Canva&logoColor=white" alt="Canva Badge" style="max-width: 100%;">
  </a>
 
+## Images
+
+### Mobile
+
+<div style="display: flex; justify-content: center">
+   <div style="padding: 4px">
+      <p>Main Page</p>
+      <img src="src/assets/images/design/RVDVR-Screenshot-Mobile1.jpg" alt="RVDVR Main Page" style="display: inline; max-width: 100%;">
+   </div>
+   <div style="padding: 4px">
+      <p>Eisenhower Matrix</p>
+      <img src="src/assets/images/design/RVDVR-Screenshot-Mobile2.jpg" alt="RVDVR Eisenhower Matrix" style="display: inline; max-width: 100%;">
+   </div>
+</div>
+
+### Website
+
+<div style="display: flex; justify-content: center">
+   <div style="padding: 4px">
+      <p>Main Page</p>
+      <img src="src/assets/images/design/RVDVR-Screenshot1.jpg" alt="RVDVR Main Page" style="display: inline; max-width: 100%;">
+   </div>
+   <div style="padding: 4px">
+      <p>Eisenhower Matrix</p>
+      <img src="src/assets/images/design/RVDVR-Screenshot2.jpg" alt="RVDVR Eisenhower Matrix" style="display: inline; max-width: 100%;">
+   </div>
+</div>
+
+## Usage:
+
+Add your tasks to the "Mission Panel" list and drag two or three of those tasks to "Today". You can check off or delete any to dos. If you need help prioritizing your tasks, click "Prioritize" at the bottom to show the Eisenhower Matrix. Drag and drop each task to the section that best describes it to color code it and sort by priority.  
+
+After everyday that you complete your "Today" task(s), you earn a streak day and after 5 streak days, you earn 1 break day. A break day allows you to take a day off from completing tasks and won't break your streak! But be careful because you only get a max of 5 streak days.
+
 ## Design:
 
 ### Mobile
 
 ![Mobile Design](./src/assets/images/design/RVDVR-figma-mobile.jpg)
 
-### Web
+### Website
 
 ![Web Design](./src/assets/images/design/RVDVR-figma-web.jpg)
-
-## Usage:
-
-Add your tasks to your "Master To Do" list and drag one or two of those tasks to "Today". You can check off or delete any to dos. If you need help prioritizing your tasks, click "Prioritize" at the bottom to show the Eisenhower Matrix. Drag and drop each task to the section that best describes it to color code it and sort by priority.  
-
-After everyday that you complete your "Today" task(s), you earn a streak day and after 5 streak days, you earn 1 break day. A break day allows you to take a day off from completing tasks and won't break your streak! But be careful because you only get a max of 7 streak days.
 
 ## License: 
 
