@@ -73,11 +73,11 @@ export default {
   width: auto;
 }
 .item {
+  @extend %flex-row;
   height: auto;
   width: 250px;
 }
 .streak {
-  @extend %flex-row;
   justify-content: flex-start;
   &-num {
     font-family: $nunito;
@@ -88,7 +88,6 @@ export default {
   }
 }
 .mini {
-  @extend %flex-row;
   justify-content: flex-end;
 }
 .btn {
@@ -106,7 +105,7 @@ export default {
     justify-content: flex-end;
   }
   &-rvdvr {
-    margin-top: 2px;
+    margin-top: 4px;
   }
 }
 @media only screen and (max-width: $medium-width) {
