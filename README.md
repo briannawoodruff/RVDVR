@@ -1,4 +1,4 @@
-<div id="header" style="text-align: center">
+<div id="header" align="center">
   <img src="src/assets/images/logos/RVDVR-logo-white.svg" width="200"/>
 
   <h3>RVDΛR is a tool to simplify the overwhelming and never ending to do list by helping you prioritize your tasks into more manageable pieces using the Eisenhower Matrix.</h3>
@@ -49,28 +49,32 @@
 
 ### Mobile
 
-<div style="display: flex; justify-content: center">
-   <div style="padding: 4px">
-      <p>Main Page</p>
-      <img src="src/assets/images/design/RVDVR-Screenshot-Mobile1.jpg" alt="RVDVR Main Page" style="display: inline; max-width: 100%;">
-   </div>
-   <div style="padding: 4px">
-      <p>Eisenhower Matrix</p>
-      <img src="src/assets/images/design/RVDVR-Screenshot-Mobile2.jpg" alt="RVDVR Eisenhower Matrix" style="display: inline; max-width: 100%;">
-   </div>
+<div align="center">
+   <table>
+   <tr>
+      <td>Main Page</td>
+      <td>Eisenhower Matrix</td>
+   </tr>
+   <tr>
+      <td style="width: 50%;"><img src="src/assets/images/design/RVDVR-Screenshot-Mobile1.jpg" alt="RVDVR Main Page Mobile"></td>
+      <td style="width: 50%;"><img src="src/assets/images/design/RVDVR-Screenshot-Mobile2.jpg" alt="RVDVR Eisenhower Matrix Mobile"></td>
+   </tr>
+   </table>
 </div>
 
 ### Website
 
-<div style="display: flex; justify-content: center">
-   <div style="padding: 4px">
-      <p>Main Page</p>
-      <img src="src/assets/images/design/RVDVR-Screenshot1.jpg" alt="RVDVR Main Page" style="display: inline; max-width: 100%;">
-   </div>
-   <div style="padding: 4px">
-      <p>Eisenhower Matrix</p>
-      <img src="src/assets/images/design/RVDVR-Screenshot2.jpg" alt="RVDVR Eisenhower Matrix" style="display: inline; max-width: 100%;">
-   </div>
+<div align="center">
+   <table>
+   <tr>
+      <td>Main Page</td>
+      <td>Eisenhower Matrix</td>
+   </tr>
+   <tr>
+      <td style="width: 50%;"><img src="src/assets/images/design/RVDVR-Screenshot1.jpg"  alt="RVDVR Main Page"></td>
+      <td style="width: 50%;"><img src="src/assets/images/design/RVDVR-Screenshot2.jpg" alt="RVDVR Eisenhower Matrix"></td>
+   </tr>
+   </table>
 </div>
 
 ## Usage:
