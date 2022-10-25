@@ -123,6 +123,7 @@ const STREAK_KEY = "rvdvr_streak";
 const PASTTASKS_KEY = "rvdvr_pasttasks";
 const PAUSE_KEY = "rvdvr_pause";
 const PAUSECOUNTER_KEY = "rvdvr_pauseCounter";
+const MIDNIGHT_KEY = "rvdvr_midnightUTC";
 
 export default {
   name: "App",
@@ -160,7 +161,6 @@ export default {
     async currentTime(timeNow) {
       // IF the currentTime is past midnight
       if (timeNow > this.midnight) {
-        console.log(timeNow, this.midnight);
         // update midnight to new day midnight
         this.setMidnight();
         // IF pauseStreak is false, continue updating streak
@@ -309,6 +309,7 @@ export default {
     setMidnight() {
       // sets to next midnight
       this.midnight = new Date().setHours(24, 0, 0, 0);
+      localStorage.setItem(MIDNIGHT_KEY, JSON.stringify(this.midnight));
     },
     setPastTodayTasks() {
       localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
@@ -372,10 +373,18 @@ export default {
         this.resetStreak();
       }
     },
+    // handles setTimout violation warning
+    watchTime(ms) {
+      return new Promise((resolve) => setInterval(resolve, ms));
+    },
+    async intervalHandler() {
+      await this.watchTime(1);
+      this.currentTime = new Date().getTime();
+    },
   },
   mounted() {
     // resets interval
-    clearInterval(window);
+    clearInterval();
 
     // Splash timeout
     setTimeout(() => {
@@ -389,13 +398,8 @@ export default {
     // Onload sets window width
     this.handleWidth();
 
-    // updates the time every 30 minutes (1800000 ms)
-    window.setInterval(() => {
-      // sets next midnight
-      this.setMidnight();
-      
-      this.currentTime = new Date().getTime();
-    }, 900000);
+    // updates the time every 15 minutes (900000 ms)
+    setInterval(this.intervalHandler, 900000);
   },
   created() {
     // Grabs todos from localStorage when reloaded
@@ -413,6 +417,11 @@ export default {
     // Grabs how long its been since paused from localStorage when reloaded
     this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
     this.setPauseCounterLocalStorage();
+
+    // sets the next midnight
+    if (this.midnight === null) {
+      this.setMidnight();
+    }
   },
 };
 </script>
