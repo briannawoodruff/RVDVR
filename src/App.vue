@@ -437,7 +437,6 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: relative;
   width: 100%;
   height: auto;
   min-height: 100%;
@@ -456,7 +455,6 @@ export default {
   justify-content: center;
   width: 100%;
   height: 100%;
-  position: relative;
   z-index: 0;
 }
 .card {
