@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="wrapper">
-      <div class="streak">
+      <div class="item streak">
         <img
           class="logo logo-streak"
           src="../assets/images/icons/RVDVR-Icons-Streak.svg"
@@ -9,18 +9,22 @@
         />
         <p class="streak-num">{{ this.streakCount }}</p>
       </div>
-      <img
-        class="logo logo-rvdvr"
-        src="../assets/images/logos/RVDVR-Logo-Small-Black.svg"
-        alt="RVDΛR logo navigation bar"
-      />
-      <button @click="handleClick('info')" class="btn">
+      <div class="item">
         <img
-          class="logo logo-simple"
-          src="../assets/images/logos/RVDVR-Icons-Logo.svg"
-          alt="RVDΛR simple logo"
+          class="logo logo-rvdvr"
+          src="../assets/images/logos/RVDVR-Logo-Small-Black.svg"
+          alt="RVDΛR logo navigation bar"
         />
-      </button>
+      </div>
+      <div class="item mini">
+        <button @click="handleClick('info')" class="btn">
+          <img
+            class="logo logo-simple"
+            src="../assets/images/logos/RVDVR-Icons-Logo.svg"
+            alt="RVDΛR simple logo"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +49,6 @@ export default {
         
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
-
 .container {
   position: absolute;
   top: 0;
@@ -60,17 +63,22 @@ export default {
   justify-content: center;
 }
 .wrapper {
-  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   overflow: hidden;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  width: 60%;
+  height: auto;
+  width: auto;
+}
+.item {
+  height: auto;
+  width: 250px;
 }
 .streak {
   @extend %flex-row;
+  justify-content: flex-start;
   &-num {
     font-family: $nunito;
     font-size: $text-lg;
@@ -79,45 +87,31 @@ export default {
     color: $black;
   }
 }
+.mini {
+  @extend %flex-row;
+  justify-content: flex-end;
+}
 .btn {
   background: none;
   border: none;
   cursor: pointer;
 }
 .logo {
-  margin: 6px 0;
+  margin: 6px 2px;
   &-streak {
     padding-left: 25px;
   }
   &-simple {
     padding-right: 25px;
+    justify-content: flex-end;
   }
   &-rvdvr {
     margin-top: 2px;
   }
 }
-@media only screen and (max-width: $xl-width) {
-  .wrapper {
-    width: 70%;
-  }
-}
-@media only screen and (max-width: $large-width) {
-  .wrapper {
-    width: 80%;
-  }
-}
 @media only screen and (max-width: $medium-width) {
   .wrapper {
-    justify-content: space-around;
     width: 90%;
-  }
-  .logo {
-    &-streak {
-      padding-left: 0;
-    }
-    &-simple {
-      padding-right: 0x;
-    }
   }
 }
 @media only screen and (max-width: $mobile-width) {
@@ -125,7 +119,6 @@ export default {
     height: auto;
   }
   .wrapper {
-    justify-content: space-between;
     width: 100%;
   }
   .logo {
