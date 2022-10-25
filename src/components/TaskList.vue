@@ -4,7 +4,11 @@
   <div class="container">
     <!-- Draggable Element -->
     <draggable
-      :group="{ name: 'tasks', pull: 'clone', put: pullFunction, delay: '200', delayOnTouchOnly: 'true', touchStartThreshold: '5'}"
+      :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
+      :delay="75"
+      :delayOnTouchOnly="true"
+      :touchStartThreshold='15'
+      :emptyInsertThreshold='20'
       :clone="handleClone"
       @start="drag = true"
       @end="end"
