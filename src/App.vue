@@ -159,6 +159,7 @@ export default {
   watch: {
     // watches the time change to evaluate updating the streak and midnight to the next day
     async currentTime(timeNow) {
+      // console.log(timeNow, this.midnight)
       // IF the currentTime is past midnight
       if (timeNow > this.midnight) {
         // update midnight to new day midnight
@@ -174,6 +175,8 @@ export default {
     async pauseStreak(newValue) {
       if (newValue === true) {
         this.pauseTimer();
+      } else {
+        clearTimeout();
       }
     },
   },
@@ -316,22 +319,28 @@ export default {
     },
     pauseTimer() {
       // waits 24 hours to set pauseStreak false again
-      // increment counter by 1 every 15 minutes
-      let counter = setInterval(() => {
-        this.pauseCounter++;
-        this.setPauseCounterLocalStorage();
-        // IF counter is 96 (24 hours)
-        if (this.pauseCounter === 96) {
-          // set pauseStreak to false and continue counting streak
-          this.pauseStreak = false;
-          this.setPauseLocalStorage();
-          // reset pause counter to 0
-          this.pauseCounter = 0;
-          this.setPauseCounterLocalStorage();
-          // stop counter from running
-          clearInterval(counter);
-        }
-      }, 900000);
+      // increment counter by 1 every 15 minutes (900000 ms)
+      if (this.pauseStreak) {
+        const count = setTimeout(() => {
+          // IF counter is 96 (24 hours)
+          if (this.pauseCounter === 96) {
+            // stop counter from running
+            clearTimeout(count);
+            // set pauseStreak to false and continue counting streak
+            this.pauseStreak = false;
+            this.setPauseLocalStorage();
+            // reset pause counter to 0
+            this.pauseCounter = 0;
+            this.setPauseCounterLocalStorage();
+          } else {
+            // increase pauseCounter
+            this.pauseCounter++;
+            this.setPauseCounterLocalStorage();
+            // recall the settimeout again
+            this.pauseTimer();
+          }
+        }, 900000);
+      }
     },
     setPause() {
       this.pauseStreak = true;
@@ -377,14 +386,17 @@ export default {
     watchTime(ms) {
       return new Promise((resolve) => setInterval(resolve, ms));
     },
-    async intervalHandler() {
-      await this.watchTime(1);
-      this.currentTime = new Date().getTime();
+    intervalHandler() {
+      setTimeout(async () => {
+        await this.watchTime(1);
+        this.currentTime = new Date().getTime();
+        this.intervalHandler();
+      }, 900000);
     },
   },
   mounted() {
-    // resets interval
-    clearInterval();
+    // resets timeout
+    clearTimeout();
 
     // Splash timeout
     setTimeout(() => {
@@ -399,7 +411,23 @@ export default {
     this.handleWidth();
 
     // updates the time every 15 minutes (900000 ms)
-    setInterval(this.intervalHandler, 900000);
+    this.intervalHandler();
+
+    // watches if page is inactive/tabbed out
+    // document.addEventListener("visibilitychange", () => {
+    //   if (document.hidden) {
+    //     // tab is now inactive
+    //     // temporarily clear timer using clearInterval() / clearTimeout()
+    //     clearTimeout()
+    //   } else {
+    //     // tab is active again
+    //     // restart timers
+    //     if (this.pauseCounter > 0 ) {
+    //       this.pauseTimer()
+    //     }
+    //     this.intervalHandler()
+    //   }
+    // });
   },
   created() {
     // Grabs todos from localStorage when reloaded
@@ -411,7 +439,7 @@ export default {
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
     );
-    // Grabs past today tasks from localStorage when reloaded
+    // Grabs pauseStreak from localStorage when reloaded
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
     this.setPauseLocalStorage();
     // Grabs how long its been since paused from localStorage when reloaded
