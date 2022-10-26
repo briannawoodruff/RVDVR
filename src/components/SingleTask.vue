@@ -250,8 +250,8 @@ export default {
       font-size: 26px;
       font-weight: bold;
       font-family: $nunito;
-      right: 4px;
-      top: -6.5px;
+      right: 4.15px;
+      top: -6.4px;
       color: $white;
     }
   }

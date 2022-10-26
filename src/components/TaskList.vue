@@ -244,7 +244,8 @@ export default {
 .no-tasks {
   font-size: $text-sm;
   font-family: $nunito;
-  margin: 8px 0 20.66px 0;
+  margin: 8px 2px 20.66px 2px;
+  letter-spacing: -0.015rem;
 }
 .show {
   cursor: pointer;
