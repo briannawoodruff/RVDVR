@@ -1,6 +1,6 @@
 <template>
   <div
-    @click="setActive(this.task.id)"
+    @click.passive="setActive(this.task.id)"
     :id="this.task.id"
     class="single-task checkbox"
     :class="{ active: this.index === this.activeItem }"

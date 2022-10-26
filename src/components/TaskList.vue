@@ -5,10 +5,10 @@
     <!-- Draggable Element -->
     <draggable
       :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
-      :delay="75"
+      :delay="85"
       :delayOnTouchOnly="true"
-      :touchStartThreshold='15'
-      :emptyInsertThreshold='20'
+      :touchStartThreshold='30'
+      :emptyInsertThreshold='25'
       :clone="handleClone"
       @start="drag = true"
       @end="end"
@@ -25,7 +25,7 @@
           <SingleTask
             v-if="this.allTasks.length > 0 && this.isToday === element.isToday"
             class="task"
-            @click="$emit('selected-task', index)"
+            @click.passive="$emit('selected-task', index)"
             :watchDelete="this.watchDelete"
             :key="element.id"
             :index="index"

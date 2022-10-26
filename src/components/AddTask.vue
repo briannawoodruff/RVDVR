@@ -4,11 +4,11 @@
     <!-- IF AddTask Button True, show + button -->
     <form
       v-if="this.isToday ? this.showTodayTask : this.showMasterTask"
-      @submit.prevent="onSubmit"
+      @submit.passive="onSubmit"
       class="add-form"
     >
       <button
-        @click="
+        @click.passive="
           this.isToday
             ? $emit('toggle-today-task')
             : $emit('toggle-master-task')
@@ -21,7 +21,7 @@
     </form>
     <!-- ELSE show Input AddTask Form and "Add a Task" Button -->
     <div v-else class="add-form">
-      <form @submit.prevent="onSubmit">
+      <form @submit.passive="onSubmit">
         <div class="form-control">
           <input
             id="input"
@@ -34,7 +34,7 @@
           />
         </div>
         <!-- Done Button -->
-        <button @click.prevent="onSubmit" type="button" class="add-task-btn">
+        <button @click.passive="onSubmit" type="button" class="add-task-btn">
           Done
         </button>
       </form>
