@@ -293,7 +293,7 @@ export default {
       }
       // handles when address bar hides on mobile
       let app = document.getElementById("app");
-      app.innerHeight = window.innerHeight + 60
+      app.innerHeight = window.innerHeight + 90
     },
     // Hides the mission panel to help focus on todays tasks
     hideMission(title) {
