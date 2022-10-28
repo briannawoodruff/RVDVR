@@ -426,7 +426,7 @@ export default {
         });
       }
       //  IF all tasks in today are completed and not equal to 0
-      if (completed.length === findToday.length && completed.length > 0) {
+      if (completed.length === findToday.length && findToday.length > 0) {
         // IF the new todays tasks are different than the prior day
         if (tasksChanged !== null && tasksChanged) {
           // limit streak to 365 days
@@ -439,14 +439,14 @@ export default {
             this.pastTodaysTasks = findToday;
             this.setPastTodayTasks();
           } else {
-            // resets streak
+            // resets streak if over 365 days
             this.resetStreak();
           }
         } else {
           // ELSE todays tasks did not change, streak is broken and reset to 0
           this.resetStreak();
         }
-      } else {
+      } else if (completed.length !== findToday.length || findToday.length === 0) {
         // ELSE all tasks are not completed, streak is broken and reset to 0
         this.resetStreak();
       }
@@ -522,7 +522,7 @@ export default {
     this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     // Grabs streak from localStorage when reloaded
     this.streakCount = JSON.parse(localStorage.getItem(STREAK_KEY) || 0);
-    this.setStreakLocalStorage();
+    // this.setStreakLocalStorage();
     // Grabs past today tasks from localStorage when reloaded
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
@@ -559,7 +559,7 @@ export default {
   min-height: 100%;
   overflow: scroll;
   position: relative;
-  transition: height 999999s;
+  transition: height 10s;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
