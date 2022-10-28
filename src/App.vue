@@ -287,7 +287,7 @@ export default {
     // Watches width of screen and sets mobileWidth if mobile
     handleWidth() {
       if (window.innerWidth <= 768) {
-        console.log(true);
+        this.mobileWidth = true;
       } else {
         this.mobileWidth = false;
       }

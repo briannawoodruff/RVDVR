@@ -1,6 +1,6 @@
 <template>
   <button
-    @click.prevent="handleClick"
+    @click.passive="handleClick"
     class="btn"
     :id="this.title === 'Break Day' ? this.title.split(' ')[0] : this.title"
   >
@@ -82,8 +82,8 @@ export default {
     handleClick() {
       // IF Break Button
       if (this.title === "Break Day") {
-        // IF breakStreak is 0, shake and return
-        if (this.breakStreakAmount === 0) {
+        // IF breakStreak is 0 or streakCount is 0, shake and return
+        if (this.breakStreakAmount === 0 || this.streakCount === 0) {
           this.oopsShake();
           return;
           // ELSE set pause to true and subtract 1 from the count and update break streak localStorage
