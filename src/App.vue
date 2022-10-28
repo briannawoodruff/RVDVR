@@ -292,9 +292,6 @@ export default {
       } else {
         this.mobileWidth = false;
       }
-      // handles when address bar hides on mobile
-      let bg = document.getElementById("background");
-      bg.innerHeight = window.innerHeight + 60;
     },
     // Hides the mission panel to help focus on todays tasks
     hideMission(title) {
@@ -551,9 +548,6 @@ export default {
 @import "./scss/_variables.scss";
 
 #app {
-  // background: url(./assets/images/backgrounds/RVDVR-gray-bg.svg) center
-  //   no-repeat;
-  // background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -563,7 +557,6 @@ export default {
   min-height: 100%;
   overflow: scroll;
   position: relative;
-  // transition: height 10s;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
@@ -574,7 +567,7 @@ export default {
     no-repeat;
   background-size: cover;
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   z-index: 0;
   position: fixed;
   top: 0;
