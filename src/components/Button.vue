@@ -179,6 +179,7 @@ export default {
       this.breakStreakAmount = JSON.parse(
         localStorage.getItem(BREAKSTREAK_KEY) || 0
       );
+      this.setBreakStreakLocalStorage();
     }
   },
 };
