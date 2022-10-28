@@ -49,6 +49,16 @@ export default {
           let btn = current.querySelector(".indicator-delete");
           btn.classList.remove("hide-btn");
         }
+        // removes delete button from all buttons except the current active button
+        let tasks = document.querySelectorAll(".single-task");
+        let [findCurrent] = this.allTasks.filter((item) => item.id === id);
+        tasks.forEach((task) => {
+          if (task.id !== findCurrent.id) {
+            let div = document.getElementById(task.id);
+            let deleteBtn = div.querySelector(".indicator-delete");
+            deleteBtn.classList.add("hide-btn");
+          }
+        });
       }
     },
     setCompleted(id) {

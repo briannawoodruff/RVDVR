@@ -93,20 +93,28 @@ export default {
           this.breakStreakAmount--;
           this.setBreakStreakLocalStorage();
         }
-      }
-      if (this.title === "Done") {
-        // ELSE IF Done Button
-        // groups colors
-        this.$emit("group-colors");
-        // toggles today container
-        this.$emit("toggle-today-list");
-      }
-      if (this.title === "Prioritize") {
-        // ELSE Prioritize Button
-        // shows mission panel
-        this.$emit("show-mission", this.title);
-        // toggles today container
-        this.$emit("toggle-today-list");
+      } else {
+        // removes delete btn from all buttons when clicked
+        let tasks = document.querySelectorAll(".single-task");
+        tasks.forEach((task) => {
+          let div = document.getElementById(task.id);
+          let deleteBtn = div.querySelector(".indicator-delete");
+          deleteBtn.classList.add("hide-btn");
+        });
+        if (this.title === "Done") {
+          // ELSE IF Done Button
+          // groups colors
+          this.$emit("group-colors");
+          // toggles today container
+          this.$emit("toggle-today-list");
+        }
+        if (this.title === "Prioritize") {
+          // ELSE Prioritize Button
+          // shows mission panel
+          this.$emit("show-mission", this.title);
+          // toggles today container
+          this.$emit("toggle-today-list");
+        }
       }
     },
     oopsShake() {

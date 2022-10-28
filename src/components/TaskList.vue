@@ -5,9 +5,9 @@
     <!-- Draggable Element -->
     <draggable
       :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
-      :delay="85"
+      :delay="90"
       :delayOnTouchOnly="true"
-      :touchStartThreshold="30"
+      :touchStartThreshold="40"
       :emptyInsertThreshold="25"
       :clone="handleClone"
       @start="drag = true"
@@ -156,45 +156,6 @@ export default {
         }
       },
     },
-    activeItem: {
-      // removes the previously active tasks delete button
-      // when the activeItem changes, set previous activeItem deleteBtn to none
-      handler(currentItem, pastItem) {
-        // IF the currentItem and pastItem exist && is not equal to reset
-        // -1 indicates the active item was not a task and removes the past active class on click of btn Prioritize and Done to elimate lingering active class bug
-        if (
-          currentItem !== null &&
-          currentItem !== undefined &&
-          pastItem !== null &&
-          pastItem !== undefined
-        ) {
-          // gets all single-task divs
-          let tasks = document.querySelectorAll(".single-task");
-
-          // IF current item is not a task, remove x from past item
-          if (currentItem === -1) {
-            // loops over each task
-            tasks.forEach((task) => {
-              this.handleInactiveTasks(task);
-            });
-          } else {
-            // ELSE remove the x from all tasks that are not the current one selected
-            // the current activeItem div
-            let [findCurrent] = this.allTasks.filter(
-              (item, i) => i === currentItem
-            );
-            // loops over each task
-            tasks.forEach((task) => {
-              // IF the task.id and current task are not the same, add hide-btn class to hide the delete btn
-              if (task.id !== findCurrent.id) {
-                this.handleInactiveTasks(task);
-              }
-            });
-          }
-        }
-      },
-      deep: true,
-    },
   },
   methods: {
     toggleTodayTask() {
@@ -202,11 +163,6 @@ export default {
     },
     toggleMasterTask() {
       this.showMasterTask = !this.showMasterTask;
-    },
-    handleInactiveTasks(task) {
-      let div = document.getElementById(task.id);
-      let deleteBtn = div.querySelector(".indicator-delete");
-      deleteBtn.classList.add("hide-btn");
     },
     handleClone(item) {
       // clones the moved item
