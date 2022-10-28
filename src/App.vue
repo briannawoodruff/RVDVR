@@ -1,4 +1,5 @@
 <template>
+  <div id="background"></div>
   <!-- SPLASH -->
   <Splash v-if="this.splash" />
   <div class="content-container" v-else>
@@ -292,8 +293,8 @@ export default {
         this.mobileWidth = false;
       }
       // handles when address bar hides on mobile
-      let app = document.getElementById("app");
-      app.innerHeight = window.innerHeight + 60;
+      let bg = document.getElementById("background");
+      bg.innerHeight = window.innerHeight + 60;
     },
     // Hides the mission panel to help focus on todays tasks
     hideMission(title) {
@@ -446,7 +447,10 @@ export default {
           // ELSE todays tasks did not change, streak is broken and reset to 0
           this.resetStreak();
         }
-      } else if (completed.length !== findToday.length || findToday.length === 0) {
+      } else if (
+        completed.length !== findToday.length ||
+        findToday.length === 0
+      ) {
         // ELSE all tasks are not completed, streak is broken and reset to 0
         this.resetStreak();
       }
@@ -547,9 +551,9 @@ export default {
 @import "./scss/_variables.scss";
 
 #app {
-  background: url(./assets/images/backgrounds/RVDVR-gray-bg.svg) center
-    no-repeat;
-  background-size: cover;
+  // background: url(./assets/images/backgrounds/RVDVR-gray-bg.svg) center
+  //   no-repeat;
+  // background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -559,11 +563,22 @@ export default {
   min-height: 100%;
   overflow: scroll;
   position: relative;
-  transition: height 10s;
+  // transition: height 10s;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
   }
+}
+#background {
+  background: url(./assets/images/backgrounds/RVDVR-gray-bg.svg) center
+    no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100%;
+  z-index: 0;
+  position: fixed;
+  top: 0;
+  overflow: hidden;
 }
 .content-container {
   width: 100vw;
