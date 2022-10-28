@@ -28,6 +28,8 @@
             class="task"
             :class="{ active: index === this.activeItem }"
             @click.passive="$emit('selected-task', index)"
+            :index="index"
+            :activeItem="this.activeItem"
             :watchDelete="this.watchDelete"
             :task="element"
             :allTasks="this.allTasks"
@@ -115,6 +117,7 @@ export default {
     "delete-task",
     "set-current-task",
     "show-mission",
+    "handle-active-item",
   ],
   props: {
     allTasks: {
@@ -157,26 +160,36 @@ export default {
       // removes the previously active tasks delete button
       // when the activeItem changes, set previous activeItem deleteBtn to none
       handler(currentItem, pastItem) {
-        // IF the currentItem and pastItem exist
+        // IF the currentItem and pastItem exist && is not equal to reset
+        // -1 indicates the active item was not a task and removes the past active class on click of btn Prioritize and Done to elimate lingering active class bug
         if (
           currentItem !== null &&
-          pastItem !== undefined &&
-          pastItem !== null
+          currentItem !== undefined &&
+          pastItem !== null &&
+          pastItem !== undefined
         ) {
-          // finds the previously active task and adds hide-btn to hide it
-          let findPastItem = this.allTasks.filter((item, i) => i === pastItem);
-          // IF the previous item is found
-          if (findPastItem.length > 0) {
-            let oldItem = document.getElementById(findPastItem[0].id); //parent
-            if (oldItem !== null) {
-              let siblingEl = oldItem.querySelector(".indicator-checkbox"); //sibling
-              if (siblingEl !== null) {
-                // makes sure sibling is found
-                let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
-                oldItem.insertBefore(deleteBtn, siblingEl); //handle error
-                deleteBtn.classList.add("hide-btn");
+          // gets all single-task divs
+          let tasks = document.querySelectorAll(".single-task");
+
+          // IF current item is not a task, remove x from past item
+          if (currentItem === -1) {
+            // loops over each task
+            tasks.forEach((task) => {
+              this.handleInactiveTasks(task);
+            });
+          } else {
+            // ELSE remove the x from all tasks that are not the current one selected
+            // the current activeItem div
+            let [findCurrent] = this.allTasks.filter(
+              (item, i) => i === currentItem
+            );
+            // loops over each task
+            tasks.forEach((task) => {
+              // IF the task.id and current task are not the same, add hide-btn class to hide the delete btn
+              if (task.id !== findCurrent.id) {
+                this.handleInactiveTasks(task);
               }
-            }
+            });
           }
         }
       },
@@ -189,6 +202,11 @@ export default {
     },
     toggleMasterTask() {
       this.showMasterTask = !this.showMasterTask;
+    },
+    handleInactiveTasks(task) {
+      let div = document.getElementById(task.id);
+      let deleteBtn = div.querySelector(".indicator-delete");
+      deleteBtn.classList.add("hide-btn");
     },
     handleClone(item) {
       // clones the moved item
@@ -210,6 +228,11 @@ export default {
       } else if (from.id === to.id) {
         // ELSE IF a task is moved in the same list, update localStorage
         this.$emit("update-task");
+      }
+      // updates activeItem on move
+      if (this.task !== null) {
+        let index = this.allTasks.map((task) => task.id).indexOf(this.task.id);
+        this.$emit("selected-task", index);
       }
     },
     // Checks if there are more than 1 tasks in Today

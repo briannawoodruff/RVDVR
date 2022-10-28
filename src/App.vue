@@ -32,6 +32,7 @@
             title="Prioritize"
             @toggle-today-list="toggleTodayList"
             @show-mission="hideMission"
+            @click.passive="selectedTask(-1)"
             :toggleToday="this.toggleToday"
           />
         </div>
@@ -52,6 +53,7 @@
           @group-colors="groupColors"
           @toggle-today-list="toggleTodayList"
           :toggleToday="this.toggleToday"
+          @click.passive="selectedTask(-1)"
         />
       </div>
       <!-- MASTER CARD -->
@@ -93,6 +95,7 @@
             @toggle-today-list="toggleTodayList"
             @show-mission="hideMission"
             :toggleToday="this.toggleToday"
+            @click.passive="selectedTask(-1)"
           />
         </div>
         <!-- IF showing Eisenhower Matrix AND Mobile, show done button -->

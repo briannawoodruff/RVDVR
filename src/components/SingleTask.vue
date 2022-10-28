@@ -1,6 +1,7 @@
 <template>
   <div
-    @click.passive="setActive(this.task.id)"
+    @mousedown="setActive(this.task.id)"
+    @touchstart.passive="setActive(this.task.id)"
     :id="this.task.id"
     class="single-task checkbox"
     :style="{ backgroundColor: this.task.color }"
@@ -108,9 +109,9 @@ export default {
     cursor: -webkit-grabbing;
   }
 }
-// .active {
-//   border: 2px solid $darkGray;
-// }
+.active {
+  border: 2px solid $darkGray;
+}
 // checkbox
 .indicator-checkbox {
   position: absolute;
