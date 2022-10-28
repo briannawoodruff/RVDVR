@@ -457,12 +457,12 @@ export default {
       return new Promise((resolve) => setInterval(resolve, ms));
     },
     intervalHandler() {
-      // updates the time every 15 minutes (900000 ms)
+      // updates the time every 10 minutes (600000 ms)
       this.streakTimeout = setTimeout(async () => {
         await this.watchTime(1);
         this.currentTime = new Date().getTime();
         this.intervalHandler();
-      }, 900000);
+      }, 600000);
     },
   },
   mounted() {

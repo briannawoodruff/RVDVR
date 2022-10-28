@@ -7,8 +7,8 @@
       :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
       :delay="85"
       :delayOnTouchOnly="true"
-      :touchStartThreshold='30'
-      :emptyInsertThreshold='25'
+      :touchStartThreshold="30"
+      :emptyInsertThreshold="25"
       :clone="handleClone"
       @start="drag = true"
       @end="end"
@@ -24,13 +24,12 @@
         >
           <SingleTask
             v-if="this.allTasks.length > 0 && this.isToday === element.isToday"
+            :key="element.id"
             class="task"
+            :class="{ active: index === this.activeItem }"
             @click.passive="$emit('selected-task', index)"
             :watchDelete="this.watchDelete"
-            :key="element.id"
-            :index="index"
             :task="element"
-            :activeItem="this.activeItem"
             :allTasks="this.allTasks"
           />
           <!-- IF there's no tasks -->
@@ -154,6 +153,35 @@ export default {
         }
       },
     },
+    activeItem: {
+      // removes the previously active tasks delete button
+      // when the activeItem changes, set previous activeItem deleteBtn to none
+      handler(currentItem, pastItem) {
+        // IF the currentItem and pastItem exist
+        if (
+          currentItem !== null &&
+          pastItem !== undefined &&
+          pastItem !== null
+        ) {
+          // finds the previously active task and adds hide-btn to hide it
+          let findPastItem = this.allTasks.filter((item, i) => i === pastItem);
+          // IF the previous item is found
+          if (findPastItem.length > 0) {
+            let oldItem = document.getElementById(findPastItem[0].id); //parent
+            if (oldItem !== null) {
+              let siblingEl = oldItem.querySelector(".indicator-checkbox"); //sibling
+              if (siblingEl !== null) {
+                // makes sure sibling is found
+                let deleteBtn = oldItem.querySelector(".indicator-delete"); //new
+                oldItem.insertBefore(deleteBtn, siblingEl); //handle error
+                deleteBtn.classList.add("hide-btn");
+              }
+            }
+          }
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     toggleTodayTask() {
@@ -208,7 +236,7 @@ export default {
     },
     // emits to parent to delete a task
     watchDelete(taskId) {
-      this.$emit("delete-task", taskId)
+      this.$emit("delete-task", taskId);
     },
   },
   mounted() {
