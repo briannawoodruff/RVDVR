@@ -293,7 +293,7 @@ export default {
       }
       // handles when address bar hides on mobile
       let app = document.getElementById("app");
-      app.innerHeight = window.innerHeight + 90
+      app.innerHeight = window.innerHeight + 60;
     },
     // Hides the mission panel to help focus on todays tasks
     hideMission(title) {
@@ -406,23 +406,28 @@ export default {
       // 2. Verify that those completed tasks are not the same as the day before
       let count = 0;
       let tasksChanged = null;
-      findToday.forEach((item) => {
-        this.pastTodaysTasks.forEach((past) => {
-          // if the ids match, add to a count
-          if (item.id === past.id) {
-            count++;
+      if (findToday.length > 0) {
+        findToday.forEach((item) => {
+          if (this.pastTodaysTasks > 0) {
+            this.pastTodaysTasks.forEach((past) => {
+              // if the ids match, add to a count
+              if (item.id === past.id) {
+                count++;
+              }
+            });
+          }
+          // if the count is the same length as findToday, tasks did not change
+          if (count === findToday.length) {
+            tasksChanged = false;
+          } else {
+            // else if the count is not the same length, tasks did change
+            tasksChanged = true;
           }
         });
-        // if the count is the same length as findToday, tasks did not change
-        if (count === findToday.length) {
-          tasksChanged = false;
-        } else {
-          // else if the count is not the same length, tasks did change
-          tasksChanged = true;
-        }
-      });
-      //  IF all tasks in today are completed and not equal to 0 && the new todays tasks are different than the prior day
+      }
+      //  IF all tasks in today are completed and not equal to 0
       if (completed.length === findToday.length && completed.length > 0) {
+        // IF the new todays tasks are different than the prior day
         if (tasksChanged !== null && tasksChanged) {
           // limit streak to 365 days
           if (this.streakCount <= 365) {
@@ -438,9 +443,12 @@ export default {
             this.resetStreak();
           }
         } else {
-          // ELSE streak is broken and reset to 0
+          // ELSE todays tasks did not change, streak is broken and reset to 0
           this.resetStreak();
         }
+      } else {
+        // ELSE all tasks are not completed, streak is broken and reset to 0
+        this.resetStreak();
       }
     },
     // handles setTimout violation warning
@@ -519,6 +527,7 @@ export default {
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
     );
+    this.setPastTodayTasks();
     // Grabs pauseStreak from localStorage when reloaded
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
     this.setPauseLocalStorage();
@@ -550,6 +559,7 @@ export default {
   min-height: 100%;
   overflow: scroll;
   position: relative;
+  transition: height 999999s;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
