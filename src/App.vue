@@ -166,12 +166,10 @@ export default {
   watch: {
     // watches the time change to evaluate updating the streak and midnight to the next day
     async currentTime(timeNow) {
-      // IF the currentTime is past midnight
-      if (timeNow > this.midnight) {
-        // update midnight to new day midnight
-        this.setMidnight();
-        // IF pauseStreak is false, continue updating streak
-        if (!this.pauseStreak) {
+      // IF pauseStreak is false, continue updating streak
+      if (!this.pauseStreak) {
+        // IF the currentTime is past midnight
+        if (timeNow > this.midnight) {
           // update streak
           this.updateStreak();
         }
@@ -454,6 +452,8 @@ export default {
         // ELSE all tasks are not completed, streak is broken and reset to 0
         this.resetStreak();
       }
+      // update midnight to new day midnight
+      this.setMidnight();
     },
     // handles setTimout violation warning
     watchTime(ms) {

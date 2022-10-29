@@ -66,7 +66,7 @@
                 this.showMasterTask
               "
             >
-              <p class="no-tasks">Add tasks to make your general list</p>
+              <p class="no-tasks">Add tasks to make a to do list</p>
             </div>
           </div>
         </div>
