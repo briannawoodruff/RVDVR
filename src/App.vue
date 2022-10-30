@@ -485,6 +485,7 @@ export default {
     this.handleWidth();
 
     // updates the time every 15 minutes (900000 ms)
+    this.currentTime = new Date().getTime();
     this.intervalHandler();
 
     // watches if page is inactive/tabbed out
@@ -503,6 +504,7 @@ export default {
         clearTimeout(this.streakTimeout);
         clearTimeout(this.pauseTimeout);
         // restarts streak timer
+        // this.currentTime = new Date().getTime();
         this.intervalHandler();
 
         // saves time returned
