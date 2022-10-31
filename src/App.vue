@@ -166,6 +166,7 @@ export default {
   watch: {
     // watches the time change to evaluate updating the streak and midnight to the next day
     async currentTime(timeNow) {
+      // console.log(timeNow);
       // IF pauseStreak is false, continue updating streak
       if (!this.pauseStreak) {
         // IF the currentTime is past midnight
@@ -318,7 +319,8 @@ export default {
       this.midnight = new Date().setHours(24, 0, 0, 0);
       localStorage.setItem(MIDNIGHT_KEY, JSON.stringify(this.midnight));
     },
-    setPastTodayTasks() {
+    setPastTodayTasks(findToday) {
+      this.pastTodaysTasks = findToday;
       localStorage.setItem(PASTTASKS_KEY, JSON.stringify(this.pastTodaysTasks));
     },
     pauseTimer() {
@@ -356,37 +358,34 @@ export default {
       this.setPauseCounterLocalStorage();
     },
     restartPauseTimer() {
-      // IF Streak is Paused
-      if (this.pauseStreak) {
-        // IF the user was inactive for more than 24 hours, reset pauseStreak and pauseCount
-        if (86400000 - this.pauseCounter * 900000 >= 86400000) {
-          this.resetPause();
-        }
-        // ELSE user was inactive for less than 24 hours
-        else {
-          // IF inactive for less than 15 mins
-          if (this.pauseInactiveDuration < 900000) {
-            // If less than 12 minutes, start timer
-            if (this.pauseInactiveDuration < 720000) {
-              this.pauseTimer();
-            }
-            // If less than 15 mins but greater than 12 mins, increase by 1 and recall pauseTimer
-            else {
-              this.pauseCounter += 1;
-              this.setPauseCounterLocalStorage();
-              this.pauseTimer();
-            }
+      // IF the user was inactive for more than 24 hours, reset pauseStreak and pauseCount
+      if (86400000 - this.pauseCounter * 900000 >= 86400000) {
+        this.resetPause();
+      }
+      // ELSE user was inactive for less than 24 hours
+      else {
+        // IF inactive for less than 15 mins
+        if (this.pauseInactiveDuration < 900000) {
+          // If less than 12 minutes, start timer
+          if (this.pauseInactiveDuration < 720000) {
+            this.pauseTimer();
           }
-          // If greater than 15 mins
+          // If less than 15 mins but greater than 12 mins, increase by 1 and recall pauseTimer
           else {
-            // finds how many times the inactive time is divisible by 15 mins and rounds it to the nearest integer to add to the pauseCounter
-            let pauseCounterInactiveTime = Math.round(
-              this.pauseInactiveDuration / 900000
-            );
-            this.pauseCounter += pauseCounterInactiveTime;
+            this.pauseCounter += 1;
             this.setPauseCounterLocalStorage();
             this.pauseTimer();
           }
+        }
+        // If greater than 15 mins
+        else {
+          // finds how many times the inactive time is divisible by 15 mins and rounds it to the nearest integer to add to the pauseCounter
+          let pauseCounterInactiveTime = Math.round(
+            this.pauseInactiveDuration / 900000
+          );
+          this.pauseCounter += pauseCounterInactiveTime;
+          this.setPauseCounterLocalStorage();
+          this.pauseTimer();
         }
       }
     },
@@ -397,74 +396,92 @@ export default {
       this.setStreakLocalStorage();
     },
     updateStreak() {
-      // 1. Verifies that all tasks in today are completed
       // finds all the today tasks
       const findToday = this.allTasks.filter((item) => item.isToday === true);
       // finds all the tasks that are completed
       const completed = findToday.filter((item) => item.completed === true);
+      let pastTasks = this.pastTodaysTasks;
+
+      // 1. Verifies that all tasks in today are completed
+      const isCompleted = () => {
+        if (
+          findToday.length === completed.length &&
+          findToday.length > 0 &&
+          completed.length > 0
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      // IF they are completed, find if they are different that yesterday
+      if (isCompleted()) {
+        // when findIfChanged returns, then call increaseStreak with result
+        new Promise(findIfChanged).then(this.increaseStreak);
+      } else {
+        // ELSE tasks are not different than yesterday, reset streak
+        this.resetStreak();
+        // saves today's tasks to compare to the next day
+        this.setPastTodayTasks(findToday);
+      }
+
       // 2. Verify that those completed tasks are not the same as the day before
-      let count = 0;
-      let tasksChanged = null;
-      if (findToday.length > 0) {
-        findToday.forEach((item) => {
-          if (this.pastTodaysTasks > 0) {
-            this.pastTodaysTasks.forEach((past) => {
-              // if the ids match, add to a count
-              if (item.id === past.id) {
+      function findIfChanged(resolve) {
+        let count = 0;
+        let tasksChanged = null;
+
+        if (pastTasks.length > 0) {
+          findToday.forEach((item) => {
+            pastTasks.forEach((past) => {
+              // if the ids match and the past was completed, add to a count
+              if (item.id === past.id && past.completed === true) {
                 count++;
               }
             });
-          }
+          });
           // if the count is the same length as findToday, tasks did not change
           if (count === findToday.length) {
             tasksChanged = false;
+            resolve({ tasksChanged, findToday });
           } else {
             // else if the count is not the same length, tasks did change
             tasksChanged = true;
-          }
-        });
-      }
-      //  IF all tasks in today are completed and not equal to 0
-      if (completed.length === findToday.length && findToday.length > 0) {
-        // IF the new todays tasks are different than the prior day
-        if (tasksChanged !== null && tasksChanged) {
-          // limit streak to 365 days
-          if (this.streakCount <= 365) {
-            // increases streak
-            this.streakCount++;
-            // sets streak storage
-            this.setStreakLocalStorage();
-            // saves today's tasks to compare to the next day
-            this.pastTodaysTasks = findToday;
-            this.setPastTodayTasks();
-          } else {
-            // resets streak if over 365 days
-            this.resetStreak();
+            resolve({ tasksChanged, findToday });
           }
         } else {
-          // ELSE todays tasks did not change, streak is broken and reset to 0
-          this.resetStreak();
+          // ELSE there are no past tasks, tasksChanged
+          tasksChanged = true;
+          resolve({ tasksChanged, findToday });
         }
-      } else if (
-        completed.length !== findToday.length ||
-        findToday.length === 0
-      ) {
-        // ELSE all tasks are not completed, streak is broken and reset to 0
+      }
+    },
+    increaseStreak({ tasksChanged, findToday }) {
+      // IF the new todays tasks are different than the prior day
+      if (tasksChanged) {
+        // increases streak
+        this.streakCount++;
+        this.setStreakLocalStorage();
+        // saves today's tasks to compare to the next day
+        this.setPastTodayTasks(findToday);
+      } else {
+        // ELSE todays tasks did not change, streak is broken and reset to 0
         this.resetStreak();
       }
+
       // update midnight to new day midnight
       this.setMidnight();
     },
     // handles setTimout violation warning
     watchTime(ms) {
-      return new Promise((resolve) => setInterval(resolve, ms));
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    intervalHandler() {
+    async timeoutHandler() {
       // updates the time every 10 minutes (600000 ms)
       this.streakTimeout = setTimeout(async () => {
         await this.watchTime(1);
         this.currentTime = new Date().getTime();
-        this.intervalHandler();
+        this.timeoutHandler();
       }, 600000);
     },
   },
@@ -484,9 +501,9 @@ export default {
     // Onload sets window width
     this.handleWidth();
 
-    // updates the time every 15 minutes (900000 ms)
+    // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
-    this.intervalHandler();
+    this.timeoutHandler();
 
     // watches if page is inactive/tabbed out
     document.addEventListener("visibilitychange", () => {
@@ -504,8 +521,8 @@ export default {
         clearTimeout(this.streakTimeout);
         clearTimeout(this.pauseTimeout);
         // restarts streak timer
-        // this.currentTime = new Date().getTime();
-        this.intervalHandler();
+        this.currentTime = new Date().getTime();
+        this.timeoutHandler();
 
         // saves time returned
         const timeReturned = new Date().getTime();
@@ -514,12 +531,14 @@ export default {
           this.pauseInactiveDuration = timeReturned - this.timeLeft;
         }
         // if user returns the next day
-        if (timeReturned > this.midnight) {
-          this.updateStreak();
-        }
+        // if (timeReturned > this.midnight) {
+        // this.updateStreak();
+        // }
 
         // IF Streak is Paused
-        this.restartPauseTimer();
+        if (this.pauseStreak) {
+          this.restartPauseTimer();
+        }
       }
     });
   },
@@ -533,7 +552,7 @@ export default {
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
     );
-    this.setPastTodayTasks();
+    // this.setPastTodayTasks();
     // Grabs pauseStreak from localStorage when reloaded
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
     this.setPauseLocalStorage();
