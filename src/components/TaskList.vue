@@ -251,6 +251,7 @@ export default {
 .no-tasks {
   font-size: $text-sm;
   font-family: $nunito;
+  font-weight: 400;
   margin: 8px 2px 20.66px 2px;
   letter-spacing: -0.015rem;
 }
@@ -264,7 +265,7 @@ export default {
     cursor: pointer;
     width: 100%;
     font-size: $text-sm;
-    font-weight: bold;
+    font-weight: 700;
     font-stretch: 200%;
     font-family: $nunito;
     color: darken($color: $darkGray, $amount: 20);

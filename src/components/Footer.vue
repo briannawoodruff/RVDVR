@@ -19,6 +19,7 @@ export default {
   right: 10px;
   font-family: $blinker;
   font-size: $text-sm;
+  font-weight: 400;
   padding: 0 5px;
   & .lambda {
     display: inline-block;

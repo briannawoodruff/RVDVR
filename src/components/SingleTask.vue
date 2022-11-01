@@ -21,9 +21,9 @@
       ></button>
       <!-- Custom checkbox -->
       <div class="indicator-checkbox"></div>
+      <!-- The added task -->
+      <p class="text">{{ this.task.task }}</p>
     </label>
-    <!-- The added task -->
-    <p class="text">{{ this.task.task }}</p>
   </div>
 </template>
         
@@ -94,10 +94,10 @@ export default {
   margin: 0;
   border-radius: 5px;
   font-family: $nunito;
+  font-size: $text-sm;
+  font-weight: 700;
   position: relative;
   cursor: pointer;
-  font-size: $text-sm;
-  font-weight: 600;
   text-align: start;
   color: $black;
   // Hide default browser input
@@ -224,7 +224,7 @@ export default {
     position: absolute;
     .checkbox & {
       font-size: 26px;
-      font-weight: bold;
+      font-weight: 700;
       font-family: $nunito;
       right: 4.15px;
       top: -6.4px;

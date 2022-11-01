@@ -115,7 +115,7 @@ export default {
   &-num {
     font-family: $nunito;
     font-size: $text-lg;
-    font-weight: bold;
+    font-weight: 700;
     padding: 3px 0 0 4px;
     color: $black;
   }

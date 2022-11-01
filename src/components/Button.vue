@@ -245,7 +245,7 @@ export default {
   width: 150px;
   height: 45px;
   font-size: $text-xs;
-  font-weight: bold;
+  font-weight: 600;
   font-family: $blinker;
   border-radius: 5px;
   cursor: pointer;
@@ -287,6 +287,7 @@ export default {
     color: white;
     text-align: center;
     font-size: $text-sm;
+    font-weight: 600;
     width: 65%;
     height: auto;
     padding: 5px;
@@ -296,7 +297,7 @@ export default {
   }
   .streak {
     font-family: $nunito;
-    font-weight: bold;
+    font-weight: 700;
     padding: 1px 2px 0 2px;
     font-size: $text-md;
   }

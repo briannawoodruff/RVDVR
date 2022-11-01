@@ -138,7 +138,7 @@ export default {
 .add-task-btn {
   width: 80%;
   font-size: $text-sm;
-  font-weight: bold;
+  font-weight: 700;
   font-family: $nunito;
   color: white;
   box-shadow: 2px 4px 5px $darkGreenShadow;

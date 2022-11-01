@@ -179,13 +179,14 @@ export default {
   // all the boxes with titles
   &.title {
     font-family: $blinker;
-    letter-spacing: 0.05rem;
-    font-weight: bold;
+    font-weight: 600;
+    letter-spacing: 0.02rem;
     padding: 0;
   }
   // info of the draggable box
   & p.info {
     font-size: $text-xs;
+    font-weight: 400;
     background: none;
     margin: 0;
   }
@@ -196,7 +197,7 @@ export default {
   // name of the draggable box
   & .name {
     font-size: $text-md;
-    font-weight: bold;
+    font-weight: 600;
     font-family: $blinker;
     letter-spacing: 0.05rem;
   }

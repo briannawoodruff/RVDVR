@@ -151,6 +151,11 @@ export default {
 .header {
   position: relative;
   letter-spacing: 0.05rem;
+  font-family: $blinker;
+  font-size: $text-lg;
+  font-weight: 600;
+  color: $black;
+  margin: 5px;
   & .icon-btn {
     position: absolute;
     top: 3px;
@@ -169,12 +174,6 @@ export default {
 .wrapper {
   width: 98%;
   top: 0;
-}
-.header {
-  font-family: $blinker;
-  font-size: $text-lg;
-  color: $black;
-  margin: 5px;
 }
 hr {
   margin: 5px;
