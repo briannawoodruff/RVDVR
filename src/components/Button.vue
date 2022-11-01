@@ -20,6 +20,8 @@
         class="icon icon-break"
         src="../assets/images/icons/RVDVR-Icons-Pause-Btn-Black.svg"
         alt="Break Icon"
+        width="24"
+        height="24"
       />
       <!-- Prioritize Icon -->
       <img
@@ -27,6 +29,8 @@
         class="icon"
         src="../assets/images/icons/RVDVR-Icons-Scan.svg"
         alt="Prioritize Icon"
+        width="35"
+        height="35"
       />
 
       <!-- Break Streak -->

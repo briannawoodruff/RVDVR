@@ -3,6 +3,8 @@
     <img
       class="logo"
       src="../assets/images/logos/RVDVR-Logo-Black-Splash.svg"
+      width="375"
+      height="175"
       alt="RVDΛR logo black"
     />
   </div>

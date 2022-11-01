@@ -4,6 +4,8 @@
     <div class="wrapper">
       <div class="item streak">
         <img
+          width="40"
+          height="40"
           class="logo logo-streak"
           src="../assets/images/icons/RVDVR-Icons-Streak.svg"
           alt="RVDΛR streak icon"
@@ -12,6 +14,8 @@
       </div>
       <div class="item">
         <img
+          width="250"
+          height="40"
           class="logo logo-rvdvr"
           src="../assets/images/logos/RVDVR-Logo-Small-Black.svg"
           alt="RVDΛR logo navigation bar"
@@ -20,6 +24,8 @@
       <div class="item mini">
         <button @click="handleClick" class="btn">
           <img
+            width="40"
+            height="40"
             id="mini-logo"
             class="logo logo-simple"
             src="../assets/images/logos/RVDVR-Icons-Logo.svg"
@@ -42,10 +48,10 @@ export default {
   methods: {
     handleClick() {
       let icon = document.getElementById("mini-logo");
-      icon.classList.add("rotate")
+      icon.classList.add("rotate");
 
       setTimeout(() => {
-        icon.classList.remove("rotate")
+        icon.classList.remove("rotate");
       }, 1000);
     },
   },

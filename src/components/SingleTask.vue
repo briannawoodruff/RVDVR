@@ -8,17 +8,20 @@
   >
     <!-- Invisible default checkbox -->
     <!-- Delete button -->
-    <input
-      @click.passive="setCompleted(this.task.id)"
-      type="checkbox"
-      :checked="this.task.completed"
-    />
-    <button
-      @click.passive="deleteTask(this.task.id)"
-      class="indicator-delete hide-btn"
-    ></button>
-    <!-- Custom checkbox -->
-    <div class="indicator-checkbox"></div>
+    <label for="checkbox">
+      <input
+        @click.passive="setCompleted(this.task.id)"
+        type="checkbox"
+        aria-label="Task Checkbox"
+        :checked="this.task.completed"
+      />
+      <button
+        @click.passive="deleteTask(this.task.id)"
+        class="indicator-delete hide-btn"
+      ></button>
+      <!-- Custom checkbox -->
+      <div class="indicator-checkbox"></div>
+    </label>
     <!-- The added task -->
     <p class="text">{{ this.task.task }}</p>
   </div>

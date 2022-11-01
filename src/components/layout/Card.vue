@@ -15,13 +15,17 @@
             v-if="this.showMission"
             class="icon"
             src="../../assets/images/icons/RVDVR-Icons-Eye.svg"
-            alt="Show Mission Panel Open Eye"
+            alt="Show Mission Panel Open Eye Icon"
+            width="24"
+            height="24"
           />
           <img
             v-else
             class="icon"
             src="../../assets/images/icons/RVDVR-Icons-EyeHidden.svg"
-            alt="Hide Mission Panel Closed Eye"
+            alt="Hide Mission Panel Closed Eye Icon"
+            width="24"
+            height="24"
           />
         </button>
       </h2>
@@ -104,13 +108,12 @@ export default {
         if (!this.mobileWidth) {
           // IF less than three, translate up
           if (this.masterLimit) {
-            elMaster.style.marginBottom = "120px"
+            elMaster.style.marginBottom = "120px";
           } else {
-            elMaster.style.marginBottom = "30px"
+            elMaster.style.marginBottom = "30px";
           }
         } else {
           // elMaster.style.marginBottom = "10px"
-
         }
       }
     },
