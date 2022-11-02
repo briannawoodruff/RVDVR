@@ -504,6 +504,14 @@ export default {
     // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
     this.timeoutHandler();
+    // IF pauseStreak is false, continue updating streak
+    if (!this.pauseStreak) {
+      // IF the currentTime is past midnight
+      if (this.currentTime > this.midnight) {
+        // update streak
+        this.updateStreak();
+      }
+    }
 
     // watches if page is inactive/tabbed out
     document.addEventListener("visibilitychange", () => {
@@ -523,6 +531,14 @@ export default {
         // restarts streak timer
         this.currentTime = new Date().getTime();
         this.timeoutHandler();
+        // IF pauseStreak is false, continue updating streak
+        if (!this.pauseStreak) {
+          // IF the currentTime is past midnight
+          if (this.currentTime > this.midnight) {
+            // update streak
+            this.updateStreak();
+          }
+        }
 
         // saves time returned
         const timeReturned = new Date().getTime();
@@ -530,10 +546,6 @@ export default {
         if (this.timeLeft !== undefined && timeReturned !== undefined) {
           this.pauseInactiveDuration = timeReturned - this.timeLeft;
         }
-        // if user returns the next day
-        // if (timeReturned > this.midnight) {
-        // this.updateStreak();
-        // }
 
         // IF Streak is Paused
         if (this.pauseStreak) {
