@@ -489,6 +489,7 @@ export default {
   mounted() {
     // resets timeout
     clearTimeout(this.streakTimeout);
+    clearTimeout(this.pauseTimeout);
 
     // Splash timeout
     setTimeout(() => {

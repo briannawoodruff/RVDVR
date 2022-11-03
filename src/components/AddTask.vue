@@ -116,6 +116,7 @@ export default {
         // puts input in focus
         if (input !== null) {
           input.focus();
+          input.click();
         }
       }, 50);
     },
@@ -149,7 +150,7 @@ export default {
   cursor: pointer;
   text-shadow: 2px 2px 3px $blackShadow;
   &:active {
-    transform: translate(1px, 1px);
+    @extend %translate-btn-click-1px-1px;
     box-shadow: 1px 3px 5px $blackShadow;
   }
 }

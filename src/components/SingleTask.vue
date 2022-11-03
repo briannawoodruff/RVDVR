@@ -111,6 +111,10 @@ export default {
     height: 36px;
     width: 36px;
     transform: translate(-192px, -3px);
+    -webkit-transform: translate(-192px, -3px);
+    -moz-transform: translate(-192px, -3px);
+    -o-transform: translate(-192px, -3px);
+    -ms-transform: translate(-192px, -3px);
   }
   &:hover {
     border: 2px solid $darkGray;
@@ -120,6 +124,9 @@ export default {
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
+  }
+  & .text {
+    cursor: pointer;
   }
 }
 .active {
@@ -159,7 +166,7 @@ export default {
   }
   // if checkbox is checked, translate
   .single-task:active input:not([disabled]):checked ~ & {
-    transform: translate(1px, 1px);
+    @extend %translate-btn-click-1px-1px;
   }
   // hide default browser input
   .single-task input:disabled ~ & {
@@ -184,6 +191,10 @@ export default {
       border: solid $white;
       border-width: 0 3px 3px 0;
       transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
     }
     // disabled tick color
     .checkbox input:disabled ~ & {
@@ -216,7 +227,7 @@ export default {
     background: darken($color: $deleteRed, $amount: 5);
   }
   &:active {
-    transform: translate(1px, 1px);
+    @extend %translate-btn-click-1px-1px;
   }
   // X
   &:after {

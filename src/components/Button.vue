@@ -203,6 +203,10 @@ export default {
 // Shake animation
 .oops {
   animation: shake 0.3s both;
+  -webkit-animation: shake 0.3s both;
+  -moz-animation: shake 0.3s both;
+  -o-animation: shake 0.3s both;
+  -ms-animation: shake 0.3s both;
   backface-visibility: hidden;
   perspective: 1000px;
   z-index: 9999;
@@ -210,21 +214,45 @@ export default {
 @keyframes shake {
   0% {
     transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -o-transform: translateX(0);
+    -ms-transform: translateX(0);
   }
   20% {
     transform: translateX(2px);
+    -webkit-transform: translateX(2px);
+    -moz-transform: translateX(2px);
+    -o-transform: translateX(2px);
+    -ms-transform: translateX(2px);
   }
   40% {
     transform: translateX(-2px);
+    -webkit-transform: translateX(-2px);
+    -moz-transform: translateX(-2px);
+    -o-transform: translateX(-2px);
+    -ms-transform: translateX(-2px);
   }
   60% {
     transform: translateX(3px);
+    -webkit-transform: translateX(3px);
+    -moz-transform: translateX(3px);
+    -o-transform: translateX(3px);
+    -ms-transform: translateX(3px);
   }
   80% {
     transform: translateX(-3px);
+    -webkit-transform: translateX(-3px);
+    -moz-transform: translateX(-3px);
+    -o-transform: translateX(-3px);
+    -ms-transform: translateX(-3px);
   }
   100% {
     transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -o-transform: translateX(0);
+    -ms-transform: translateX(0);
   }
 }
 .paused {
@@ -274,7 +302,7 @@ export default {
       border: 2px solid $col;
       box-shadow: 2px 4px 6px $boxSdw;
       &:active {
-        transform: translate(1px, 1px);
+        @extend %translate-btn-click-1px-1px;
         box-shadow: 1px 3px 5px $boxSdw;
       }
     }

@@ -238,6 +238,8 @@ export default {
   @extend %flex-column;
   overflow: hidden;
   justify-content: flex-start;
+  position: relative;
+  z-index: 1;
 }
 .tasks {
   width: 100%;
@@ -281,16 +283,32 @@ export default {
 }
 .arrow-down:hover {
   animation: wobble 1s infinite;
+  -webkit-animation: wobble 1s infinite;
+  -moz-animation: wobble 1s infinite;
+  -o-animation: wobble 1s infinite;
+  -ms-animation: wobble 1s infinite;
 }
 @keyframes wobble {
   0% {
     transform: translateY(-0.1rem);
+    -webkit-transform: translateY(-0.1rem);
+    -moz-transform: translateY(-0.1rem);
+    -o-transform: translateY(-0.1rem);
+    -ms-transform: translateY(-0.1rem);
   }
   50% {
     transform: translateY(0.2rem);
+    -webkit-transform: translateY(0.2rem);
+    -moz-transform: translateY(0.2rem);
+    -o-transform: translateY(0.2rem);
+    -ms-transform: translateY(0.2rem);
   }
   100% {
     transform: translateY(-0.1rem);
+    -webkit-transform: translateY(-0.1rem);
+    -moz-transform: translateY(-0.1rem);
+    -o-transform: translateY(-0.1rem);
+    -ms-transform: translateY(-0.1rem);
   }
 }
 </style>

@@ -63,22 +63,46 @@ export default {
 
 .rotate {
   animation: spin 500ms ease;
+  -webkit-animation: spin 500ms ease;
+  -moz-animation: spin 500ms ease;
+  -o-animation: spin 500ms ease;
+  -ms-animation: spin 500ms ease;
 }
 @keyframes spin {
   0% {
     transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
   }
   50% {
     transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
   }
   75% {
     transform: rotate(190deg);
+    -webkit-transform: rotate(190deg);
+    -moz-transform: rotate(190deg);
+    -o-transform: rotate(190deg);
+    -ms-transform: rotate(190deg);
   }
   90% {
     transform: rotate(150deg);
+    -webkit-transform: rotate(150deg);
+    -moz-transform: rotate(150deg);
+    -o-transform: rotate(150deg);
+    -ms-transform: rotate(150deg);
   }
   100% {
     transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
   }
 }
 .container {
