@@ -394,6 +394,8 @@ export default {
       this.streakCount = 0;
       // sets streak storage
       this.setStreakLocalStorage();
+      // update midnight to new day midnight
+      this.setMidnight();
     },
     updateStreak() {
       // finds all the today tasks
@@ -464,13 +466,12 @@ export default {
         this.setStreakLocalStorage();
         // saves today's tasks to compare to the next day
         this.setPastTodayTasks(findToday);
+        // update midnight to new day midnight
+        this.setMidnight();
       } else {
         // ELSE todays tasks did not change, streak is broken and reset to 0
         this.resetStreak();
       }
-
-      // update midnight to new day midnight
-      this.setMidnight();
     },
     // handles setTimout violation warning
     watchTime(ms) {
@@ -504,14 +505,6 @@ export default {
     // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
     this.timeoutHandler();
-    // IF pauseStreak is false, continue updating streak
-    if (!this.pauseStreak) {
-      // IF the currentTime is past midnight
-      if (this.currentTime > this.midnight) {
-        // update streak
-        this.updateStreak();
-      }
-    }
 
     // watches if page is inactive/tabbed out
     document.addEventListener("visibilitychange", () => {
@@ -531,14 +524,6 @@ export default {
         // restarts streak timer
         this.currentTime = new Date().getTime();
         this.timeoutHandler();
-        // IF pauseStreak is false, continue updating streak
-        if (!this.pauseStreak) {
-          // IF the currentTime is past midnight
-          if (this.currentTime > this.midnight) {
-            // update streak
-            this.updateStreak();
-          }
-        }
 
         // saves time returned
         const timeReturned = new Date().getTime();
