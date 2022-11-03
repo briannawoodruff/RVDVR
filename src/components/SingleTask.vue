@@ -100,6 +100,7 @@ export default {
   cursor: pointer;
   text-align: start;
   color: $black;
+  user-select: none;
   // Hide default browser input
   & input {
     position: absolute;
@@ -125,9 +126,10 @@ export default {
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
   }
-  & .text {
-    cursor: pointer;
-  }
+}
+.text {
+  cursor: pointer;
+  user-select: none;
 }
 .active {
   border: 2px solid $darkGray;
@@ -246,6 +248,14 @@ export default {
 @media only screen and (max-width: $mobile-width) {
   .single-task {
     font-size: $text-xs;
+    &.text {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+  .text {
+    cursor: none;
+    user-select: none;
   }
 }
 </style>
