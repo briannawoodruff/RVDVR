@@ -330,7 +330,7 @@ export default {
         this.pauseTimeout = setTimeout(() => {
           console.log(this.pauseCounter);
           // IF counter is 96 (24 hours)
-          if (this.pauseCounter === 96) {
+          if (this.pauseCounter >= 96) {
             // stop counter from running
             clearTimeout(this.pauseTimeout);
             // set pauseStreak to false and set pauseCount back to 0
@@ -358,35 +358,28 @@ export default {
       this.setPauseCounterLocalStorage();
     },
     restartPauseTimer() {
-      // IF the user was inactive for more than 24 hours, reset pauseStreak and pauseCount
-      if (86400000 - this.pauseCounter * 900000 >= 86400000) {
-        this.resetPause();
-      }
-      // ELSE user was inactive for less than 24 hours
-      else {
-        // IF inactive for less than 15 mins
-        if (this.pauseInactiveDuration < 900000) {
-          // If less than 12 minutes, start timer
-          if (this.pauseInactiveDuration < 720000) {
-            this.pauseTimer();
-          }
-          // If less than 15 mins but greater than 12 mins, increase by 1 and recall pauseTimer
-          else {
-            this.pauseCounter += 1;
-            this.setPauseCounterLocalStorage();
-            this.pauseTimer();
-          }
+      // IF inactive for less than 15 mins
+      if (this.pauseInactiveDuration < 900000) {
+        // If less than 12 minutes, start timer
+        if (this.pauseInactiveDuration < 720000) {
+          this.pauseTimer();
         }
-        // If greater than 15 mins
+        // If less than 15 mins but greater than 12 mins, increase by 1 and recall pauseTimer
         else {
-          // finds how many times the inactive time is divisible by 15 mins and rounds it to the nearest integer to add to the pauseCounter
-          let pauseCounterInactiveTime = Math.round(
-            this.pauseInactiveDuration / 900000
-          );
-          this.pauseCounter += pauseCounterInactiveTime;
+          this.pauseCounter += 1;
           this.setPauseCounterLocalStorage();
           this.pauseTimer();
         }
+      }
+      // If greater than 15 mins
+      else {
+        // finds how many times the inactive time is divisible by 15 mins and rounds it to the nearest integer to add to the pauseCounter
+        let pauseCounterInactiveTime = Math.round(
+          this.pauseInactiveDuration / 900000
+        );
+        this.pauseCounter += pauseCounterInactiveTime;
+        this.setPauseCounterLocalStorage();
+        this.pauseTimer();
       }
     },
     resetStreak() {
@@ -545,18 +538,14 @@ export default {
     this.allTasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     // Grabs streak from localStorage when reloaded
     this.streakCount = JSON.parse(localStorage.getItem(STREAK_KEY) || 0);
-    // this.setStreakLocalStorage();
     // Grabs past today tasks from localStorage when reloaded
     this.pastTodaysTasks = JSON.parse(
       localStorage.getItem(PASTTASKS_KEY) || "[]"
     );
-    // this.setPastTodayTasks();
     // Grabs pauseStreak from localStorage when reloaded
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
-    this.setPauseLocalStorage();
     // Grabs how long its been since paused from localStorage when reloaded
     this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
-    this.setPauseCounterLocalStorage();
 
     // sets the next midnight
     if (this.midnight === null) {

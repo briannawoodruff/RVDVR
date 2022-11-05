@@ -90,6 +90,9 @@ export default {
         if (this.breakStreakAmount === 0 || this.streakCount === 0) {
           this.oopsShake();
           return;
+          // ELSE IF pauseStreak is true
+        } else if (this.pauseStreak) {
+          this.oopsShake();
           // ELSE set pause to true and subtract 1 from the count and update break streak localStorage
         } else {
           this.$emit("set-pause");
