@@ -270,7 +270,7 @@ export default {
   .indicator-delete {
     &:after {
       .checkbox & {
-        top: -1.5px;
+        top: -1px;
       }
     }
   }
