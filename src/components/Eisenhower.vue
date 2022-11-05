@@ -219,5 +219,13 @@ export default {
     background: $eGreen;
   }
 }
+@media only screen and (max-width: $mobile-width) {
+  .box {
+    & p.info {
+      padding-top: 3px;
+      font-size: 15px;
+    }
+  }
+}
 </style>
           

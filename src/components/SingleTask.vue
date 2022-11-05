@@ -235,12 +235,21 @@ export default {
   &:after {
     content: "\D7";
     position: absolute;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    align-items: center;
     .checkbox & {
       font-size: 26px;
       font-weight: 700;
       font-family: $nunito;
-      right: 4.15px;
-      top: -6.4px;
+      // text-align: center;
+      // right: 4.15px;
+      // top: -6.4px;
+      top: 0;
+      width: 100%;
+      height: 100%;
       color: $white;
     }
   }
@@ -256,6 +265,14 @@ export default {
   .text {
     cursor: none;
     user-select: none;
+  }
+
+  .indicator-delete {
+    &:after {
+      .checkbox & {
+        top: -1.5px;
+      }
+    }
   }
 }
 </style>
