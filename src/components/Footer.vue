@@ -24,6 +24,10 @@ export default {
   & .lambda {
     display: inline-block;
     transform: rotate(180deg) translateY(-2px);
+    -webkit-transform: rotate(180deg) translateY(-2px);
+    -moz-transform: rotate(180deg) translateY(-2px);
+    -o-transform: rotate(180deg) translateY(-2px);
+    -ms-transform: rotate(180deg) translateY(-2px);
   }
 }
 
@@ -34,6 +38,10 @@ export default {
     font-size: $text-xs;
     & .lambda {
       transform: rotate(180deg) translateY(-0.75px);
+      -webkit-transform: rotate(180deg) translateY(-0.75px);
+      -moz-transform: rotate(180deg) translateY(-0.75px);
+      -o-transform: rotate(180deg) translateY(-0.75px);
+      -ms-transform: rotate(180deg) translateY(-0.75px);
     }
   }
 }

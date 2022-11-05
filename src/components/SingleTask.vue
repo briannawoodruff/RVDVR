@@ -130,6 +130,10 @@ export default {
 .text {
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
 }
 .active {
   border: 2px solid $darkGray;
@@ -213,7 +217,6 @@ export default {
   }
 }
 .indicator-delete {
-  // display: block;
   position: absolute;
   z-index: 100;
   top: 12px;
@@ -240,13 +243,16 @@ export default {
     margin: 0;
     padding: 0;
     align-items: center;
+    overflow: hidden;
     .checkbox & {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -ms-user-select: none;
       font-size: 26px;
       font-weight: 700;
       font-family: $nunito;
-      // text-align: center;
-      // right: 4.15px;
-      // top: -6.4px;
       top: 0;
       width: 100%;
       height: 100%;
@@ -260,11 +266,19 @@ export default {
     &.text {
       cursor: pointer;
       user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -ms-user-select: none;
     }
   }
   .text {
     cursor: none;
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
   }
 
   .indicator-delete {
