@@ -178,6 +178,7 @@ export default {
     },
     // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
     async pauseStreak(newValue, oldValue) {
+      console.log(newValue, oldValue)
       if (newValue === true) {
         this.pauseTimer();
       } else {
@@ -185,7 +186,10 @@ export default {
       }
       // after a streak pause (when newValue changes to false and oldValue was true), update midnight so streak isn't updated
       if (newValue === false && oldValue === true) {
-        this.setMidnight();
+        // if currentTime is past midnight, to prevent setting midnight every refresh
+        if (this.currentTime > this.midnight) {
+          this.setMidnight();
+        }
       }
     },
   },
