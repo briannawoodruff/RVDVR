@@ -177,11 +177,15 @@ export default {
       }
     },
     // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
-    async pauseStreak(newValue) {
+    async pauseStreak(newValue, oldValue) {
       if (newValue === true) {
         this.pauseTimer();
       } else {
         clearTimeout();
+      }
+      // after a streak pause (when newValue changes to false and oldValue was true), update midnight so streak isn't updated
+      if (newValue === false && oldValue === true) {
+        this.setMidnight();
       }
     },
   },
@@ -328,9 +332,8 @@ export default {
       // increment counter by 1 every 15 minutes (900000 ms)
       if (this.pauseStreak) {
         this.pauseTimeout = setTimeout(() => {
-          console.log(this.pauseCounter);
-          // IF counter is 96 (24 hours)
-          if (this.pauseCounter >= 96) {
+          // IF counter is 95 (24 hours)
+          if (this.pauseCounter >= 95) {
             // stop counter from running
             clearTimeout(this.pauseTimeout);
             // set pauseStreak to false and set pauseCount back to 0
@@ -346,8 +349,16 @@ export default {
       }
     },
     setPause() {
-      this.pauseStreak = true;
-      this.setPauseLocalStorage();
+      // IF pauseStreak is false, make it true
+      if (!this.pauseStreak) {
+        this.pauseStreak = true;
+        this.setPauseLocalStorage();
+
+        // update pastTasks
+        const findToday = this.allTasks.filter((item) => item.isToday === true);
+        // saves today's tasks to compare to the next day
+        this.setPastTodayTasks(findToday);
+      }
     },
     resetPause() {
       // set pauseStreak to false and set pauseCount back to 0
