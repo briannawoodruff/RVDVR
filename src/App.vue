@@ -483,11 +483,28 @@ export default {
         this.resetStreak();
       }
     },
-    // handles setTimout violation warning
+    clearPauseTimeout() {
+      // IF Streak is Paused
+      if (this.pauseStreak) {
+        // clear this.pauseTimeout
+        if (this.pauseTimeout) {
+          clearTimeout(this.pauseTimeout);
+          this.pauseTimeout = null;
+        }
+      }
+    },
+    clearStreakTimeout() {
+      // resets timeout if it exists
+      if (this.streakTimeout) {
+        clearTimeout(this.streakTimeout);
+        this.streakTimeout = null;
+      }
+    },
+    // handles setTimeout violation warning
     watchTime(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    async timeoutHandler() {
+    timeoutHandler() {
       // updates the time every 10 minutes (600000 ms)
       this.streakTimeout = setTimeout(async () => {
         await this.watchTime(1);
@@ -497,13 +514,13 @@ export default {
     },
   },
   mounted() {
-    // resets timeout
-    clearTimeout(this.streakTimeout);
-    clearTimeout(this.pauseTimeout);
+    // resets timeout if it exists
+    this.clearStreakTimeout();
 
     // Splash timeout
-    setTimeout(() => {
+    const splashTimeout = setTimeout(() => {
       this.splash = false;
+      clearTimeout(splashTimeout);
     }, 1750);
 
     // Groups by colors on page load
@@ -515,8 +532,12 @@ export default {
 
     // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
+
+    // restarts this.streakTimeout
     this.timeoutHandler();
-    // IF Streak is Paused
+    // clears pauseTimeout
+    this.clearPauseTimeout();
+    // restarts pauseTimer if pauseStreak is true
     if (this.pauseStreak) {
       this.pauseTimer();
     }
@@ -527,29 +548,34 @@ export default {
       if (document.hidden) {
         // saves when user left tab or page went inactive
         this.timeLeft = new Date().getTime();
-        // clears timeout of both timers
-        clearTimeout(this.streakTimeout);
-        clearTimeout(this.pauseTimeout);
+
+        // resets timeout if it exists
+        this.clearStreakTimeout();
+        // clears pauseTimeout
+        this.clearPauseTimeout();
       }
       // PAGE ACTIVE
       else {
-        // clears timeout of both timers
-        clearTimeout(this.streakTimeout);
-        clearTimeout(this.pauseTimeout);
+        // resets timeout if it exists
+        this.clearStreakTimeout();
+        // clears pauseTimeout
+        this.clearPauseTimeout();
 
         // restarts streak timer
         this.currentTime = new Date().getTime();
         this.timeoutHandler();
-        // IF Streak is Paused
-        if (this.pauseStreak) {
-          this.restartPauseTimer();
-        }
 
         // saves time returned
         const timeReturned = new Date().getTime();
+
         // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
         if (this.timeLeft !== undefined && timeReturned !== undefined) {
           this.pauseInactiveDuration = timeReturned - this.timeLeft;
+        }
+
+        // IF Streak is Paused
+        if (this.pauseStreak) {
+          this.restartPauseTimer();
         }
       }
     });
