@@ -167,10 +167,10 @@ export default {
     // watches the time change to evaluate updating the streak and midnight to the next day
     async currentTime(timeNow) {
       // console.log(timeNow);
-      // IF pauseStreak is false, continue updating streak
-      if (!this.pauseStreak) {
-        // IF the currentTime is past midnight
-        if (timeNow > this.midnight) {
+      // IF the currentTime is past midnight
+      if (timeNow > this.midnight) {
+        // IF pauseStreak is false, continue updating streak
+        if (!this.pauseStreak) {
           // update streak
           this.updateStreak();
         }
@@ -178,7 +178,7 @@ export default {
     },
     // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
     async pauseStreak(newValue, oldValue) {
-      console.log(newValue, oldValue)
+      // console.log(newValue, oldValue);
       if (newValue === true) {
         this.pauseTimer();
       } else {
@@ -403,7 +403,9 @@ export default {
       // sets streak storage
       this.setStreakLocalStorage();
       // update midnight to new day midnight
-      this.setMidnight();
+      if (this.currentTime > this.midnight) {
+        this.setMidnight();
+      }
     },
     updateStreak() {
       // finds all the today tasks
@@ -514,6 +516,10 @@ export default {
     // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
     this.timeoutHandler();
+    // IF Streak is Paused
+    if (this.pauseStreak) {
+      this.pauseTimer();
+    }
 
     // watches if page is inactive/tabbed out
     document.addEventListener("visibilitychange", () => {
@@ -530,20 +536,20 @@ export default {
         // clears timeout of both timers
         clearTimeout(this.streakTimeout);
         clearTimeout(this.pauseTimeout);
+
         // restarts streak timer
         this.currentTime = new Date().getTime();
         this.timeoutHandler();
+        // IF Streak is Paused
+        if (this.pauseStreak) {
+          this.restartPauseTimer();
+        }
 
         // saves time returned
         const timeReturned = new Date().getTime();
         // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
         if (this.timeLeft !== undefined && timeReturned !== undefined) {
           this.pauseInactiveDuration = timeReturned - this.timeLeft;
-        }
-
-        // IF Streak is Paused
-        if (this.pauseStreak) {
-          this.restartPauseTimer();
         }
       }
     });
