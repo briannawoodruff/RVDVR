@@ -166,7 +166,6 @@ export default {
   watch: {
     // watches the time change to evaluate updating the streak and midnight to the next day
     async currentTime(timeNow) {
-      // console.log(timeNow);
       // IF the currentTime is past midnight
       if (timeNow > this.midnight) {
         // IF pauseStreak is false, continue updating streak
@@ -178,14 +177,15 @@ export default {
     },
     // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
     async pauseStreak(newValue, oldValue) {
-      // console.log(newValue, oldValue);
-      if (newValue === true) {
+      if (newValue) {
         this.pauseTimer();
       } else {
-        clearTimeout();
+        // clears this.pauseTimeout
+        clearTimeout(this.pauseTimeout);
+        this.pauseTimeout = null;
       }
       // after a streak pause (when newValue changes to false and oldValue was true), update midnight so streak isn't updated
-      if (newValue === false && oldValue === true) {
+      if (!newValue && oldValue) {
         // if currentTime is past midnight, to prevent setting midnight every refresh
         if (this.currentTime > this.midnight) {
           this.setMidnight();
@@ -336,12 +336,12 @@ export default {
       // increment counter by 1 every 15 minutes (900000 ms)
       if (this.pauseStreak) {
         this.pauseTimeout = setTimeout(() => {
-          // IF counter is 95 (24 hours)
-          if (this.pauseCounter >= 95) {
-            // stop counter from running
-            clearTimeout(this.pauseTimeout);
+          // IF counter is 96 or over (24 hours) (96 * 900000ms(15 mins) = 86400000ms)
+          if (this.pauseCounter > 95) {
             // set pauseStreak to false and set pauseCount back to 0
             this.resetPause();
+            // stop counter from running
+            clearTimeout(this.pauseTimeout);
           } else {
             // increase pauseCounter
             this.pauseCounter++;
@@ -393,8 +393,14 @@ export default {
           this.pauseInactiveDuration / 900000
         );
         this.pauseCounter += pauseCounterInactiveTime;
-        this.setPauseCounterLocalStorage();
-        this.pauseTimer();
+        // IF pauseCounter is under 24 hours (96 * 900000ms(15 mins) = 86400000ms), continue counter
+        if (this.pauseCounter < 96) {
+          this.setPauseCounterLocalStorage();
+          this.pauseTimer();
+        } else {
+          // ELSE reset pause
+          this.resetPause();
+        }
       }
     },
     resetStreak() {
@@ -427,7 +433,7 @@ export default {
         }
       };
 
-      // IF they are completed, find if they are different that yesterday
+      // IF they are completed, find if they are different than yesterday
       if (isCompleted()) {
         // when findIfChanged returns, then call increaseStreak with result
         new Promise(findIfChanged).then(this.increaseStreak);
@@ -484,7 +490,7 @@ export default {
       }
     },
     clearPauseTimeout() {
-      // IF Streak is Paused
+      // IF streak is paused
       if (this.pauseStreak) {
         // clear this.pauseTimeout
         if (this.pauseTimeout) {
@@ -514,9 +520,6 @@ export default {
     },
   },
   mounted() {
-    // resets timeout if it exists
-    this.clearStreakTimeout();
-
     // Splash timeout
     const splashTimeout = setTimeout(() => {
       this.splash = false;
@@ -530,12 +533,14 @@ export default {
     // Onload sets window width
     this.handleWidth();
 
+    // clears timeout if it exists
+    this.clearStreakTimeout();
     // updates the time every 10 minutes (600000 ms)
     this.currentTime = new Date().getTime();
-
     // restarts this.streakTimeout
     this.timeoutHandler();
-    // clears pauseTimeout
+
+    // clears pauseTimeout if it exists
     this.clearPauseTimeout();
     // restarts pauseTimer if pauseStreak is true
     if (this.pauseStreak) {
@@ -549,18 +554,13 @@ export default {
         // saves when user left tab or page went inactive
         this.timeLeft = new Date().getTime();
 
-        // resets timeout if it exists
+        // clears timeout if it exists
         this.clearStreakTimeout();
         // clears pauseTimeout
         this.clearPauseTimeout();
       }
       // PAGE ACTIVE
       else {
-        // resets timeout if it exists
-        this.clearStreakTimeout();
-        // clears pauseTimeout
-        this.clearPauseTimeout();
-
         // restarts streak timer
         this.currentTime = new Date().getTime();
         this.timeoutHandler();
@@ -573,8 +573,9 @@ export default {
           this.pauseInactiveDuration = timeReturned - this.timeLeft;
         }
 
-        // IF Streak is Paused
+        // IF streak is paused
         if (this.pauseStreak) {
+          // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
           this.restartPauseTimer();
         }
       }
