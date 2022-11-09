@@ -594,11 +594,10 @@ export default {
     this.pauseStreak = JSON.parse(localStorage.getItem(PAUSE_KEY) || false);
     // Grabs how long its been since paused from localStorage when reloaded
     this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
-
-    // sets the next midnight
-    if (this.midnight === null) {
-      this.setMidnight();
-    }
+    // Grabs midnight from localStorage
+    this.midnight = JSON.parse(
+      localStorage.getItem(MIDNIGHT_KEY) || new Date().setHours(24, 0, 0, 0)
+    );
   },
 };
 </script>
