@@ -392,9 +392,10 @@ export default {
         let pauseCounterInactiveTime = Math.round(
           this.pauseInactiveDuration / 900000
         );
-        this.pauseCounter += pauseCounterInactiveTime;
-        // IF pauseCounter is under 24 hours (96 * 900000ms(15 mins) = 86400000ms), continue counter
-        if (this.pauseCounter < 96) {
+        const totalPauseCount = this.pauseCounter + pauseCounterInactiveTime;
+        // IF totalPauseCount is under 24 hours (96 * 900000ms(15 mins) = 86400000ms), continue counter
+        if (totalPauseCount < 95) {
+          this.pauseCounter += pauseCounterInactiveTime;
           this.setPauseCounterLocalStorage();
           this.pauseTimer();
         } else {
