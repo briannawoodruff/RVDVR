@@ -161,6 +161,8 @@ export default {
       timeLeft: null,
       streakTimeout: null,
       pauseTimeout: null,
+      isVisible: true, // internal flag, defaults to true
+      hiddenPropertyName: "",
     };
   },
   watch: {
@@ -519,6 +521,72 @@ export default {
         this.timeoutHandler();
       }, 600000);
     },
+    // handles visibility
+    onVisible() {
+      // prevent double execution
+      if (this.isVisible) {
+        return;
+      } else {
+        // change flag value
+        this.isVisible = true;
+      }
+    },
+    onHidden() {
+      // prevent double execution
+      if (!this.isVisible) {
+        return;
+      } else {
+        // change flag value
+        this.isVisible = false;
+      }
+    },
+    // visibility event
+    handleVisibilityChange(forcedFlag) {
+      // Resource: Stack Overflow -> https://stackoverflow.com/a/29425789
+      // forcedFlag is a boolean when this event handler is triggered by focus or blur event, otherwise it's an Event object
+      if (typeof forcedFlag === "boolean") {
+        if (forcedFlag) {
+          this.onVisible();
+        } else {
+          this.onHidden();
+        }
+      }
+      if (document[this.hiddenPropertyName]) {
+        this.onHidden();
+      } else {
+        this.onVisible();
+      }
+
+      // PAGE INACTIVE
+      if (!this.isVisible) {
+        // saves when user left tab or page went inactive
+        this.timeLeft = new Date().getTime();
+
+        // clears timeout if it exists
+        this.clearStreakTimeout();
+        // clears pauseTimeout
+        this.clearPauseTimeout();
+        // PAGE ACTIVE
+      } else {
+        // restarts streak timer
+        this.currentTime = new Date().getTime();
+        this.timeoutHandler();
+  
+        // saves time returned
+        const timeReturned = new Date().getTime();
+
+        // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
+        if (this.timeLeft !== undefined && timeReturned !== undefined) {
+          this.pauseInactiveDuration = timeReturned - this.timeLeft;
+        }
+
+        // IF streak is paused
+        if (this.pauseStreak) {
+          // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
+          this.restartPauseTimer();
+        }
+      }
+    },
   },
   mounted() {
     // Splash timeout
@@ -548,39 +616,56 @@ export default {
       this.pauseTimer();
     }
 
-    // watches if page is inactive/tabbed out
-    document.addEventListener("visibilitychange", () => {
-      // PAGE INACTIVE
-      if (document.hidden) {
-        // saves when user left tab or page went inactive
-        this.timeLeft = new Date().getTime();
+    // HANDLE VISIBILITY CHANGE INCLUDING SWITCHING PROGRAM/WINDOW
+    // Resource: Stack Overflow -> https://stackoverflow.com/a/29425789
+    const browserPrefixes = ["moz", "ms", "o", "webkit"];
+    // get the correct attribute name
+    function getHiddenPropertyName(prefix) {
+      return prefix ? prefix + "Hidden" : "hidden";
+    }
 
-        // clears timeout if it exists
-        this.clearStreakTimeout();
-        // clears pauseTimeout
-        this.clearPauseTimeout();
-      }
-      // PAGE ACTIVE
-      else {
-        // restarts streak timer
-        this.currentTime = new Date().getTime();
-        this.timeoutHandler();
+    // get the correct event name
+    function getVisibilityEvent(prefix) {
+      return (prefix ? prefix : "") + "visibilitychange";
+    }
 
-        // saves time returned
-        const timeReturned = new Date().getTime();
-
-        // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
-        if (this.timeLeft !== undefined && timeReturned !== undefined) {
-          this.pauseInactiveDuration = timeReturned - this.timeLeft;
-        }
-
-        // IF streak is paused
-        if (this.pauseStreak) {
-          // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
-          this.restartPauseTimer();
+    // get current browser vendor prefix
+    function getBrowserPrefix() {
+      for (var i = 0; i < browserPrefixes.length; i++) {
+        if (getHiddenPropertyName(browserPrefixes[i]) in document) {
+          // return vendor prefix
+          return browserPrefixes[i];
         }
       }
-    });
+      // no vendor prefix needed
+      return null;
+    }
+
+    // bind and handle events
+    let browserPrefix = getBrowserPrefix(),
+      visibilityEventName = getVisibilityEvent(browserPrefix);
+    this.hiddenPropertyName = getHiddenPropertyName(browserPrefix);
+
+    document.addEventListener(visibilityEventName, () => {
+      this.handleVisibilityChange();
+    }, false);
+
+    // extra event listeners for better behaviour
+    document.addEventListener("focus", () => {
+      this.handleVisibilityChange(true);
+    }, false);
+
+    document.addEventListener("blur", () => {
+      this.handleVisibilityChange(false);
+    }, false);
+
+    window.addEventListener("focus", () => {
+      this.handleVisibilityChange(true);
+    }, false);
+
+    window.addEventListener("blur", () => {
+      this.handleVisibilityChange(false);
+    }, false);
   },
   created() {
     // Grabs todos from localStorage when reloaded
