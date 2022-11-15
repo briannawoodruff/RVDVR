@@ -128,6 +128,9 @@ const PASTTASKS_KEY = "rvdvr_pasttasks";
 const PAUSE_KEY = "rvdvr_pause";
 const PAUSECOUNTER_KEY = "rvdvr_pauseCounter";
 const MIDNIGHT_KEY = "rvdvr_midnightUTC";
+const TIMELEFT_KEY = "rvdvr_timeLeft";
+const TIMERETURNED_KEY = "rvdvr_timeReturned";
+const PAUSEINACTIVE_KEY = "rvdvr_timeInactive";
 
 export default {
   name: "App",
@@ -159,10 +162,12 @@ export default {
       pauseCounter: 0,
       pauseInactiveDuration: null,
       timeLeft: null,
+      timeReturned: null,
       streakTimeout: null,
       pauseTimeout: null,
       isVisible: true, // internal flag, defaults to true
       hiddenPropertyName: "",
+      reloaded: null,
     };
   },
   watch: {
@@ -406,6 +411,23 @@ export default {
         }
       }
     },
+    startPauseBtn() {
+      // saves time returned
+      this.timeReturned = new Date().getTime();
+      localStorage.setItem(TIMERETURNED_KEY, JSON.stringify(this.timeReturned));
+
+      // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
+      if (this.timeLeft !== undefined && this.timeReturned !== undefined) {
+        this.pauseInactiveDuration = this.timeReturned - this.timeLeft;
+        localStorage.setItem(
+          PAUSEINACTIVE_KEY,
+          JSON.stringify(this.pauseInactiveDuration)
+        );
+      }
+
+      // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
+      this.restartPauseTimer();
+    },
     resetStreak() {
       // resets streak to 0
       this.streakCount = 0;
@@ -523,6 +545,7 @@ export default {
     },
     // handles visibility
     onVisible() {
+      this.reloaded = false;
       // prevent double execution
       if (this.isVisible) {
         return;
@@ -532,6 +555,7 @@ export default {
       }
     },
     onHidden() {
+      this.reloaded = false;
       // prevent double execution
       if (!this.isVisible) {
         return;
@@ -556,34 +580,29 @@ export default {
       } else {
         this.onVisible();
       }
+      
+      // Only calls when page is not reloaded to prevent resetting timeLeft and timeReturned (prevent mulitple execution of visibility change)
+      if (!this.reloaded) {
+        // PAGE INACTIVE
+        if (!this.isVisible) {
+          // saves when user left tab or page went inactive
+          this.timeLeft = new Date().getTime();
+          localStorage.setItem(TIMELEFT_KEY, JSON.stringify(this.timeLeft));
 
-      // PAGE INACTIVE
-      if (!this.isVisible) {
-        // saves when user left tab or page went inactive
-        this.timeLeft = new Date().getTime();
+          // clears timeout if it exists
+          this.clearStreakTimeout();
+          // clears pauseTimeout
+          this.clearPauseTimeout();
+          // PAGE ACTIVE
+        } else {
+          // restarts streak timer
+          this.currentTime = new Date().getTime();
+          this.timeoutHandler();
 
-        // clears timeout if it exists
-        this.clearStreakTimeout();
-        // clears pauseTimeout
-        this.clearPauseTimeout();
-        // PAGE ACTIVE
-      } else {
-        // restarts streak timer
-        this.currentTime = new Date().getTime();
-        this.timeoutHandler();
-  
-        // saves time returned
-        const timeReturned = new Date().getTime();
-
-        // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
-        if (this.timeLeft !== undefined && timeReturned !== undefined) {
-          this.pauseInactiveDuration = timeReturned - this.timeLeft;
-        }
-
-        // IF streak is paused
-        if (this.pauseStreak) {
-          // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
-          this.restartPauseTimer();
+          // starts pauseBtn and finds how long inactive since away
+          if (this.pauseStreak) {
+            this.startPauseBtn();
+          }
         }
       }
     },
@@ -613,7 +632,12 @@ export default {
     this.clearPauseTimeout();
     // restarts pauseTimer if pauseStreak is true
     if (this.pauseStreak) {
-      this.pauseTimer();
+      if (this.timeLeft !== null) {
+        // starts pauseBtn and finds how long inactive since away
+        this.startPauseBtn();
+      } else {
+        this.pauseTimer();
+      }
     }
 
     // HANDLE VISIBILITY CHANGE INCLUDING SWITCHING PROGRAM/WINDOW
@@ -646,26 +670,46 @@ export default {
       visibilityEventName = getVisibilityEvent(browserPrefix);
     this.hiddenPropertyName = getHiddenPropertyName(browserPrefix);
 
-    document.addEventListener(visibilityEventName, () => {
-      this.handleVisibilityChange();
-    }, false);
+    document.addEventListener(
+      visibilityEventName,
+      () => {
+        this.handleVisibilityChange();
+      },
+      false
+    );
 
     // extra event listeners for better behaviour
-    document.addEventListener("focus", () => {
-      this.handleVisibilityChange(true);
-    }, false);
+    document.addEventListener(
+      "focus",
+      () => {
+        this.handleVisibilityChange(true);
+      },
+      false
+    );
 
-    document.addEventListener("blur", () => {
-      this.handleVisibilityChange(false);
-    }, false);
+    document.addEventListener(
+      "blur",
+      () => {
+        this.handleVisibilityChange(false);
+      },
+      false
+    );
 
-    window.addEventListener("focus", () => {
-      this.handleVisibilityChange(true);
-    }, false);
+    window.addEventListener(
+      "focus",
+      () => {
+        this.handleVisibilityChange(true);
+      },
+      false
+    );
 
-    window.addEventListener("blur", () => {
-      this.handleVisibilityChange(false);
-    }, false);
+    window.addEventListener(
+      "blur",
+      () => {
+        this.handleVisibilityChange(false);
+      },
+      false
+    );
   },
   created() {
     // Grabs todos from localStorage when reloaded
@@ -684,6 +728,20 @@ export default {
     this.midnight = JSON.parse(
       localStorage.getItem(MIDNIGHT_KEY) || new Date().setHours(24, 0, 0, 0)
     );
+    // Grabs timeLeft incase page refreshes when user returns
+    this.timeLeft = JSON.parse(localStorage.getItem(TIMELEFT_KEY) || null);
+    // Grabs timeReturned incase page refreshes when user return
+    this.timeReturned = JSON.parse(
+      localStorage.getItem(TIMERETURNED_KEY) || null
+    );
+    // Grabs pauseInactiveDuration incase page refreshes when user return
+    this.pauseInactiveDuration = JSON.parse(
+      localStorage.getItem(PAUSEINACTIVE_KEY) || null
+    );
+
+    // Watches if page is reloaded to prevent mulitple execution of visibility change
+    let data = window.performance.getEntriesByType("navigation")[0].type;
+    data === "reload" ? (this.reloaded = true) : (this.reloaded = false);
   },
 };
 </script>
