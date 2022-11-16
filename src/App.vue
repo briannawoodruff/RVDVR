@@ -131,6 +131,7 @@ const MIDNIGHT_KEY = "rvdvr_midnightUTC";
 const TIMELEFT_KEY = "rvdvr_timeLeft";
 const TIMERETURNED_KEY = "rvdvr_timeReturned";
 const PAUSEINACTIVE_KEY = "rvdvr_timeInactive";
+const TOTALINACTIVE_KEY = "rvdvr_totalInactive";
 
 export default {
   name: "App",
@@ -161,6 +162,7 @@ export default {
       pauseStreak: false,
       pauseCounter: 0,
       pauseInactiveDuration: null,
+      totalInactiveDuration: 0,
       timeLeft: null,
       timeReturned: null,
       streakTimeout: null,
@@ -185,7 +187,10 @@ export default {
     // watches if pauseStreak is set to true, then set a timer for 24 hours before setting it false again
     async pauseStreak(newValue, oldValue) {
       if (newValue) {
-        this.pauseTimer();
+        // Prevents execution when page is reloaded (is only called on click of Pause Btn)
+        if (!this.reloaded) {
+          this.pauseTimer();
+        }
       } else {
         // clears this.pauseTimeout
         clearTimeout(this.pauseTimeout);
@@ -196,6 +201,30 @@ export default {
         // if currentTime is past midnight, to prevent setting midnight every refresh
         if (this.currentTime > this.midnight) {
           this.setMidnight();
+        }
+      }
+    },
+    // watches whether page is active or inactive 
+    async isVisible(newValue) {
+      // PAGE INACTIVE
+      if (!newValue) {
+        // saves when user left tab or page went inactive
+        this.timeLeft = new Date().getTime();
+        localStorage.setItem(TIMELEFT_KEY, JSON.stringify(this.timeLeft));
+
+        // clears timeout if it exists
+        this.clearStreakTimeout();
+        // clears pauseTimeout
+        this.clearPauseTimeout();
+        // PAGE ACTIVE
+      } else {
+        // restarts streak timer
+        this.currentTime = new Date().getTime();
+        this.timeoutHandler();
+
+        // starts pauseBtn and finds how long inactive since away
+        if (this.pauseStreak) {
+          this.startPauseBtn();
         }
       }
     },
@@ -379,19 +408,47 @@ export default {
       this.pauseCounter = 0;
       this.setPauseCounterLocalStorage();
     },
+    startPauseBtn() {
+      // saves time returned
+      this.timeReturned = new Date().getTime();
+      localStorage.setItem(TIMERETURNED_KEY, JSON.stringify(this.timeReturned));
+
+      // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
+      if (this.timeLeft !== undefined && this.timeReturned !== undefined) {
+        this.pauseInactiveDuration = this.timeReturned - this.timeLeft;
+        localStorage.setItem(
+          PAUSEINACTIVE_KEY,
+          JSON.stringify(this.pauseInactiveDuration)
+        );
+      }
+
+      // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
+      this.restartPauseTimer();
+    },
     restartPauseTimer() {
       // IF inactive for less than 15 mins
       if (this.pauseInactiveDuration < 900000) {
-        // If less than 12 minutes, start timer
-        if (this.pauseInactiveDuration < 720000) {
-          this.pauseTimer();
-        }
-        // If less than 15 mins but greater than 12 mins, increase by 1 and recall pauseTimer
-        else {
-          this.pauseCounter += 1;
+        // If total time away is more than 15 mins, add 1 to pauseCounter and reset total count away to 0
+        if (this.totalInactiveDuration > 900000) {
+          this.pauseCounter++;
           this.setPauseCounterLocalStorage();
-          this.pauseTimer();
+          console.log(this.pauseCounter);
+
+          this.totalInactiveDuration = 0;
+          localStorage.setItem(
+            TOTALINACTIVE_KEY,
+            JSON.stringify(this.totalInactiveDuration)
+          );
+          // Else total time away is less than 15 mins, continue total time away count
+        } else {
+          this.totalInactiveDuration += this.pauseInactiveDuration;
+          localStorage.setItem(
+            TOTALINACTIVE_KEY,
+            JSON.stringify(this.totalInactiveDuration)
+          );
         }
+
+        this.pauseTimer();
       }
       // If greater than 15 mins
       else {
@@ -410,23 +467,6 @@ export default {
           this.resetPause();
         }
       }
-    },
-    startPauseBtn() {
-      // saves time returned
-      this.timeReturned = new Date().getTime();
-      localStorage.setItem(TIMERETURNED_KEY, JSON.stringify(this.timeReturned));
-
-      // sets how long a user was inactive for by subtracting when they return and when the left in UTC (milliseconds)
-      if (this.timeLeft !== undefined && this.timeReturned !== undefined) {
-        this.pauseInactiveDuration = this.timeReturned - this.timeLeft;
-        localStorage.setItem(
-          PAUSEINACTIVE_KEY,
-          JSON.stringify(this.pauseInactiveDuration)
-        );
-      }
-
-      // handles update of pauseCounter based on how long the user was away, and the restarts the pauseTimer
-      this.restartPauseTimer();
     },
     resetStreak() {
       // resets streak to 0
@@ -549,62 +589,36 @@ export default {
       // prevent double execution
       if (this.isVisible) {
         return;
-      } else {
-        // change flag value
-        this.isVisible = true;
       }
+      // change flag value
+      this.isVisible = true;
     },
     onHidden() {
       this.reloaded = false;
       // prevent double execution
       if (!this.isVisible) {
         return;
-      } else {
-        // change flag value
-        this.isVisible = false;
       }
+      // change flag value
+      this.isVisible = false;
     },
     // visibility event
     handleVisibilityChange(forcedFlag) {
       // Resource: Stack Overflow -> https://stackoverflow.com/a/29425789
-      // forcedFlag is a boolean when this event handler is triggered by focus or blur event, otherwise it's an Event object
+      // focus or blur eventotherwise it's an Event object
       if (typeof forcedFlag === "boolean") {
         if (forcedFlag) {
-          this.onVisible();
-        } else {
-          this.onHidden();
+          return this.onVisible();
         }
+
+        return this.onHidden();
       }
+
       if (document[this.hiddenPropertyName]) {
-        this.onHidden();
-      } else {
-        this.onVisible();
+        return this.onHidden();
       }
-      
-      // Only calls when page is not reloaded to prevent resetting timeLeft and timeReturned (prevent mulitple execution of visibility change)
-      if (!this.reloaded) {
-        // PAGE INACTIVE
-        if (!this.isVisible) {
-          // saves when user left tab or page went inactive
-          this.timeLeft = new Date().getTime();
-          localStorage.setItem(TIMELEFT_KEY, JSON.stringify(this.timeLeft));
 
-          // clears timeout if it exists
-          this.clearStreakTimeout();
-          // clears pauseTimeout
-          this.clearPauseTimeout();
-          // PAGE ACTIVE
-        } else {
-          // restarts streak timer
-          this.currentTime = new Date().getTime();
-          this.timeoutHandler();
-
-          // starts pauseBtn and finds how long inactive since away
-          if (this.pauseStreak) {
-            this.startPauseBtn();
-          }
-        }
-      }
+      return this.onVisible();
     },
   },
   mounted() {
@@ -737,6 +751,10 @@ export default {
     // Grabs pauseInactiveDuration incase page refreshes when user return
     this.pauseInactiveDuration = JSON.parse(
       localStorage.getItem(PAUSEINACTIVE_KEY) || null
+    );
+    // Grabs totalInactiveDuration incase page refreshes when user return
+    this.totalInactiveDuration = JSON.parse(
+      localStorage.getItem(TOTALINACTIVE_KEY) || 0
     );
 
     // Watches if page is reloaded to prevent mulitple execution of visibility change
