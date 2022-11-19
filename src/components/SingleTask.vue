@@ -128,7 +128,7 @@ export default {
   }
 }
 .text {
-  height: 24px;
+  min-height: 24px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
