@@ -21,7 +21,7 @@
     </form>
     <!-- ELSE show Input AddTask Form and "Add a Task" Button -->
     <div v-else class="add-form">
-      <form @submit.passive="onSubmit">
+      <form @submit.prevent="onSubmit">
         <div class="form-control">
           <input
             id="input"
@@ -47,7 +47,14 @@ import { uuid } from "vue-uuid";
 
 export default {
   name: "AddTask",
-  emits: ["toggle-today-task", "toggle-master-task", "add-task"],
+  emits: [
+    "toggle-today-task",
+    "toggle-master-task",
+    "add-task",
+    "clear-edit-task",
+    "update-single-task",
+    "set-today-limit",
+  ],
   props: {
     showTodayTask: {
       type: Boolean,
@@ -61,6 +68,12 @@ export default {
     isToday: {
       type: Boolean,
     },
+    editTask: {
+      type: Object,
+    },
+    todayLimit: {
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -72,46 +85,96 @@ export default {
         color: "#fff",
         date: new Date().getTime(),
       },
+      savedTask: "",
+      timeout: null,
     };
   },
   watch: {
     // watches toggle to put the input in focus
-    showTodayTask(currentItem) {
-      if (!currentItem) {
-        this.setFocus();
-      }
+    showTodayTask: {
+      handler(currentItem) {
+        if (!currentItem) {
+          this.setFocus();
+        }
+      },
+      immediate: true,
     },
-    showMasterTask(currentItem) {
-      if (!currentItem) {
-        this.setFocus();
-      }
+    showMasterTask: {
+      handler(currentItem) {
+        if (!currentItem) {
+          this.setFocus();
+        }
+      },
+      immediate: true,
+    },
+    editTask: {
+      handler(newValue) {
+        // IF a task is being edited
+        if (newValue) {
+          // saves the editTask.task
+          this.savedTask = this.editTask.task;
+          // points the edit task to be the newTask
+          this.newTask = this.editTask;
+        } else {
+          // ELSE a task is not being updated
+          // If today's limit is false
+          if (!this.todayLimit && this.isToday) {
+            // reset todayLimit back to true
+            this.$emit("set-today-limit");
+          }
+          // reset saved task and set newTask.task back to nothing
+          if (this.savedTask !== "") {
+            this.savedTask = "";
+          }
+          // reset newTask
+          this.resetNewTask();
+        }
+      },
+      immediate: true,
     },
   },
   methods: {
     onSubmit() {
       // IF text was added
-      if (this.newTask.task !== "") {
-        this.$parent.$emit("add-task", this.newTask);
-        // reset newTask
-        this.newTask = {
-          id: uuid.v4(),
-          task: "",
-          isToday: this.isToday,
-          completed: false,
-          color: "#fff",
-          date: new Date().getTime(),
-        };
-      }
-      // BUTTON TOGGLE
-      if (this.isToday === true) {
-        this.$emit("toggle-today-task");
+      if (this.newTask.task !== "" && this.newTask.task !== " ") {
+        // If a task being edited
+        if (this.editTask) {
+          // update that single task
+          this.$parent.$emit("update-single-task", this.newTask);
+        } else {
+          // ELSE a task is not being edit, add a new task
+          this.$parent.$emit("add-task", this.newTask);
+        }
       } else {
-        this.$emit("toggle-master-task");
+        // ELSE no text was added but it's being edited
+        if (this.editTask) {
+          // reset the newTask.task to what it was
+          this.newTask.task = this.savedTask;
+        }
       }
+      // reset newTask
+      this.resetNewTask();
+      // reset editTask back to null
+      this.$emit("clear-edit-task");
+      // BUTTON TOGGLE
+      this.isToday
+        ? this.$emit("toggle-today-task")
+        : this.$emit("toggle-master-task");
+    },
+    resetNewTask() {
+      return (this.newTask = {
+        id: uuid.v4(),
+        task: "",
+        isToday: this.isToday,
+        completed: false,
+        color: "#fff",
+        date: new Date().getTime(),
+      });
     },
     async setFocus() {
+      clearTimeout(this.timeout);
       // waits until mounts
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         let input = document.getElementById("input");
         // puts input in focus
         if (input !== null) {

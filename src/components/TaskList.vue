@@ -7,8 +7,8 @@
       :group="{ name: 'tasks', pull: 'clone', put: pullFunction }"
       :delay="90"
       :delayOnTouchOnly="true"
-      :touchStartThreshold="40"
-      :emptyInsertThreshold="25"
+      :touchStartThreshold="50"
+      :emptyInsertThreshold="35"
       :clone="handleClone"
       @start="drag = true"
       @end="end"
@@ -27,7 +27,7 @@
             :key="element.id"
             class="task"
             :class="{ active: index === this.activeItem }"
-            @click.passive="$emit('selected-task', index)"
+            @click.passive="handleClick(index, element.id)"
             :index="index"
             :activeItem="this.activeItem"
             :watchDelete="this.watchDelete"
@@ -38,7 +38,7 @@
           <!-- TODAY element AND index < 1 to only show once -->
           <div
             v-else-if="this.isToday === true && index < 1"
-            @click="toggleTodayTask"
+            @click.passive="toggleTodayTask"
             class="task"
           >
             <!-- IF there are no tasks OR there are no Today tasks AND toggles on and off -->
@@ -55,7 +55,7 @@
           <!-- MASTER element AND index < 1 to only show once -->
           <div
             v-else-if="this.isToday === false && index < 1"
-            @click="toggleMasterTask"
+            @click.passive="toggleMasterTask"
             class="task"
           >
             <!-- IF there are no tasks OR there are no Master tasks AND toggles on and off -->
@@ -81,11 +81,16 @@
         : !this.isToday && this.showMission
     "
     @add-task="$emit('add-task', newTask)"
+    @update-single-task="$emit('update-single-task', singleTask)"
     @toggle-today-task="toggleTodayTask"
     @toggle-master-task="toggleMasterTask"
+    @clear-edit-task="clearEditTask"
+    @set-today-limit="setTodayLimit"
+    :editTask="this.editTask"
     :showTodayTask="this.showTodayTask"
     :showMasterTask="this.showMasterTask"
     :isToday="this.isToday"
+    :todayLimit="this.todayLimit"
   />
   <div
     v-else-if="!this.isToday && !this.showMission"
@@ -118,6 +123,7 @@ export default {
     "set-current-task",
     "show-mission",
     "handle-active-item",
+    "update-single-task",
   ],
   props: {
     allTasks: {
@@ -140,18 +146,16 @@ export default {
       task: null,
       selectedTaskId: null,
       todayLimit: null,
+      editTask: null,
+      clicks: 0,
     };
   },
   watch: {
     // When allTasks change, check if number of today tasks change to set limit
     allTasks: {
-      handler(currentItem, pastItem) {
-        // IF the currentItem and pastItem exist
-        if (
-          currentItem !== null &&
-          pastItem !== undefined &&
-          pastItem !== null
-        ) {
+      handler(currentItem) {
+        // IF the currentItem exist
+        if (currentItem !== null && currentItem !== undefined) {
           this.checkNumberOfToday();
         }
       },
@@ -216,6 +220,66 @@ export default {
     // emits to parent to delete a task
     watchDelete(taskId) {
       this.$emit("delete-task", taskId);
+      if (this.editTask) {
+        if (this.editTask.id === taskId) {
+          this.clearEditTask();
+          // toggle adding a task
+          this.isToday ? this.toggleTodayTask() : this.toggleMasterTask();
+        }
+      }
+    },
+    updateTask(id) {
+      // find task in allTasks
+      let [found] = this.allTasks.filter((task) => task.id === id);
+
+      // TOGGLING when double clicked
+      // If there is no task being edited
+      if (this.editTask === null) {
+        // set editTask
+        this.editTask = found;
+      } else {
+        // ELSE if there already is a task being edited, set it back to null
+        this.clearEditTask();
+      }
+      // IF it's Todays list and todays limit is true when double clicked to edit
+      if (this.isToday) {
+        if (this.todayLimit) {
+          // toggle off the limit and show the addTask to edit a singleTask
+          this.todayLimit = false;
+        } else {
+          // set it back to true
+          this.checkNumberOfToday();
+        }
+      }
+      // toggle adding a task
+      this.isToday ? this.toggleTodayTask() : this.toggleMasterTask();
+    },
+    // resets the editTask to null
+    clearEditTask() {
+      this.editTask = null;
+    },
+    setTodayLimit() {
+      // recheck number of today
+      this.checkNumberOfToday();
+    },
+    handleClick(index, id) {
+      // increase click count
+      this.clicks++;
+      // set selected task
+      this.$emit("selected-task", index);
+
+      // Resource for handling the double click: https://stackoverflow.com/a/41309853
+      // If only one click within time, set click to 0
+      if (this.clicks === 1) {
+        this.timer = setTimeout(() => {
+          this.clicks = 0;
+        }, 700);
+        // ELSE if we do get 2 clicks, update task
+      } else {
+        clearTimeout(this.timer);
+        this.updateTask(id);
+        this.clicks = 0;
+      }
     },
   },
   mounted() {

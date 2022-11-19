@@ -18,6 +18,7 @@
             @update-task="updateTask"
             @delete-task="deleteTask"
             @selected-task="selectedTask"
+            @update-single-task="updateSingleTask"
           />
         </Card>
         <!-- IF Desktop, show buttons -->
@@ -77,6 +78,7 @@
             @selected-task="selectedTask"
             @set-current-task="setCurrentTask"
             @show-mission="hideMission"
+            @update-single-task="updateSingleTask"
           />
         </Card>
         <!-- IF Mobile, show buttons -->
@@ -204,7 +206,7 @@ export default {
         }
       }
     },
-    // watches whether page is active or inactive 
+    // watches whether page is active or inactive
     async isVisible(newValue) {
       // PAGE INACTIVE
       if (!newValue) {
@@ -239,6 +241,20 @@ export default {
     selectedTask(i) {
       // this gets emitted to SingleTask.vue -> :class="{ active: this.index === this.activeItem }"
       this.activeItem = i;
+    },
+    // updates a single task on double click
+    updateSingleTask(singleTask) {
+      // find task
+      let [found] = this.allTasks.filter((task) => task.id === singleTask.id);
+      // update task
+      if (found !== null && found !== undefined && found.length !== 0) {
+        // UPDATE the id
+        found.id = uuid.v4();
+        // update task
+        found.task = singleTask.task;
+      }
+      // updates localStorage
+      this.updateLocalStorage();
     },
     updateTask(tasks) {
       // if a task is passed
@@ -432,7 +448,6 @@ export default {
         if (this.totalInactiveDuration > 900000) {
           this.pauseCounter++;
           this.setPauseCounterLocalStorage();
-          console.log(this.pauseCounter);
 
           this.totalInactiveDuration = 0;
           localStorage.setItem(
