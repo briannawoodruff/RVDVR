@@ -273,7 +273,7 @@ export default {
       if (this.clicks === 1) {
         this.timer = setTimeout(() => {
           this.clicks = 0;
-        }, 700);
+        }, 350);
         // ELSE if we do get 2 clicks, update task
       } else {
         clearTimeout(this.timer);
