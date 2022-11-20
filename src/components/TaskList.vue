@@ -300,7 +300,7 @@ export default {
 }
 .container {
   @extend %flex-column;
-  overflow: hidden;
+  // overflow: hidden;
   justify-content: flex-start;
   position: relative;
   z-index: 1;

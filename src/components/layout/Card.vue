@@ -137,7 +137,7 @@ export default {
   max-width: 500px;
   height: auto;
   margin: 50px 30px 30px 30px;
-  overflow: auto;
+  // overflow: auto;
   border: 3px solid $darkGreen;
   background-color: $white;
   padding: 0;
