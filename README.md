@@ -1,6 +1,5 @@
 <div id="header" align="center">
-  <img src="src/assets/images/logos/RVDVR-logo-white.svg" width="200"/>
-
+  <a target="_blank" rel="noopener noreferrer" href="https://rvdvr.com/"><img src="src/assets/images/logos/RVDVR-logo-white.svg" width="200"/></a>
   <h3>RVDΛR is a tool to simplify the overwhelming and never ending to do list by helping you prioritize your tasks into more manageable pieces using the Eisenhower Matrix.</h3>
 
   ---
@@ -79,9 +78,9 @@
 
 ## Usage:
 
-Add your tasks to the "Mission Panel" list and drag two or three of those tasks to "Today". You can check off or delete any to dos. If you need help prioritizing your tasks, click "Prioritize" at the bottom to show the Eisenhower Matrix. Drag and drop each task to the section that best describes it to color code it and sort by priority.  
+Add your tasks to the "Mission Panel" list and drag one to three of those tasks to "Today". You can check off or delete any to dos. If you need help prioritizing your tasks, click "Prioritize" at the bottom to show the Eisenhower Matrix. Drag and drop each task to the section that best describes it to color code it and sort by priority. Double click on a task to edit it.
 
-After everyday that you complete your "Today" task(s), you earn a streak day and after 5 streak days, you earn 1 break day. A break day allows you to take a day off from completing tasks and won't break your streak! But be careful because you only get a max of 5 streak days.
+After everyday that you complete your "Today" task(s), you earn a streak day and after 5 streak days, you earn 1 break day. A break day allows you to take a day off from completing tasks and won't break your streak! But be careful because you only get a max of 5 break-streak days.
 
 ## Design:
 
