@@ -13,6 +13,8 @@
             ? $emit('toggle-today-task')
             : $emit('toggle-master-task')
         "
+        @touchend.passive="setFocus"
+        @mouseup.passive="setFocus"
         type="button"
         class="add-task-btn"
       >
@@ -90,23 +92,6 @@ export default {
     };
   },
   watch: {
-    // watches toggle to put the input in focus
-    showTodayTask: {
-      handler(currentItem) {
-        if (!currentItem) {
-          this.setFocus();
-        }
-      },
-      immediate: true,
-    },
-    showMasterTask: {
-      handler(currentItem) {
-        if (!currentItem) {
-          this.setFocus();
-        }
-      },
-      immediate: true,
-    },
     editTask: {
       handler(newValue) {
         // IF a task is being edited
@@ -181,7 +166,7 @@ export default {
           input.focus();
           input.click();
         }
-      }, 50);
+      }, 40);
     },
   },
 };
