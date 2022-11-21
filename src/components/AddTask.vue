@@ -92,6 +92,23 @@ export default {
     };
   },
   watch: {
+    // watches toggle to put the input in focus
+    showTodayTask: {
+      handler(currentItem) {
+        if (!currentItem) {
+          this.setFocus();
+        }
+      },
+      immediate: true,
+    },
+    showMasterTask: {
+      handler(currentItem) {
+        if (!currentItem) {
+          this.setFocus();
+        }
+      },
+      immediate: true,
+    },
     editTask: {
       handler(newValue) {
         // IF a task is being edited
