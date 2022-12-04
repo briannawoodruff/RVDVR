@@ -637,6 +637,10 @@ export default {
     },
   },
   mounted() {
+    // sets midnight 
+    if (this.midnight === null) {
+      this.setMidnight();
+    }
     // Splash timeout
     const splashTimeout = setTimeout(() => {
       this.splash = false;
@@ -754,9 +758,7 @@ export default {
     // Grabs how long its been since paused from localStorage when reloaded
     this.pauseCounter = JSON.parse(localStorage.getItem(PAUSECOUNTER_KEY) || 0);
     // Grabs midnight from localStorage
-    this.midnight = JSON.parse(
-      localStorage.getItem(MIDNIGHT_KEY) || new Date().setHours(24, 0, 0, 0)
-    );
+    this.midnight = JSON.parse(localStorage.getItem(MIDNIGHT_KEY) || null);
     // Grabs timeLeft incase page refreshes when user returns
     this.timeLeft = JSON.parse(localStorage.getItem(TIMELEFT_KEY) || null);
     // Grabs timeReturned incase page refreshes when user return
