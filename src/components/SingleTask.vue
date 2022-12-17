@@ -26,7 +26,7 @@
     </label>
   </div>
 </template>
-        
+
 <script>
 const STORAGE_KEY = "rvdvr_todos";
 
@@ -79,7 +79,7 @@ export default {
   },
 };
 </script>
-        
+
 <style lang="scss" scoped>
 @import "../scss/_variables.scss";
 
@@ -282,6 +282,13 @@ export default {
     -ms-user-select: none;
   }
 
+  .hide-btn {
+    // hover over task show delete button
+    .single-task:hover & {
+      display: none;
+    }
+  }
+
   .indicator-delete {
     &:after {
       .checkbox & {
@@ -291,4 +298,3 @@ export default {
   }
 }
 </style>
-        
