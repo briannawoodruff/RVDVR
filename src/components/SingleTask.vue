@@ -274,7 +274,7 @@ export default {
     }
   }
   .text {
-    cursor: none;
+    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
