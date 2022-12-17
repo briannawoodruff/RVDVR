@@ -42,7 +42,7 @@
     <p class="title">{{ this.title }}</p>
   </button>
 </template>
-  
+
 <script>
 const BREAKSTREAK_KEY = "rvdvr_breakstreak";
 
@@ -77,7 +77,8 @@ export default {
     },
     // watches streakCount and if it changes, check if user gets a break day
     async streakCount(newValue) {
-      if (newValue) {
+      // If newValue is greater than 0
+      if (newValue > 0) {
         this.breakStreak();
       }
     },
@@ -172,13 +173,17 @@ export default {
       );
     },
     breakStreak() {
-      // IF the streakCount is divisible by 5 (every 5 days you get a break day), increase # of break days
-      if (this.streakCount % 5 === 0 && this.streakCount > 0) {
-        if (this.streakCount <= 25) {
+      // IF streakCount is less than 25
+      if (this.streakCount <= 25) {
+        // IF streakCount is divisible by 5 (every 5 days you get a break day), increase # of break days
+        if (this.streakCount % 5 === 0) {
           this.breakStreakAmount++;
           this.setBreakStreakLocalStorage();
-          // ELSE IF streakCount is more than 25 && breakStreakAmount is less than 5, increace # of break days (to limit the amount of streaks you can have [total of 5 at most])
-        } else if (this.streakCount > 25 && this.breakStreakAmount < 5) {
+        }
+        // ELSE streakCount is greater than 25
+      } else {
+        // IF breakStreakAmount is less than 5, increace # of break days (to limit the amount of streaks you can have [total of 5 at most])
+        if (this.breakStreakAmount < 5) {
           this.breakStreakAmount++;
           this.setBreakStreakLocalStorage();
         }
@@ -194,12 +199,12 @@ export default {
       this.breakStreakAmount = JSON.parse(
         localStorage.getItem(BREAKSTREAK_KEY) || 0
       );
-      this.setBreakStreakLocalStorage();
+      // this.setBreakStreakLocalStorage();
     }
   },
 };
 </script>
-  
+
 <style lang="scss" scoped>
 @import "../scss/variables";
 
