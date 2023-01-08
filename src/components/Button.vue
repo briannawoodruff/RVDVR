@@ -77,9 +77,12 @@ export default {
     },
     // watches streakCount and if it changes, check if user gets a break day
     async streakCount(newValue) {
-      // If newValue is greater than 0
-      if (newValue > 0) {
-        this.breakStreak();
+      // executes only for the Break Day Button
+      if (this.title === "Break Day") {
+        // If newValue is greater than 0 (to avoid 0 % 5 === 0)
+        if (newValue > 0) {
+          this.breakStreak();
+        }
       }
     },
   },
@@ -173,20 +176,10 @@ export default {
       );
     },
     breakStreak() {
-      // IF streakCount is less than 25
-      if (this.streakCount <= 25) {
-        // IF streakCount is divisible by 5 (every 5 days you get a break day), increase # of break days
-        if (this.streakCount % 5 === 0) {
-          this.breakStreakAmount++;
-          this.setBreakStreakLocalStorage();
-        }
-        // ELSE streakCount is greater than 25
-      } else {
-        // IF breakStreakAmount is less than 5, increace # of break days (to limit the amount of streaks you can have [total of 5 at most])
-        if (this.breakStreakAmount < 5) {
-          this.breakStreakAmount++;
-          this.setBreakStreakLocalStorage();
-        }
+      // IF breakStreakAmount is less than 5 (max is 5) and the streakCount is divisible by 5 (every 5 days a user gets a breakStreakDay)
+      if (this.breakStreakAmount < 5 && this.streakCount % 5 === 0) {
+        this.breakStreakAmount++;
+        this.setBreakStreakLocalStorage();
       }
     },
   },
