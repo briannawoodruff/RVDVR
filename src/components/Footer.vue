@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <p>&copy;2022 RVD<span class="lambda">V</span>R</p>
+    <p>&copy;2023 RVD<span class="lambda">V</span>R</p>
   </div>
 </template>
 
